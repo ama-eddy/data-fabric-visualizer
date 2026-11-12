@@ -96,6 +96,21 @@ const path = require('path'), fs = require('fs');
   await shot('10-team-e-showroom', 3500);
   check((await page.locator('#info h3').textContent()).startsWith('Team dati'), 'scheda del team dati');
 
+  // ---- Batch 4: workload trasversali e opzionali ----
+  check(await page.evaluate(() => !fabbrica.cfg.elements.some((e) => e.tipo === 'segnaposto')), 'nessun segnaposto rimasto');
+  check(await page.waitForFunction(() => fabbrica.flows.routes.some((r) => r.tipo === 'evento' && r.items.length), null, { timeout: 15000 }).then(() => true, () => false), 'nastro veloce verso la sala sensori');
+  await page.evaluate(() => fabbrica.state.set('RTI', 'off')); await page.waitForTimeout(300);            // [REQ-SRC-06]
+  check(await page.evaluate(() => !fabbrica.flows.routes.some((r) => r.tipo === 'evento' && r.items.length) && fabbrica.state.elemento('src-iot').on.visible), 'Real-Time spento: sensori visibili ma senza flusso');
+  await page.evaluate(() => { fabbrica.state.set('RTI', 'on'); fabbrica.ui.chiudi(); fabbrica.world.home(); });
+  await shot('12-tutto-on', 3500);
+  await page.evaluate(() => fabbrica.world.flyTo([-10, 26, 92], [-22, 4, 44]));
+  await shot('13-fronte', 3000);
+  await page.evaluate(() => fabbrica.world.flyTo([18, 30, -8], [60, 4, -4]));
+  await shot('14-realtime-knowledge', 3000);
+  await page.evaluate(() => { fabbrica.state.set('INT', 'off'); fabbrica.world.flyTo([-18, 16, -44], [-58, 4, -46]); });
+  await shot('15-sala-controllo', 3000);
+  await page.evaluate(() => fabbrica.state.set('INT', 'on'));
+
   // profilo di esempio [REQ-CFG-03]
   const pe = await browser.newPage({ viewport: { width: 1440, height: 860 } });
   pe.on('pageerror', (e) => errors.push('esempio: ' + e.message));

@@ -19,6 +19,7 @@ export function createFlows(cfg, world) {
     gold: () => new THREE.Mesh(geo.box, mat(M.gold.colore, { m: 0.7, r: 0.3, e: '#a16207', ei: 0.25 })),
     semilavorato() { const g = new THREE.Group(); g.add(new THREE.Mesh(geo.pacco, mat(M.semilavorato.colore, { e: '#0891b2', ei: 0.3 }))); const n = new THREE.Mesh(geo.nastro, mat('#ffffff')); n.position.y = 0.4; g.add(n); return g; },
     impulso: () => new THREE.Mesh(geo.sfera, mat('#e0f2fe', { e: '#38bdf8', ei: 1.4 })),
+    evento: () => new THREE.Mesh(geo.sfera, mat('#ffedd5', { e: '#f97316', ei: 1.6 })),
     camion() { return camion(false); }, officina() { return camion(true); },
     furgone() {                                                        // [REQ-HS-04] consegna dei semilavorati agli spoke
       const g = new THREE.Group(); box(g, 1.9, 1.5, 1.5, mat('#f8fafc'), 0, 0.5, 1.7); box(g, 1.7, 0.55, 0.1, mat('#bae6fd'), 0, 1.35, 2.47); box(g, 2, 0.3, 3.4, mat('#374151'), 0, 0.5, -0.8);

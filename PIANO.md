@@ -39,6 +39,6 @@ npm test         # prova automatica nel browser, schermate in tests/out/
 | 1 | **Completato** | Prova automatica superata (`npm test`). Gli altri workload hanno un **segnaposto** (volume colorato) al posto degli edifici definitivi. Restano da fare nei loro batch: REQ-UI-08 (schermi piccoli), prove su Edge e Firefox. Il pulsante "Pausa flussi" c'è ma i flussi arrivano nel batch 2. |
 | 2 | **Completato** | Prova automatica superata. Il nastro veloce dei sensori (streaming) arriva con il Real-Time nel batch 4: per ora la sorgente "Sensori" c'è ma non ha trasporto. Dalle spedizioni non parte ancora nulla verso gli spoke (batch 3). |
 | 3 | **Completato** | Prova automatica superata, anche con il profilo di esempio (`src/profile.esempio.js`, azienda inventata). Le strade verso gli spoke attraversano per ora i segnaposto di cancelli e recinzione: si sistemano nel batch 4. |
-| 4 | Da iniziare | |
+| 4 | **Completato** | Prova automatica superata. Non resta nessun segnaposto: l'esplorazione libera è completa. **Prossimo passo: prove dell'utente e scelta dei capitoli della narrazione (D-34), poi batch 5.** |
 | 5 | Da iniziare | |
 | 6 | Da iniziare | |

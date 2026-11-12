@@ -5,6 +5,7 @@ import { builders, buildCantiere } from './builders.js';
 import './sources.js';
 import './reparti.js';
 import './spoke.js';
+import './trasversali.js';
 import { mat } from './kit.js';
 import { ease } from './kit.js';
 

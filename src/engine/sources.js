@@ -96,7 +96,16 @@ function infrastruttura(g, el, ctx) {
       for (let i = 0; i < 3; i++) box(ombra, 1.4, 1.1, 1.4, mat('#a5f3fc', { op: 0.45, e: '#22d3ee', ei: 0.5 }), ...L(ax + (i - 1) * 1.6, 1.0 + (i === 1 ? 1.15 : 0), zB + 1.5)).castShadow = false;
       ctx.animate(() => { ombra.visible = attivo(); });
     }
-  }                                                                 // streaming: il nastro verso la sala sensori arriva con il Real-Time (batch 4)
+  } else if (m === 'streaming') {                                   // [REQ-SRC-06, REQ-FLW-10] nastro veloce: dritto alla sala sensori, salta banchina e magazzino
+    const s = ctx.cfg.elements.find((e) => e.tipo === 'salasensori'), tx = s ? s.pos[0] + 4 : 62, tz = s ? s.pos[1] : -20;
+    const pts = [[sx, 3, sz + 5], [sx, 8, sz + 13], [tx, 8, sz + 22], [tx, 8, tz - 9], [tx, 6.5, tz - 5]];
+    const nastro = mat('#fdba74', { e: '#ea580c', ei: 0.25, op: 0.8 }).clone();
+    for (let i = 0; i < 4; i++) tratto(pts[i], pts[i + 1], { w: 1.4, h: 0.2 }, nastro).castShadow = false;
+    for (const p of [pts[1], pts[2], pts[3]]) cyl(g, 0.2, 0.28, p[1], mat('#64748b'), ...L(p[0], 0, p[2]), 8);
+    const vivo = () => ctx.flows.lavora('RTI') && ctx.state().effettivo(ctx.state().elemento(el.id)) === 'on';
+    ctx.animate(() => { nastro.emissiveIntensity = vivo() ? 0.9 : 0.1; });      // con il Real-Time spento il nastro resta fermo e spento
+    ctx.flows.addRoute({ punti: pts.map(([x, y, z]) => [x, y + 0.45, z]), tipo: 'evento', attivo: vivo, ogni: 0.35, vel: 26 });
+  }
 }
 
 builders.sorgente = (g, el, ctx) => {

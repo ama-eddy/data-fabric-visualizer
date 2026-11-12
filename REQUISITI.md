@@ -538,13 +538,14 @@ const CONFIG = {
 | REQ-WL-10…12 | tutti | `CONFIG.workloads` · `CONFIG.elements` · `src/engine/state.js` | `npm test` | Implementato |
 | REQ-FLW-01…03 | WL-INT | `src/engine/reparti.js` (banchina, bronze) · `CONFIG.flussi` | `npm test` | Implementato |
 | REQ-SRC-01…05, 07…09 | WL-INT | `CONFIG.sources` · `CONFIG.categorie` · `CONFIG.modalita` · `src/engine/sources.js` | `npm test` | Implementato |
-| REQ-SRC-06, 10 | WL-RTI, narrativa | `src/engine/sources.js` · `CONFIG.chapters` | — | Approvato |
+| REQ-SRC-06 | WL-RTI | `src/engine/sources.js` (nastro veloce) | `npm test` | Implementato |
+| REQ-SRC-10 | narrativa | `CONFIG.chapters` | — | Approvato |
 | REQ-FLW-04…06 | WL-TRF | `src/engine/reparti.js` (silver, gold, confezionamento) · `CONFIG.flussi` | `npm test` | Implementato |
 | REQ-FLW-07 | WL-VIS, WL-SSR | `CONFIG.flussi.uscite` · `src/engine/spoke.js` (furgoni) | `npm test` | Implementato |
 | REQ-FLW-08…09 | — | `src/engine/flows.js` · `CONFIG.materiali` · legenda in `src/engine/ui.js` | `npm test` | Implementato |
-| REQ-FLW-10 | WL-RTI | `CONFIG.routes.rti` | — | Approvato |
-| REQ-FLW-11 | WL-KNW | `CONFIG.routes.knw` | — | Approvato |
-| REQ-SCN-01…10 | tutti | `engine/sceneBuilder` · `CONFIG.layout` · `CONFIG.elements` | — | Approvato |
+| REQ-FLW-10 | WL-RTI | `src/engine/sources.js` (nastro veloce) · `src/engine/trasversali.js` | `npm test` | Implementato |
+| REQ-FLW-11 | WL-KNW | `src/engine/trasversali.js` (archiviotecnico) | schermate | Implementato |
+| REQ-SCN-01…10 | tutti | `src/engine/scene.js` · `builders.js` · `reparti.js` · `spoke.js` · `trasversali.js` · `CONFIG.layout` · `CONFIG.elements` | `npm test` + schermate | Implementato |
 | REQ-SCN-11…13 | tutti | `src/engine/figures.js` · `src/engine/spoke.js` (ufficio) · `CONFIG.team` | `npm test` | Implementato |
 | REQ-NAR-01…08 | — | `engine/narrator` · `CONFIG.chapters` | — | Approvato |
 | REQ-PER-01…07 | trasversale | `CONFIG.paths` · `engine/pathPlayer` | — | Approvato |
