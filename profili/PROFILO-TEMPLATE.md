@@ -9,7 +9,7 @@
 | Campo | Valore |
 |---|---|
 | Azienda | |
-| Basato su standard | REQUISITI.md v1.5 |
+| Basato su standard | REQUISITI.md v1.6 |
 
 ---
 
@@ -35,7 +35,7 @@
 ## 3. Team dati (REQ-SCN-11)
 
 > Una figura per ogni persona reale del team. Lasciare vuoto per usare il default (5 figure: 2 al trasporto, 3 a rotazione).
-> **Trasporto**: fanno scorrere il materiale dai fornitori al lago dei dati, lo pescano dal pontile e lo portano nel Bronze.
+> **Trasporto** (Data Integration): uno costruisce e ripara gli scivoli, l'altro manovra le gru che pescano dal lago e riempiono il Bronze.
 > **Rotazione**: si alternano tra cabina di controllo, ufficio di coordinamento e showroom.
 
 | Gruppo | Uomini | Donne |
