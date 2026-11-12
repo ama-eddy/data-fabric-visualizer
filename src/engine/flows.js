@@ -1,4 +1,4 @@
-// Flussi di materiale: nastri del capannone, camion, condotte. [REQ-FLW-08, REQ-FLW-09]
+// Flussi di materiale: nastri del capannone, scivoli, scialuppe, furgoni. [REQ-FLW-08, REQ-FLW-09]
 import * as THREE from 'three';
 import { mat, box, cyl } from './kit.js';
 
@@ -18,9 +18,7 @@ export function createFlows(cfg, world) {
     silver: () => new THREE.Mesh(geo.box, mat(M.silver.colore, { m: 0.75, r: 0.25 })),
     gold: () => new THREE.Mesh(geo.box, mat(M.gold.colore, { m: 0.7, r: 0.3, e: '#a16207', ei: 0.25 })),
     semilavorato() { const g = new THREE.Group(); g.add(new THREE.Mesh(geo.pacco, mat(M.semilavorato.colore, { e: '#0891b2', ei: 0.3 }))); const n = new THREE.Mesh(geo.nastro, mat('#ffffff')); n.position.y = 0.4; g.add(n); return g; },
-    impulso: () => new THREE.Mesh(geo.sfera, mat('#e0f2fe', { e: '#38bdf8', ei: 1.4 })),
     evento: () => new THREE.Mesh(geo.sfera, mat('#ffedd5', { e: '#f97316', ei: 1.6 })),
-    camion() { return camion(false); }, officina() { return camion(true); },
     galleggiante() { const g = new THREE.Group(), p = pezzo.grezzo(); p.position.y = 0.1; g.add(p); g.userData.galleggia = true; return g; },
     scialuppa() {                                                      // [RDM-019] la scialuppa del materiale pre-lavorato
       const g = new THREE.Group(), c = cfg.modalita.dataflow.colore;
@@ -34,17 +32,6 @@ export function createFlows(cfg, world) {
       for (const z of [-1.8, 1.6]) for (const x of [-0.95, 0.95]) { const w = cyl(g, 0.42, 0.42, 0.3, mat('#111827'), x, 0, z, 10); w.rotation.z = Math.PI / 2; w.position.y = 0.42; }
       return g; },
   };
-  function camion(officina) {
-    const g = new THREE.Group(), c = cfg.modalita[officina ? 'dataflow' : 'copy'].colore;
-    box(g, 2, 1.6, 1.6, mat(c), 0, 0.5, 1.9); box(g, 1.8, 0.6, 0.1, mat('#bae6fd'), 0, 1.4, 2.72);
-    box(g, 2.1, 0.3, 4, mat('#374151'), 0, 0.5, -0.9);
-    if (officina) { box(g, 2, 1.7, 3.6, mat('#fde68a'), 0, 0.8, -0.9); cyl(g, 0.22, 0.22, 0.9, mat('#57534e'), 0.5, 2.5, -1.8, 8); }
-    else for (const z of [-2.1, -0.9, 0.3]) { const p = pezzo.grezzo(); p.position.set(0, 1.2, z); g.add(p); }
-    for (const z of [-2, 1.8]) for (const x of [-1, 1]) { const w = cyl(g, 0.45, 0.45, 0.3, mat('#111827'), x, 0, z, 10); w.rotation.z = Math.PI / 2; w.position.y = 0.45; }
-    g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-    return g;
-  }
-
   /* Percorso: punti [x,y,z]; tipo = pezzo o veicolo; attivo() decide se il materiale si muove */
   function addRoute(r) {
     const path = new THREE.CurvePath();
@@ -99,7 +86,7 @@ export function createFlows(cfg, world) {
         if (it.u >= 1) { r.parent.remove(it.o); r.items.splice(i, 1); continue; }
         r.path.getPointAt(it.u, it.o.position);
         if (it.o.userData.galleggia) { it.o.position.y += Math.sin(performance.now() / 300 + i) * 0.08; it.o.rotation.z = Math.sin(performance.now() / 500 + i) * 0.08; }
-        if (r.tipo === 'camion' || r.tipo === 'officina' || r.tipo === 'furgone' || r.tipo === 'scialuppa') { const tg = r.path.getTangentAt(it.u); it.o.rotation.y = Math.atan2(tg.x, tg.z); }
+        if (r.tipo === 'furgone' || r.tipo === 'scialuppa') { const tg = r.path.getTangentAt(it.u); it.o.rotation.y = Math.atan2(tg.x, tg.z); }
       }
     }
   }

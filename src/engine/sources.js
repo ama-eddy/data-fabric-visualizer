@@ -7,7 +7,8 @@ import { builders } from './builders.js';
 export function elementiSorgenti(cfg) {
   const L = cfg.layout.sorgenti, n = cfg.sources.length, passo = Math.min(L.passo, L.larghezza / Math.max(n, 1));
   return cfg.sources.flatMap((s, i) => {
-    const cat = cfg.categorie[s.categoria] || cfg.categorie.erp, modalita = s.modalita || cat.modalita, mz = cfg.modalita[modalita];
+    if (!cfg.categorie[s.categoria]) console.warn(`Sorgente "${s.nome}": categoria "${s.categoria}" sconosciuta, uso "esterni". Categorie valide: ${Object.keys(cfg.categorie).join(', ')}`);
+    const cat = cfg.categorie[s.categoria] || cfg.categorie.esterni, modalita = s.modalita || cat.modalita, mz = cfg.modalita[modalita];
     const x = (i - (n - 1) / 2) * passo, id = s.id || 'src-' + i;
     return [
       /* [REQ-SRC-01] l'edificio del fornitore: appartiene alle Data Sources */
@@ -22,7 +23,7 @@ export function elementiSorgenti(cfg) {
   });
 }
 
-/* ===== [REQ-SRC-02] Otto forme, una per categoria ===== */
+/* ===== [REQ-SRC-02] Una forma per ogni categoria di software ===== */
 const forme = {
   stabilimento(g) {
     box(g, 9, 5, 7, mat('#94a3b8'));
@@ -131,7 +132,7 @@ function infrastruttura(g, el, ctx) {
     const ombra = new THREE.Group(); g.add(ombra);                  // [REQ-SRC-05] "ombra" del materiale, in conto deposito nel lago
     for (let i = 0; i < 4; i++) box(ombra, 1.3, 1, 1.3, mat('#a5f3fc', { op: 0.45, e: '#22d3ee', ei: 0.6 }), ...L(fine[0] + (i % 2 ? 1.6 : -1.6), 0.15, fine[1] + 1.5 + Math.floor(i / 2) * 1.7)).castShadow = false;
     ctx.animate((t) => { ombra.visible = attivo(); ombra.position.y = Math.sin(t * 2) * 0.1; });
-  } else if (m === 'streaming') {                                   // [REQ-SRC-06, REQ-FLW-10] nastro veloce: dritto alla sala sensori, salta banchina e magazzino
+  } else if (m === 'streaming') {                                   // [REQ-SRC-06, REQ-FLW-10] nastro veloce: dritto alla sala sensori, salta lago e magazzino
     const s = ctx.cfg.elements.find((e) => e.tipo === 'salasensori'), tx = s ? s.pos[0] + 4 : 62, tz = s ? s.pos[1] : -20;
     const pts = [[sx, 3, sz + 5], [sx, 8, sz + 13], [tx, 8, sz + 22], [tx, 8, tz - 9], [tx, 6.5, tz - 5]];
     const nastro = mat('#fdba74', { e: '#ea580c', ei: 0.25, op: 0.8 }).clone();

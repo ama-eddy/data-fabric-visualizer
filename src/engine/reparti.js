@@ -1,31 +1,10 @@
-// Reparti del capannone: banchina, Bronze, Silver, Gold, confezionamento, spedizioni. [REQ-FLW-02…06]
+// Lago dei dati, pontile e reparti del capannone: Bronze, Silver, Gold, confezionamento, spedizioni. [REQ-FLW-02…06]
 import * as THREE from 'three';
 import { mat, box, cyl } from './kit.js';
 import { builders } from './builders.js';
 
 const cassa = (g, colore, x, y, z, o = {}) => box(g, 1.3, 1, 1.3, mat(colore, o), x, y, z);
 const pila = (g, colore, x, z, n, o) => { for (let i = 0; i < n; i++) cassa(g, colore, x + (i % 2) * 0.1, i * 1.05, z, o); };
-
-/* ===== [REQ-FLW-02] Banchina di scarico (Landing): il materiale arriva così com'è ===== */
-builders.banchina = (g, el, ctx) => {
-  const [w, d, h] = el.dim, corsie = ctx.cfg.flussi.corsie;
-  box(g, w, 0.5, d, mat('#6b7280'));                                   // piano di carico
-  box(g, w, 0.12, 0.5, mat('#facc15'), 0, 0.5, -d / 2 + 0.25);
-  for (let x = -w / 2 + 3; x <= w / 2 - 3; x += 9) {                   // portali di scarico
-    for (const s of [-2, 2]) box(g, 0.4, h, 0.4, mat('#475569'), x + s, 0.5, -d / 2 + 0.6);
-    box(g, 4.4, 0.5, 0.5, mat('#475569'), x, h + 0.2, -d / 2 + 0.6);
-    box(g, 4, 1.1, 0.12, mat('#1d4ed8'), x, h - 1, -d / 2 + 0.6);
-  }
-  const tetto = box(g, w, 0.25, d * 0.6, mat('#93c5fd', { op: 0.5 }), 0, h + 0.8, -d * 0.15); tetto.castShadow = false;
-  const grezzi = ['#9ca3af', '#a8a29e', '#78716c', '#94a3b8'];
-  for (let x = -w / 2 + 4; x <= w / 2 - 4; x += 4.5) {                 // materiale grezzo, di forme diverse
-    if (corsie.some((c) => Math.abs(c - x) < 2)) continue;
-    box(g, 2.6, 0.15, 2.6, mat('#a16207'), x, 0.5, 1);
-    const c = grezzi[Math.abs(Math.round(x)) % 4];
-    if (Math.round(x) % 2) { cyl(g, 0.6, 0.6, 1.2, mat(c), x - 0.5, 0.65, 1, 10); cassa(g, grezzi[(Math.abs(Math.round(x)) + 1) % 4], x + 0.6, 0.65, 1.2); }
-    else { cassa(g, c, x - 0.5, 0.65, 0.6); cassa(g, c, x + 0.6, 0.65, 1.3); cassa(g, grezzi[(Math.abs(Math.round(x)) + 2) % 4], x, 1.7, 0.9); }
-  }
-};
 
 /* ===== [REQ-SCN-04] Lago dei dati: un'unica riserva tra i fornitori e la fabbrica ===== */
 builders.lago = (g, el, ctx) => {
