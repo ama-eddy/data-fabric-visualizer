@@ -17,6 +17,7 @@ const path = require('path'), fs = require('fs');
 
   await page.evaluate(() => fabbrica.world.flyTo([0, 40, -40], [0, 0, -86], 0.01));
   await shot('0-area-fornitori-vuota', 1500);
+  check(await page.evaluate(() => { const r = fabbrica.state.elemento('fornitori'), p = r.label.getWorldPosition(new (r.root.position.constructor)()); return p.y < 2 && Math.abs(p.z - (-77.5)) < 2; }), 'etichetta dell\'area fornitori a terra, davanti ai lotti');
   await page.evaluate(() => fabbrica.world.home());
   await shot('1-terreno-vuoto', 1500);
   check(await page.locator('#wl > .row').count() === 12, '12 workload nel pannello');
