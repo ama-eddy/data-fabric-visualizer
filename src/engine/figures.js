@@ -61,8 +61,16 @@ export function createFigures(cfg, world, state, flows) {
         if (f.gruppo !== g) { f.gruppo = g; f.wl = G.wl; f.compito = comp.nome; f.o.traverse((m) => { m.userData.el = 'team:' + g; }); }
         const meta = new THREE.Vector3(comp.pos[0] + quanti * 1.8, 0, comp.pos[1] + quanti * 1.4);
         if (!f.pos) { f.pos = meta.clone(); f.verso = meta; f.k = 1; }
-        if (!f.verso.equals(meta)) { f.da = f.pos.clone(); f.verso = meta; f.k = 0; }
-        if (f.k < 1) { f.k = Math.min(1, f.k + (dt * 11) / Math.max(1, f.da.distanceTo(f.verso))); f.pos.lerpVectors(f.da, f.verso, f.k); f.o.rotation.y = Math.atan2(f.verso.x - f.da.x, f.verso.z - f.da.z); }
+        if (!f.verso.equals(meta)) {                                   // nuovo turno: si passa dal corridoio davanti al capannone, senza attraversare gli edifici
+          const c = T.corridoio, via = [f.pos.clone(), new THREE.Vector3(f.pos.x, 0, c), new THREE.Vector3(meta.x, 0, c), meta];
+          f.via = via; f.lung = via.slice(1).map((p, j) => p.distanceTo(via[j])); f.tot = f.lung.reduce((a, b) => a + b, 0) || 1; f.fatto = 0; f.verso = meta; f.k = 0;
+        }
+        if (f.k < 1) {
+          f.fatto = Math.min(f.tot, f.fatto + dt * 11); f.k = f.fatto / f.tot;
+          let d = f.fatto, j = 0; while (j < f.lung.length - 1 && d > f.lung[j]) d -= f.lung[j++];
+          const a = f.via[j], b = f.via[j + 1]; f.pos.lerpVectors(a, b, f.lung[j] ? Math.min(1, d / f.lung[j]) : 1);
+          if (f.lung[j] > 0.01) f.o.rotation.y = Math.atan2(b.x - a.x, b.z - a.z);
+        }
         else f.o.rotation.y = (comp.verso || 0) + Math.sin(t * 0.6 + i) * 0.35;
         f.o.position.set(f.pos.x, quota(f.pos.x, f.pos.z) + (f.k < 1 ? Math.abs(Math.sin(t * 9)) * 0.12 : 0), f.pos.z);
         continue;

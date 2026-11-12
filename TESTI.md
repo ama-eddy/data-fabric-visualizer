@@ -92,6 +92,66 @@ Chiudi
 ### ui.tecnico
 In Fabric
 
+### ui.presentazione
+Presentazione
+
+### ui.percorsi
+Percorsi
+
+### ui.avanti
+Avanti
+
+### ui.indietro
+Indietro
+
+### ui.esci
+Esci
+
+### ui.tornaQui
+Torna qui
+
+### ui.capitolo
+Capitolo
+
+### ui.tappa
+Tappa
+
+### ui.di
+di
+
+### ui.chi
+Chi
+
+### ui.tu
+Cosa fai tu
+
+### ui.ricorda
+Da ricordare
+
+### ui.nessunaTappa
+Questo percorso attraversa reparti non ancora accesi.
+
+### ui.aiutoGuida
+Avanti: → o spazio · Indietro: ← · Esci: Esc
+
+### ui.benvenutoTitolo
+La fabbrica dei dati
+
+### ui.esplora
+Esplora liberamente
+
+### ui.menu
+Pannello
+
+### ui.benvenuto1
+I numeri che leggi nei report non nascono nei report: nascono nei sistemi che usi ogni giorno e fanno un viaggio, come in una fabbrica.
+
+### ui.benvenuto2
+Qui vedi quel viaggio: i fornitori, il lago dove arriva il materiale, i reparti che lo lavorano, i semilavorati certificati e le officine delle funzioni.
+
+### ui.benvenuto3
+Puoi seguire la presentazione, un capitolo alla volta, oppure esplorare da solo: accendi i reparti dal pannello e clicca su ciò che vedi.
+
 ### ui.legenda
 Legenda
 
@@ -533,11 +593,23 @@ Sala sensori
 ### elements.sensori.tecnico
 Eventstream · Eventhouse · Activator
 
+### elements.sensori.fabbrica
+La sala sensori: il materiale dei sensori arriva sul nastro veloce e viene guardato subito, sul grande schermo, senza passare dal lago e dal magazzino.
+
+### elements.sensori.perTe
+Vedi cosa sta succedendo in questo momento, e puoi farti avvisare appena un valore esce dalla norma.
+
 ### elements.archivio.nome
 Ufficio tecnico e archivio
 
 ### elements.archivio.tecnico
 Ontology (Fabric IQ)
+
+### elements.archivio.fabbrica
+L'ufficio tecnico: sul tetto, la mappa di come le cose dell'azienda sono collegate tra loro. I fili d'oro la legano alla linea di assemblaggio e ai semilavorati.
+
+### elements.archivio.perTe
+Cliente, ordine, margine: qui si scrive una volta per tutte cosa significano, così tutti parlano la stessa lingua e si possono fare domande ai dati con parole semplici.
 
 ## Legenda: materiali
 
@@ -879,3 +951,373 @@ Coordina tutti gli operatori della fabbrica: chi fa cosa, in che ordine, entro q
 
 ### team.gruppi.coordination.compiti.0.nome
 All'ufficio di coordinamento
+
+## Narrativa: i capitoli della presentazione
+
+### chapters.inizio.titolo
+Il punto di partenza
+
+### chapters.inizio.testo
+Oggi ogni funzione lavora nei propri sistemi e i numeri si passano a mano, tra fogli di calcolo e mail. Qui c'è un terreno vuoto: costruiamo insieme la fabbrica dei dati, un pezzo alla volta.
+
+### chapters.sorgenti.titolo
+I fornitori: i sistemi che usate ogni giorno
+
+### chapters.sorgenti.testo
+Gestionale, CRM, fogli di calcolo: il dato nasce qui, nel lavoro di tutti i giorni. Ogni sistema è un fornitore di materia prima, e resta dov'è: voi continuate a lavorarci come sempre.
+
+### chapters.architettura.titolo
+Data Architecture: le fondamenta
+
+### chapters.architettura.testo
+Prima si costruisce lo spazio comune: il capannone, la centrale che dà energia e il lago dei dati, un solo posto dove arriverà il materiale di tutti i fornitori.
+
+### chapters.coordinamento.titolo
+Project Management: chi fa cosa
+
+### chapters.coordinamento.testo
+Il team dati è fatto di poche persone e le richieste sono tante. Dall'ufficio di coordinamento si decide cosa viene prima e si dà a ogni richiesta un responsabile e una data.
+
+### chapters.integrazione.titolo
+Data Integration: il materiale arriva in fabbrica
+
+### chapters.integrazione.testo
+Dai fornitori il materiale scivola nel lago a orari stabiliti: per questo un dato di oggi può arrivare domani. Il team dati lo pesca e lo mette nel magazzino materie prime, così com'è. Nessuno deve più estrarre dati a mano.
+
+### chapters.trasformazione.titolo
+Data Transformation: dal grezzo al semilavorato
+
+### chapters.trasformazione.testo
+Il materiale viene pulito, assemblato e confezionato in semilavorati: dati certificati, con i calcoli già pronti. Ogni semilavorato passa dal laboratorio prove prima di uscire dalla fabbrica.
+
+### chapters.sicurezza.titolo
+Security: proteggere ciò che vale
+
+### chapters.sicurezza.testo
+Recinzione, telecamere e caveau: i dati riservati li vede solo chi deve, e si sa sempre chi ha guardato cosa.
+
+### chapters.accessi.titolo
+Accessi: chi entra e cosa può fare
+
+### chapters.accessi.testo
+In fabbrica si entra con il badge. Ogni funzione decide chi dei suoi entra, e ognuno raggiunge solo ciò che gli serve.
+
+### chapters.visualizzazione.titolo
+Data Visualization: i report ufficiali
+
+### chapters.visualizzazione.testo
+Nello showroom nascono i report ufficiali, in Power BI, costruiti sui semilavorati collaudati: gli stessi numeri per tutta l'azienda.
+
+### chapters.officine.titolo
+Self-service: le officine delle funzioni
+
+### chapters.officine.testo
+Ogni funzione riceve i semilavorati e ci costruisce i propri report, aggiungendo se serve i propri dati. Non si parte da zero e non si aspetta nessuno.
+
+### chapters.governance.titolo
+Data Governance: regole, qualità, sportello
+
+### chapters.governance.testo
+La torre fissa le regole comuni e mette il marchio di qualità. La sala controllo sorveglia che ogni reparto lavori. Allo sportello si chiede, si segnala un problema, si entra nella fabbrica.
+
+### chapters.costi.titolo
+Monitoraggio costi: quanto consuma la fabbrica
+
+### chapters.costi.testo
+La fabbrica ha un costo, e i contatori mostrano quanto consuma ogni reparto e ogni officina: serve a decidere dove vale la pena investire.
+
+### chapters.conoscenza.titolo
+Knowledge: parlare la stessa lingua
+
+### chapters.conoscenza.testo
+L'ufficio tecnico tiene la mappa di cosa sono le cose dell'azienda e di come sono collegate: mette tutti d'accordo sul significato delle parole e permette di fare domande ai dati nel linguaggio di tutti i giorni.
+
+### chapters.tempo-reale.titolo
+Real-Time: quando non si può aspettare domani
+
+### chapters.tempo-reale.testo
+Alcuni segnali vanno visti subito. Il nastro veloce porta il materiale dai sensori alla sala sensori nel momento in cui nasce, senza passare dal lago e dal magazzino.
+
+## Percorsi: tappe e messaggi
+
+### paths.incidente.sottotitolo
+Incident
+
+### paths.incidente.titolo
+Il numero nel mio report è sbagliato
+
+### paths.incidente.messaggio
+Non devi sapere dove sta il problema: lo segnali allo sportello e il team dati risale la filiera per te.
+
+### paths.incidente.tappe.0.chi
+La funzione
+
+### paths.incidente.tappe.0.cosa
+Nel report della funzione un numero non torna, o non si è aggiornato.
+
+### paths.incidente.tappe.0.tu
+Ti accorgi del problema e non provi a sistemarlo a mano.
+
+### paths.incidente.tappe.1.chi
+La funzione e il team dati
+
+### paths.incidente.tappe.1.cosa
+La segnalazione arriva allo sportello dell'hub.
+
+### paths.incidente.tappe.1.tu
+Segnali quale report, quale numero e da quando.
+
+### paths.incidente.tappe.2.chi
+Il team dati
+
+### paths.incidente.tappe.2.cosa
+In sala controllo si guarda se qualche reparto si è fermato: una spia rossa dice già dove cercare.
+
+### paths.incidente.tappe.3.chi
+Il team dati
+
+### paths.incidente.tappe.3.cosa
+Si controlla il semilavorato: il calcolo è quello giusto?
+
+### paths.incidente.tappe.4.chi
+Il team dati
+
+### paths.incidente.tappe.4.cosa
+Si risale la filiera, un reparto alla volta: i componenti sono stati assemblati bene?
+
+### paths.incidente.tappe.5.chi
+Il team dati
+
+### paths.incidente.tappe.5.cosa
+Ancora più a monte: la pulizia ha scartato o corretto qualcosa che non doveva?
+
+### paths.incidente.tappe.6.chi
+Il team dati
+
+### paths.incidente.tappe.6.cosa
+Nel magazzino si guarda il materiale così com'era arrivato: l'errore c'era già?
+
+### paths.incidente.tappe.7.chi
+Il team dati
+
+### paths.incidente.tappe.7.cosa
+Si trova la causa: un carico non è arrivato nel lago, oppure il dato era sbagliato già dal fornitore.
+
+### paths.incidente.tappe.8.chi
+Il team dati
+
+### paths.incidente.tappe.8.cosa
+Corretta la causa, il materiale ripercorre la filiera e il semilavorato viene collaudato di nuovo.
+
+### paths.incidente.tappe.9.chi
+La funzione
+
+### paths.incidente.tappe.9.cosa
+Il report torna corretto e la funzione viene avvisata.
+
+### paths.incidente.tappe.9.tu
+Controlli che il numero ora torni.
+
+### paths.richiesta.sottotitolo
+Change request
+
+### paths.richiesta.titolo
+Mi serve un nuovo indicatore
+
+### paths.richiesta.messaggio
+Quello che serve a tutti entra nel semilavorato; quello che serve solo a te lo costruisci nella tua officina.
+
+### paths.richiesta.tappe.0.chi
+La funzione
+
+### paths.richiesta.tappe.0.cosa
+Alla funzione serve un indicatore nuovo, o un'informazione in più.
+
+### paths.richiesta.tappe.0.tu
+Descrivi cosa ti serve e per quale decisione.
+
+### paths.richiesta.tappe.1.chi
+Il team dati con la funzione
+
+### paths.richiesta.tappe.1.cosa
+Allo sportello si capisce: esiste già? Serve a tutti o solo a questa funzione? Se serve solo a te, lo costruisci nella tua officina, con il nostro aiuto.
+
+### paths.richiesta.tappe.1.tu
+Porti la richiesta allo sportello.
+
+### paths.richiesta.tappe.2.chi
+Il team dati
+
+### paths.richiesta.tappe.2.cosa
+La richiesta entra nel piano di lavoro: ha un responsabile e una data.
+
+### paths.richiesta.tappe.3.chi
+Il team dati
+
+### paths.richiesta.tappe.3.cosa
+Si modifica la lavorazione: il nuovo calcolo entra nei componenti.
+
+### paths.richiesta.tappe.4.chi
+Il team dati
+
+### paths.richiesta.tappe.4.cosa
+Il semilavorato viene aggiornato con il nuovo indicatore.
+
+### paths.richiesta.tappe.5.chi
+Il team dati con la funzione
+
+### paths.richiesta.tappe.5.cosa
+In laboratorio la modifica si prova prima che arrivi a tutti.
+
+### paths.richiesta.tappe.5.tu
+Provi il nuovo indicatore e confermi che è quello che ti serviva.
+
+### paths.richiesta.tappe.6.chi
+Il team dati
+
+### paths.richiesta.tappe.6.cosa
+Il semilavorato aggiornato riceve il marchio di qualità.
+
+### paths.richiesta.tappe.7.chi
+Il team dati
+
+### paths.richiesta.tappe.7.cosa
+Il semilavorato aggiornato parte verso tutte le officine.
+
+### paths.richiesta.tappe.8.chi
+La funzione
+
+### paths.richiesta.tappe.8.cosa
+L'indicatore è disponibile: per la tua funzione e per tutte le altre.
+
+### paths.richiesta.tappe.8.tu
+Lo usi nei tuoi report.
+
+### paths.progetto.sottotitolo
+New project · il viaggio del dato
+
+### paths.progetto.titolo
+Vogliamo analizzare un'area nuova
+
+### paths.progetto.messaggio
+Ogni numero che leggi ha fatto questo viaggio, con un controllo a ogni reparto: per questo ti puoi fidare. E un'area nuova non è un report nuovo: è una nuova linea della fabbrica, che poi serve a tutti.
+
+### paths.progetto.tappe.0.chi
+La funzione
+
+### paths.progetto.tappe.0.cosa
+Il dato nasce in un sistema che la funzione usa ogni giorno: è lì il nuovo fornitore da collegare.
+
+### paths.progetto.tappe.0.tu
+Indichi il sistema e chi lo conosce bene.
+
+### paths.progetto.tappe.1.chi
+Il team dati
+
+### paths.progetto.tappe.1.cosa
+Si costruisce lo scivolo: da ora il materiale scende nel lago a orari stabiliti. Per questo un dato di oggi può arrivare domani.
+
+### paths.progetto.tappe.2.chi
+Il team dati
+
+### paths.progetto.tappe.2.cosa
+Il materiale viene pescato e messo nel magazzino, così com'è, con la data di arrivo.
+
+### paths.progetto.tappe.3.chi
+Il team dati
+
+### paths.progetto.tappe.3.cosa
+Viene pulito e controllato: qui nasce la qualità.
+
+### paths.progetto.tappe.4.chi
+Il team dati con la funzione
+
+### paths.progetto.tappe.4.cosa
+Viene assemblato con il materiale degli altri fornitori, secondo le regole della funzione.
+
+### paths.progetto.tappe.4.tu
+Spieghi come si calcolano i tuoi numeri.
+
+### paths.progetto.tappe.5.chi
+Il team dati
+
+### paths.progetto.tappe.5.cosa
+Nasce un nuovo semilavorato, collaudato in laboratorio e certificato.
+
+### paths.progetto.tappe.6.chi
+Il team dati
+
+### paths.progetto.tappe.6.cosa
+Sul semilavorato nascono i report: il manager legge il numero, e dietro quel numero c'è tutto il viaggio appena visto.
+
+### paths.progetto.tappe.6.tu
+Leggi il numero e decidi.
+
+### paths.ingresso.sottotitolo
+Onboarding
+
+### paths.ingresso.titolo
+Come entra la mia funzione nella fabbrica?
+
+### paths.ingresso.messaggio
+Non parti da zero: ricevi semilavorati già controllati e ci costruisci sopra quello che ti serve.
+
+### paths.ingresso.tappe.0.chi
+La funzione
+
+### paths.ingresso.tappe.0.cosa
+La funzione si presenta allo sportello dell'hub.
+
+### paths.ingresso.tappe.0.tu
+Racconti cosa vorresti capire dai tuoi dati.
+
+### paths.ingresso.tappe.1.chi
+Il team dati
+
+### paths.ingresso.tappe.1.cosa
+L'ingresso della funzione entra nel piano di lavoro.
+
+### paths.ingresso.tappe.2.chi
+Il team dati
+
+### paths.ingresso.tappe.2.cosa
+Si costruisce l'officina della funzione.
+
+### paths.ingresso.tappe.3.chi
+La funzione
+
+### paths.ingresso.tappe.3.cosa
+Si distribuiscono i badge.
+
+### paths.ingresso.tappe.3.tu
+Decidi chi dei tuoi entra e cosa può fare.
+
+### paths.ingresso.tappe.4.chi
+Il team dati con la funzione
+
+### paths.ingresso.tappe.4.cosa
+Si fissano le regole su chi vede cosa.
+
+### paths.ingresso.tappe.4.tu
+Indichi quali dati sono riservati.
+
+### paths.ingresso.tappe.5.chi
+Il team dati
+
+### paths.ingresso.tappe.5.cosa
+Parte il primo semilavorato verso la nuova officina.
+
+### paths.ingresso.tappe.6.chi
+La funzione
+
+### paths.ingresso.tappe.6.cosa
+Nasce il primo report della funzione.
+
+### paths.ingresso.tappe.6.tu
+Costruisci il report, con il supporto del team dati.
+
+### paths.ingresso.tappe.7.chi
+La funzione
+
+### paths.ingresso.tappe.7.cosa
+La funzione vede quanta energia consuma la sua officina.

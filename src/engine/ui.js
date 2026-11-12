@@ -150,8 +150,8 @@ export function createUI(cfg, world, state) {
   const v = new THREE.Vector3();
   function ordinaEtichette(dt) {
     tEt += dt; if (tEt < 0.12) return; tEt = 0;
-    const W = innerWidth, H = innerHeight, occupati = [[0, 0, 340, H], [W - 250, 0, W, 96]], lista = [];   // pannello dei workload e del team
-    if ($('info').classList.contains('open')) { const r = $('info').getBoundingClientRect(); occupati.push([r.left, r.top, r.right, r.bottom]); }
+    const W = innerWidth, H = innerHeight, occupati = [], lista = [];
+    for (const id of ['left', 'bar', 'team', 'info', 'guida', 'legenda']) { const e = $(id); if (e && e.offsetParent !== null) { const r = e.getBoundingClientRect(); occupati.push([r.left - 6, r.top - 6, r.right + 6, r.bottom + 6]); } }   // i pannelli visibili
     for (const r of state.recs) {
       if (!r.label.visible || r.mostrato === 'off') continue;
       r.label.getWorldPosition(v); const d = v.distanceTo(world.camera.position); v.project(world.camera);

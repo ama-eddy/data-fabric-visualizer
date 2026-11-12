@@ -7,6 +7,7 @@ const SEZIONI = [
   ['workloads', 'Workload: schede'], ['elements', 'Elementi della scena: etichette e schede'], ['materiali', 'Legenda: materiali'],
   ['modalita', 'Legenda e schede: mezzi di trasporto'], ['categorie', 'Sorgenti: tipi di fornitore'], ['sources', 'Sorgenti standard: nomi'],
   ['spoke', 'Officine degli spoke: scheda'], ['spokes', 'Spoke standard: nomi'], ['team', 'Team dati: schede e postazioni'],
+  ['chapters', 'Narrativa: i capitoli della presentazione'], ['paths', 'Percorsi: tappe e messaggi'],
 ];
 const testi = estraiTesti(caricaConfig());
 if (!existsSync('TESTI.md')) {

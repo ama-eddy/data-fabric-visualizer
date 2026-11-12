@@ -13,7 +13,7 @@ export function elementiSorgenti(cfg) {
     return [
       /* [REQ-SRC-01] l'edificio del fornitore: appartiene alle Data Sources */
       { id, wl: 'SRC', tipo: 'sorgente', nome: s.nome, categoria: s.categoria, forma: cat.forma, modalita,
-        pos: [x, L.z], dim: [10, 10, 7], stato: s.stato || 'on', categoriaNome: cat.nome, etichetta: [0, i % 2 ? 15 : 10.5, 0],
+        pos: [x, L.z], dim: [10, 10, 7], stato: s.stato || 'on', narrativa: s.narrativa || 'on', categoriaNome: cat.nome, etichetta: [0, i % 2 ? 15 : 10.5, 0],
         fabbrica: cat.fabbrica, perTe: cat.perTe, mezzo: mz.nome + '. ' + mz.testo, tecnico: cat.tecnico + ' · ' + mz.tecnico },
       /* [REQ-SRC-03] il suo trasporto: appartiene alla Data Integration (il nastro veloce al Real-Time) e segue lo stato della sorgente */
       { id: 'tr-' + id, wl: modalita === 'streaming' ? 'RTI' : 'INT', tipo: 'trasporto', segue: id, nome: mz.nome + ' · ' + s.nome, modalita,
@@ -169,7 +169,7 @@ builders.piazzale = (g, el, ctx) => {
     while (k.measureText(s.categoriaNome).width > 230 && fs > 18) { fs -= 2; k.font = `600 ${fs}px sans-serif`; }
     k.fillText(s.categoriaNome, 128, 50);
     const tx = new THREE.CanvasTexture(c); tx.colorSpace = THREE.SRGBColorSpace;
-    const cart = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 1.35), new THREE.MeshBasicMaterial({ map: tx })); cart.position.set(x, 1.6, z + h + 0.4); g.add(cart);
-    for (const d of [-1.4, 1.4]) cyl(g, 0.07, 0.07, 1.6, mat('#475569'), x + d, 0, z + h + 0.35, 6);
+    const cart = new THREE.Mesh(new THREE.PlaneGeometry(7.2, 2.7), new THREE.MeshBasicMaterial({ map: tx })); cart.position.set(x, 2.4, z + h + 0.9); cart.rotation.x = -0.55; g.add(cart);
+    for (const d of [-3, 3]) cyl(g, 0.09, 0.09, 2, mat('#475569'), x + d, 0, z + h + 0.5, 6);
   }
 };

@@ -5,7 +5,7 @@
 
 | Campo | Valore |
 |---|---|
-| Versione documento | 1.10 |
+| Versione documento | 1.11 |
 | Data | 2026-11-12 |
 | Stato | Requisiti approvati — implementazione da avviare (vedi `PIANO.md`) |
 | Approva | Il responsabile del progetto (richiedente) |
@@ -81,9 +81,9 @@ Richiesta (RDM) ──► 1. Classificazione ──► 2. Requisito ──► 3.
 | REQ-LIT-01 | Ogni elemento cliccabile ha una sezione **"Cosa significa per te"**, scritta per la funzione aziendale. | Sezione presente e non tecnica per tutti gli elementi. | M | Implementato |
 | REQ-LIT-02 | Ogni elemento ha una sezione **"A chi rivolgerti"**, che mostra il **contatto indicato nel profilo dell'azienda** (in sua assenza: "lo sportello dell'hub"). | Con il profilo compilato, tutte le schede mostrano il contatto reale. | M | Implementato |
 | REQ-LIT-03 | I testi principali (etichette, titoli, schede) rispettano il **lessico** del §1.2: usano solo i termini ammessi e traducono quelli da tradurre. | Revisione dei testi con una persona non tecnica; nessun termine "da tradurre" nei testi principali. | M | Implementato |
-| REQ-LIT-04 | All'apertura compare una **schermata di benvenuto**: "cos'è la piattaforma in un minuto" (3 frasi) e come muoversi nella fabbrica. | La schermata si chiude con un clic e si riapre da un pulsante "?". | S | Approvato |
-| REQ-LIT-05 | Ogni percorso (§8.1) ha come titolo una **frase in prima persona** della funzione. | Esempio: "Il numero nel mio report è sbagliato". | M | Approvato |
-| REQ-LIT-06 | Ogni percorso si chiude con un **messaggio chiave** ("cosa ricordare"). | Scheda finale presente in ogni percorso. | S | Approvato |
+| REQ-LIT-04 | All'apertura compare una **schermata di benvenuto**: "cos'è la piattaforma in un minuto" (3 frasi) e come muoversi nella fabbrica. | La schermata si chiude con un clic e si riapre da un pulsante "?". | S | Implementato |
+| REQ-LIT-05 | Ogni percorso (§8.1) ha come titolo una **frase in prima persona** della funzione. | Esempio: "Il numero nel mio report è sbagliato". | M | Implementato |
+| REQ-LIT-06 | Ogni percorso si chiude con un **messaggio chiave** ("cosa ricordare"). | Scheda finale presente in ogni percorso. | S | Implementato |
 
 ### 1.2 Lessico (D-23)
 
@@ -324,7 +324,7 @@ Le sorgenti sono classificate per **categoria di software**, come le conoscono l
 | REQ-SRC-07 | Le sorgenti stanno nell'**area fornitori**, sul fondo della scena, e **non sono legate a nessuno spoke**. L'area mostra **un lotto a terra per ogni sorgente del catalogo**, con un cartello del tipo di sistema, anche quando la sorgente è spenta. | Con Data Sources `on` e tutte le sorgenti spente si vedono i lotti con i cartelli, appoggiati a terra; accendendo una sorgente, l'edificio compare sul suo lotto. | M | Implementato |
 | REQ-SRC-08 | Ogni sorgente ha uno **stato proprio** (`off`/`wip`/`on`) che si combina con **Data Sources**: è visibile solo se Data Sources non è `off`. Nel modello standard tutte le sorgenti partono `off`. | Prova: Data Sources `on`, il gestionale in `wip` → è mostrato come cantiere, senza trasporto. | M | Implementato |
 | REQ-SRC-09 | Il pannello di una sorgente mostra solo informazioni utili al business: **che tipo di fornitore è** (spiegazione della categoria), **come arriva il materiale** (il mezzo, in parole semplici) e **se il flusso è attivo**. | Nessun termine tecnico nel pannello (verifica sul lessico §1.2). | M | Implementato |
-| REQ-SRC-10 | La narrativa (§8) può **accendere singole sorgenti** ("ora colleghiamo il gestionale"). | Un capitolo da CONFIG cambia lo stato di una sola sorgente. | C | Approvato |
+| REQ-SRC-10 | La narrativa (§8) può **accendere singole sorgenti** ("ora colleghiamo il gestionale"). | Un capitolo da CONFIG cambia lo stato di una sola sorgente. | C | Implementato |
 
 #### 6.1.5 Catalogo standard (sorgenti generiche)
 
@@ -373,14 +373,14 @@ L'HTML ha **due modalità** (REQ-UI-10): **esplorazione libera**, in cui la fabb
 
 | ID | Requisito | Criterio di accettazione | Pr. | Stato |
 |---|---|---|---|---|
-| REQ-NAR-01 | Esiste una **modalità narrativa**, organizzata in **capitoli**, che si percorre con **Avanti / Indietro**. Ogni capitolo definisce: titolo, testo da raccontare, stato dei workload, inquadratura ed elemento evidenziato. | Pulsanti Avanti e Indietro, indicatore "capitolo n di N"; ogni Avanti porta al capitolo successivo con transizione fluida. | M | Approvato |
-| REQ-NAR-02 | I **capitoli standard** coprono tutti i workload, in ordine di costruzione: 0 Terreno vuoto · 1 Data Sources · 2 Data Architecture · 3 Project Management · 4 Data Integration · 5 Data Transformation · 6 Security · 7 Accessi · 8 Data Visualization · 9 Self-service (spoke) · 10 Data Governance · 11 Monitoraggio costi · 12 Knowledge · 13 Real-Time. Ogni capitolo si può **includere o escludere** dalla presentazione, e l'ordine si può cambiare, dal CONFIG. | Escludendo un capitolo dal CONFIG, Avanti lo salta; quali capitoli entrano nella presentazione si decide dopo le prove in esplorazione libera. | M | Approvato |
-| REQ-NAR-03 | Ogni capitolo **accende un workload alla volta** (con l'animazione di costruzione, REQ-WL-07); quelli accesi nei capitoli precedenti restano accesi. | Tornando indietro di un capitolo si ripristina lo stato precedente. | M | Approvato |
-| REQ-NAR-04 | Un capitolo può portare un workload a **`wip`** invece che a `on`, per raccontare "cosa stiamo costruendo". | Prova da CONFIG: un capitolo con stato `wip` mostra il cantiere. | S | Approvato |
-| REQ-NAR-05 | In narrativa si avanza anche da **tastiera** e da **telecomando da presentazione**: frecce, spazio, PagGiù = avanti; freccia sinistra, PagSu = indietro; Esc = esci. | Presentazione completa senza toccare il mouse, con un telecomando standard. | M | Approvato |
-| REQ-NAR-06 | Durante la narrazione il presentatore **può comunque esplorare** liberamente la scena; "Riprendi" riporta all'inquadratura del capitolo. | L'esplorazione non fa perdere il punto della narrazione. | S | Approvato |
-| REQ-NAR-07 | Il testo del capitolo è mostrato in un **riquadro leggibile a distanza** (pensato per la proiezione). | Font ≥ 18 px, contrasto adeguato. | M | Approvato |
-| REQ-NAR-08 | Nei capitoli Data Integration e Self-service, **sorgenti e spoke compaiono nello stato indicato dal profilo** (flusso on/off, spoke on/wip/off). | Con il profilo compilato, la narrativa termina sull'as-is di business dell'azienda. | M | Approvato |
+| REQ-NAR-01 | Esiste una **modalità narrativa**, organizzata in **capitoli**, che si percorre con **Avanti / Indietro**. Ogni capitolo definisce: titolo, testo da raccontare, stato dei workload, inquadratura ed elemento evidenziato. | Pulsanti Avanti e Indietro, indicatore "capitolo n di N"; ogni Avanti porta al capitolo successivo con transizione fluida. | M | Implementato |
+| REQ-NAR-02 | I **capitoli standard** coprono tutti i workload, in ordine di costruzione: 0 Terreno vuoto · 1 Data Sources · 2 Data Architecture · 3 Project Management · 4 Data Integration · 5 Data Transformation · 6 Security · 7 Accessi · 8 Data Visualization · 9 Self-service (spoke) · 10 Data Governance · 11 Monitoraggio costi · 12 Knowledge · 13 Real-Time. Ogni capitolo si può **includere o escludere** dalla presentazione, e l'ordine si può cambiare, dal CONFIG. | Escludendo un capitolo dal CONFIG, Avanti lo salta; quali capitoli entrano nella presentazione si decide dopo le prove in esplorazione libera. | M | Implementato |
+| REQ-NAR-03 | Ogni capitolo **accende un workload alla volta** (con l'animazione di costruzione, REQ-WL-07); quelli accesi nei capitoli precedenti restano accesi. | Tornando indietro di un capitolo si ripristina lo stato precedente. | M | Implementato |
+| REQ-NAR-04 | Un capitolo può portare un workload a **`wip`** invece che a `on`, per raccontare "cosa stiamo costruendo". | Prova da CONFIG: un capitolo con stato `wip` mostra il cantiere. | S | Implementato |
+| REQ-NAR-05 | In narrativa si avanza anche da **tastiera** e da **telecomando da presentazione**: frecce, spazio, PagGiù = avanti; freccia sinistra, PagSu = indietro; Esc = esci. | Presentazione completa senza toccare il mouse, con un telecomando standard. | M | Implementato |
+| REQ-NAR-06 | Durante la narrazione il presentatore **può comunque esplorare** liberamente la scena; "Riprendi" riporta all'inquadratura del capitolo. | L'esplorazione non fa perdere il punto della narrazione. | S | Implementato |
+| REQ-NAR-07 | Il testo del capitolo è mostrato in un **riquadro leggibile a distanza** (pensato per la proiezione). | Font ≥ 18 px, contrasto adeguato. | M | Implementato |
+| REQ-NAR-08 | Nei capitoli Data Integration e Self-service, **sorgenti e spoke compaiono nello stato indicato dal profilo** (flusso on/off, spoke on/wip/off). | Con il profilo compilato, la narrativa termina sull'as-is di business dell'azienda. | M | Implementato |
 
 ### 8.1 Percorsi (RDM-006)
 
@@ -395,67 +395,26 @@ Un **percorso** mostra come un evento tipico della vita aziendale **attraversa l
 
 | ID | Requisito | Criterio di accettazione | Pr. | Stato |
 |---|---|---|---|---|
-| REQ-PER-01 | I percorsi si scelgono da un **menu dedicato** e sono definiti in `CONFIG.paths`; aggiungerne uno non richiede codice. | Un percorso aggiunto da CONFIG compare nel menu e funziona. | M | Approvato |
-| REQ-PER-02 | Visualizzazione **solo tramite evidenziazione**: il percorso si disegna come una **linea luminosa** con **tappe numerate** sopra i reparti, e il resto della fabbrica si **attenua**. Nessun personaggio. | Percorso leggibile dalla vista d'insieme; il resto della scena è attenuato. | M | Approvato |
-| REQ-PER-03 | La linea mostra la **direzione** con frecce, comprese le **risalite a ritroso** (es. l'incident risale dalla funzione alla sorgente). | Nell'incident le frecce vanno da valle a monte, poi tornano. | M | Approvato |
-| REQ-PER-04 | **Tappa per tappa**: Avanti e Indietro; la telecamera inquadra la tappa e una scheda mostra *cosa succede*, *chi* e *cosa fai tu*. Nessun dettaglio tecnico. | Tutte le tappe di ogni percorso standard sono navigabili. | M | Approvato |
-| REQ-PER-05 | Le tappe su workload `off` o `wip` vengono **saltate**: il percorso prosegue con le tappe disponibili e la numerazione si adatta. | Con `WL-GOV` spento, il Change request non mostra la tappa di valutazione. | M | Approvato |
-| REQ-PER-06 | Un **capitolo** della narrazione può avviare un percorso. | Prova da CONFIG. | C | Approvato |
-| REQ-PER-07 | Durante un percorso si può comunque **cliccare** su qualunque elemento per la sua scheda, senza perdere il punto. | "Riprendi percorso" torna alla tappa corrente. | S | Approvato |
+| REQ-PER-01 | I percorsi si scelgono da un **menu dedicato** e sono definiti in `CONFIG.paths`; aggiungerne uno non richiede codice. | Un percorso aggiunto da CONFIG compare nel menu e funziona. | M | Implementato |
+| REQ-PER-02 | Visualizzazione **solo tramite evidenziazione**: il percorso si disegna come una **linea luminosa** con **tappe numerate** sopra i reparti, e il resto della fabbrica si **attenua**. Nessun personaggio. | Percorso leggibile dalla vista d'insieme; il resto della scena è attenuato. | M | Implementato |
+| REQ-PER-03 | La linea mostra la **direzione** con frecce, comprese le **risalite a ritroso** (es. l'incident risale dalla funzione alla sorgente). | Nell'incident le frecce vanno da valle a monte, poi tornano. | M | Implementato |
+| REQ-PER-04 | **Tappa per tappa**: Avanti e Indietro; la telecamera inquadra la tappa e una scheda mostra *cosa succede*, *chi* e *cosa fai tu*. Nessun dettaglio tecnico. | Tutte le tappe di ogni percorso standard sono navigabili. | M | Implementato |
+| REQ-PER-05 | Le tappe su workload `off` o `wip` vengono **saltate**: il percorso prosegue con le tappe disponibili e la numerazione si adatta. | Con `WL-GOV` spento, il Change request non mostra la tappa di valutazione. | M | Implementato |
+| REQ-PER-06 | Un **capitolo** della narrazione può avviare un percorso. | Prova da CONFIG. | C | Implementato |
+| REQ-PER-07 | Durante un percorso si può comunque **cliccare** su qualunque elemento per la sua scheda, senza perdere il punto. | "Riprendi percorso" torna alla tappa corrente. | S | Implementato |
 
 #### 8.1.1 Percorsi standard
 
-**PER-INC — "Il numero nel mio report è sbagliato o non si aggiorna"** *(Incident)*
-| # | Elemento | Workload | Cosa succede |
-|---|---|---|---|
-| 1 | Officina dello spoke | SSR | La funzione nota il problema nel suo report |
-| 2 | Sportello hub | GOV | La funzione apre una segnalazione allo sportello |
-| 3 | Sala controllo | GOV | L'hub controlla se qualche impianto si è fermato (caricamenti, aggiornamenti) |
-| 4 | Confezionamento (modelli semantici) | TRF | Si verifica il semilavorato: il calcolo è corretto? |
-| 5 | Gold → Silver → Bronze | TRF, INT | Si **risale la filiera** reparto per reparto per trovare dove nasce l'errore |
-| 6 | Lago e pontile / Sorgente | INT | Si trova la causa: un dato errato all'origine o un carico non arrivato |
-| 7 | Filiera (in avanti) | INT, TRF | Corretta la causa, il materiale ripercorre la filiera |
-| 8 | Officina dello spoke | SSR | Il report torna corretto e la funzione viene avvisata |
+Le tappe complete (cosa succede, chi, cosa fai tu) stanno in `CONFIG.paths` e si modificano in `TESTI.md`. Qui la sequenza degli elementi attraversati.
 
-*Messaggio chiave:* "Non devi sapere dove sta il problema: lo segnali allo sportello e l'hub risale la filiera per te."
+| Percorso | Titolo | Tappe (elemento · workload) |
+|---|---|---|
+| `incidente` (Incident) | "Il numero nel mio report è sbagliato" | Officina (SSR) → Sportello (GOV) → Sala controllo (GOV) → Confezionamento (TRF) → Gold (TRF) → Silver (TRF) → Bronze (INT) → Lago (INT) → Laboratorio prove (TRF) → Officina (SSR) |
+| `richiesta` (Change request) | "Mi serve un nuovo indicatore" | Officina (SSR) → Sportello (GOV) → Ufficio di coordinamento (PMO) → Gold (TRF) → Confezionamento (TRF) → Laboratorio prove (TRF) → Torre di controllo (GOV) → Spedizioni (TRF) → Officina (SSR) |
+| `progetto` (New project · il viaggio del dato, LO-03) | "Vogliamo analizzare un'area nuova" | Area fornitori (SRC) → Lago (INT) → Bronze (INT) → Silver (TRF) → Gold (TRF) → Confezionamento (TRF) → Showroom (VIS) |
+| `ingresso` (Onboarding) | "Come entra la mia funzione nella fabbrica?" | Sportello (GOV) → Ufficio di coordinamento (PMO) → Officina (SSR) → Cancelli (ACC) → Caveau (SEC) → Spedizioni (TRF) → Officina (SSR) → Contatori (FIN) |
 
-**PER-CR — "Mi serve un nuovo indicatore o un campo in più"** *(Change request)*
-| # | Elemento | Workload | Cosa succede |
-|---|---|---|---|
-| 1 | Officina dello spoke | SSR | La funzione formula la richiesta |
-| 2 | Sportello hub | GOV | L'hub valuta: esiste già? Serve a tutti o solo a te? |
-| 3a | Officina dello spoke | SSR | *Se serve solo a te*: lo costruisci nella tua officina, con il supporto dell'hub |
-| 3b | Laboratorio prove (Dev) | ARC, TRF | *Se serve a tutti*: l'hub modifica la lavorazione e il semilavorato in laboratorio |
-| 4 | Laboratorio prove (Test) | ARC | Collaudo insieme alla funzione |
-| 5 | Confezionamento | TRF, GOV | Il nuovo semilavorato viene certificato e messo in produzione |
-| 6 | Spedizioni → Officina / Showroom | SSR, VIS | Il semilavorato aggiornato arriva a tutti gli spoke e ai report istituzionali |
-
-*Messaggio chiave:* "Quello che serve a tutti va nel semilavorato; quello che serve solo a te lo fai nella tua officina."
-
-**PER-NEW — "Vogliamo analizzare un'area nuova"** *(New project — il viaggio del dato)*
-| # | Elemento | Workload | Cosa succede |
-|---|---|---|---|
-| 1 | Sorgente → Lago → Bronze | INT | Si collega il nuovo fornitore: il materiale parte dal sistema di origine e arriva in fabbrica **a orari stabiliti** (per questo un dato può "arrivare domani") |
-| 2 | Silver → Gold | TRF | Il materiale viene pulito, controllato e assemblato: qui nasce la qualità |
-| 3 | Confezionamento | TRF | Nasce un nuovo **semilavorato certificato**, con il marchio di qualità dell'hub |
-| 4 | Showroom e/o Officina | VIS, SSR | Nascono i report: il **manager legge il numero**, e dietro quel numero c'è tutto il viaggio appena visto |
-
-*Messaggio chiave:* "Ogni numero che leggi ha fatto questo viaggio, con controlli a ogni reparto: per questo ti puoi fidare. E un'area nuova non è un report nuovo: è una nuova linea della fabbrica, che poi serve a tutti."
-
-*Questo percorso è il veicolo di **LO-03** (viaggio del dato dalla sorgente all'insight).*
-
-**PER-ONB — "Come entra la nostra funzione nella piattaforma?"** *(Onboarding funzione)*
-| # | Elemento | Workload | Cosa succede |
-|---|---|---|---|
-| 1 | Sportello hub | GOV | La funzione si presenta allo sportello |
-| 2 | Officina dello spoke | ARC, SSR | Si costruisce l'officina della funzione (lo spoke passa da `wip` a `on`) |
-| 3 | Cancelli | ACC | Si distribuiscono i badge: chi della funzione entra e con quale ruolo |
-| 4 | Recinzione / caveau | SEC | Si fissano le regole su chi vede cosa |
-| 5 | Sportello hub (formazione) | GOV | La funzione impara a usare i semilavorati |
-| 6 | Spedizioni → Officina | SSR | Arriva il primo semilavorato e nasce il primo report self-service |
-| 7 | Contatori della centrale | FIN | La funzione vede quanta energia consuma la sua officina |
-
-*Messaggio chiave:* "Non parti da zero: ricevi semilavorati già controllati e ci costruisci sopra quello che ti serve."
+Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali allo sportello e il team dati risale la filiera per te"; Change request, "Quello che serve a tutti entra nel semilavorato; quello che serve solo a te lo costruisci nella tua officina"; New project, "Ogni numero che leggi ha fatto questo viaggio, con un controllo a ogni reparto: per questo ti puoi fidare"; Onboarding, "Non parti da zero: ricevi semilavorati già controllati e ci costruisci sopra quello che ti serve".
 
 ---
 
@@ -470,9 +429,9 @@ Un **percorso** mostra come un evento tipico della vita aziendale **attraversa l
 | REQ-UI-05 | **Passando il mouse** su un elemento compaiono un evidenziamento e un tooltip con il nome. | Il cursore diventa a "mano" sugli elementi cliccabili. | S | Implementato |
 | REQ-UI-06 | Gli spostamenti della telecamera sono **animati** (volo fluido). | Nessun salto brusco. | S | Implementato |
 | REQ-UI-07 | L'interfaccia è in **italiano**, con testi provenienti dal CONFIG. | Nessun testo fisso nel motore. | M | Implementato |
-| REQ-UI-08 | Il layout si adatta a **schermi da 1280 px in su**; sotto quella soglia i pannelli si possono ridurre. | Usabile su un portatile e su un proiettore. | S | Approvato |
+| REQ-UI-08 | Il layout si adatta a **schermi da 1280 px in su**; sotto quella soglia i pannelli si possono ridurre. | Usabile su un portatile e su un proiettore. | S | Implementato |
 | REQ-UI-09 | Durante il meeting il presentatore può **cambiare dal vivo lo stato** (off/wip/on) di workload, **singoli spoke** e **singole sorgenti**, dal pannello o cliccando sull'elemento; la scena alla fine rappresenta l'as-is di business costruito insieme. | Cambio di stato in ≤ 2 clic, con effetto immediato in scena. | M | Implementato |
-| REQ-UI-10 | Due **modalità**: **esplorazione libera** (navigazione, clic sugli elementi, stati dal vivo, percorsi) e **narrativa** (tutti i workload in ordine, §8). Si passa dall'una all'altra con un pulsante; uscendo dalla narrativa, la scena resta nello stato raggiunto. | Il cambio di modalità non ricarica la scena e non perde lo stato. | M | Approvato |
+| REQ-UI-10 | Due **modalità**: **esplorazione libera** (navigazione, clic sugli elementi, stati dal vivo, percorsi) e **narrativa** (tutti i workload in ordine, §8). Si passa dall'una all'altra con un pulsante; uscendo dalla narrativa, la scena resta nello stato raggiunto. | Il cambio di modalità non ricarica la scena e non perde lo stato. | M | Implementato |
 | REQ-UI-11 | Nel pannello, i workload con elementi a **stato proprio** (Data Integration → sorgenti, Self-service → spoke) si aprono **a tendina**: ogni sorgente o spoke ha il suo selettore off/cantiere/on, per **accenderli uno alla volta**. | Aprendo la tendina di Data Integration e spegnendo una sorgente, si spegne solo quella. | M | Implementato |
 | REQ-UI-12 | **In alto a destra**, il pannello **Team dati** mostra **un pupazzino per persona** (sagoma uomo/donna); sotto ciascuno, il **gruppo in cui sta lavorando in quel momento**, con il colore del workload. Il clic su un pupazzino lo **evidenzia in scena** (anello a terra e freccia sopra la testa), inquadra la figura e apre la scheda del gruppo; un secondo clic toglie l'evidenziazione. Le figure non in servizio sono attenuate. | Clic su un pupazzino: figura evidenziata, scheda aperta; la scritta sotto chi ruota cambia a ogni turno. | M | Implementato |
 
@@ -554,7 +513,7 @@ const CONFIG = {
 | REQ-FLW-01…03 | WL-INT | `src/engine/reparti.js` (lago, pontile, bronze) · `src/engine/sources.js` (scivoli, scialuppe) · `CONFIG.flussi` | `npm test` | Implementato |
 | REQ-SRC-01…05, 07…09 | WL-INT | `CONFIG.sources` · `CONFIG.categorie` · `CONFIG.modalita` · `src/engine/sources.js` | `npm test` | Implementato |
 | REQ-SRC-06 | WL-RTI | `src/engine/sources.js` (nastro veloce) | `npm test` | Implementato |
-| REQ-SRC-10 | narrativa | `CONFIG.chapters` | — | Approvato |
+| REQ-SRC-10 | narrativa | `CONFIG.chapters` (`sorgenti`, `elementi`) · `src/engine/guida.js` | `npm test` | Implementato |
 | REQ-FLW-04…06 | WL-TRF | `src/engine/reparti.js` (silver, gold, confezionamento) · `CONFIG.flussi` | `npm test` | Implementato |
 | REQ-FLW-07 | WL-VIS, WL-SSR | `CONFIG.flussi.uscite` · `src/engine/spoke.js` (furgoni) | `npm test` | Implementato |
 | REQ-FLW-08…09 | — | `src/engine/flows.js` · `CONFIG.materiali` · legenda in `src/engine/ui.js` | `npm test` | Implementato |
@@ -562,13 +521,13 @@ const CONFIG = {
 | REQ-FLW-11 | WL-KNW | `src/engine/trasversali.js` (archiviotecnico) | schermate | Implementato |
 | REQ-SCN-01…10 | tutti | `src/engine/scene.js` · `builders.js` · `reparti.js` · `spoke.js` · `trasversali.js` · `CONFIG.layout` · `CONFIG.elements` | `npm test` + schermate | Implementato |
 | REQ-SCN-11…14 | tutti | `src/engine/figures.js` · `src/engine/spoke.js` (ufficio) · `CONFIG.team` | `npm test` | Implementato |
-| REQ-NAR-01…08 | — | `engine/narrator` · `CONFIG.chapters` | — | Approvato |
-| REQ-PER-01…07 | trasversale | `CONFIG.paths` · `engine/pathPlayer` | — | Approvato |
+| REQ-NAR-01…08 | — | `src/engine/guida.js` · `CONFIG.chapters` | `npm test` | Implementato |
+| REQ-PER-01…07 | trasversale | `src/engine/guida.js` · `CONFIG.paths` | `npm test` | Implementato |
 | REQ-LIT-01…02 | trasversale | `TESTI.md` (`fabbrica`, `perTe`) · `src/engine/ui.js` (scheda) | `npm test` | Implementato |
 | REQ-LIT-03 | trasversale | `tools/testi.mjs` (controllo del lessico in build) | `npm run build` | Implementato |
-| REQ-LIT-04…06 | trasversale | `src/engine/ui.js` (benvenuto) · `CONFIG.paths` | — | Approvato |
+| REQ-LIT-04…06 | trasversale | `src/engine/guida.js` (benvenuto) · `CONFIG.paths` | `npm test` | Implementato |
 | REQ-UI-01…07, 09, 11, 12 | — | `src/engine/ui.js` · `src/engine/scene.js` · `src/engine/figures.js` | `npm test` | Implementato |
-| REQ-UI-08, 10 | — | `src/engine/ui.js` (schermi piccoli, modalità) | — | Approvato |
+| REQ-UI-08, 10 | — | `src/engine/guida.js` (pannello richiudibile, due modalità) · `src/index.html` | `npm test` | Implementato |
 | REQ-HS-01…07 | WL-SSR | `CONFIG.spokes` · `CONFIG.spoke` · `src/engine/spoke.js` | `npm test` | Implementato |
 | REQ-CFG-01…05, 07, 08 | — | `src/config.js` · `src/profile.js` · `src/main.js` · `build.mjs` · `tools/testi.mjs` · `TESTI.md` · `.gitignore` | `npm test` | Implementato |
 | REQ-CFG-06 | — | caricamento del profilo da file | — | Approvato |
@@ -642,6 +601,8 @@ const CONFIG = {
 | D-49 | **Data Sources** è il primo workload; segue **Data Architecture** (nuovo nome dell'Architettura). | Utente | Confermata |
 | D-50 | **Project Management** è un workload a sé, con l'ufficio di coordinamento: non si accende più con l'architettura. | Utente (separazione) · proposta (workload dedicato, posizione nell'ordine) | Confermata |
 | D-51 | Le etichette non si sovrappongono: resta la più importante, poi la più vicina. | Utente | Confermata |
+| D-52 | Capitoli e tappe sono scritti con **testi provvisori**, da rivedere in `TESTI.md`; quali capitoli entrano nella presentazione si decide escludendoli dal CONFIG (`incluso: false`). | Proposta | Confermata |
+| D-53 | Chi ruota tra le postazioni cammina lungo un **corridoio davanti al capannone**, senza attraversare gli edifici. | Proposta | Confermata |
 
 ---
 
@@ -695,6 +656,7 @@ const CONFIG = {
 | RDM-028 | Sistemare le etichette affollate | Standard · SCN | REQ-SCN-06, D-51 | Approvata |
 | RDM-029 | Team diviso in Data Integration, Data Visualization, Architecture e Project Management; il coordinamento non si accende più con l'architettura | Standard · SCN, WL, UI, CFG | §5.1, §5.2, REQ-SCN-11, REQ-SCN-13, REQ-UI-12, REQ-CFG-03, D-28, D-36, D-50 | Approvata |
 | RDM-030 | Gli omini non di Data Integration ruotano tra i flussi attivi | Standard · SCN, UI | REQ-SCN-11, REQ-UI-12, D-36 | Approvata |
+| RDM-031 | Lavori avviati in autonomia su richiesta: narrativa, percorsi sul nuovo layout, benvenuto, schermi piccoli, contatore fps, camminata delle figure, cartelli dei fornitori più grandi, schede proprie per Sala sensori e Ufficio tecnico | Standard · NAR, PER, LIT, UI, SCN | REQ-NAR-*, REQ-PER-*, REQ-LIT-04…06, REQ-UI-08, REQ-UI-10, REQ-SRC-10, §8.1.1, D-52, D-53 | Approvata |
 
 ---
 
@@ -702,4 +664,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.10 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…030 |
+| 1.11 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…031 |

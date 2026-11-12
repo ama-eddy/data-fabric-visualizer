@@ -7,6 +7,7 @@ import { createFlows } from './engine/flows.js';
 import { elementiSorgenti } from './engine/sources.js';
 import { elementiSpoke } from './engine/spoke.js';
 import { createFigures } from './engine/figures.js';
+import { createGuida } from './engine/guida.js';
 
 /* ===== [REQ-CFG-02] Il profilo dell'azienda si sovrappone al modello standard ===== */
 function applicaProfilo(cfg, p) {
@@ -14,7 +15,7 @@ function applicaProfilo(cfg, p) {
   if (p.azienda) cfg.meta.titolo += ' · ' + p.azienda;
   if (p.contatto && p.contatto.chi) cfg.contatto = p.contatto;        // [REQ-LIT-02]
   /* [REQ-CFG-03] sorgenti del profilo: nome, categoria e flusso on/off sostituiscono il catalogo standard */
-  if (p.sorgenti && p.sorgenti.length) cfg.sources = p.sorgenti.map((s, i) => ({ id: 'src-' + i, nome: s.nome, categoria: s.categoria, stato: s.flusso === 'off' ? 'off' : 'on' }));
+  if (p.sorgenti && p.sorgenti.length) cfg.sources = p.sorgenti.map((s, i) => ({ id: 'src-' + i, nome: s.nome, categoria: s.categoria, stato: s.flusso === 'off' ? 'off' : 'on', narrativa: s.flusso === 'off' ? 'off' : 'on' }));
   /* [REQ-HS-02, REQ-HS-07] spoke del profilo: nome e stato on/wip/off */
   if (p.spoke && p.spoke.length) cfg.spokes = p.spoke.map((s) => ({ nome: s.nome, stato: ['on', 'wip', 'off'].includes(s.stato) ? s.stato : 'on' }));
   /* [REQ-SCN-11] team dati del profilo: uomini e donne al trasporto e a rotazione */
@@ -43,6 +44,9 @@ try {
   const figures = createFigures(cfg, world, state, flows);
   const ui = createUI(cfg, world, state);
   ui.collegaTeam(figures);
+  const guida = createGuida(cfg, world, state, ui);
+  /* [NFR-03] contatore dei fotogrammi al secondo: si attiva aggiungendo ?fps all'indirizzo */
+  const fpsEl = document.getElementById('fps'), fps = { n: 0, t: 0, v: 0 }; if (/[?&]fps/.test(location.search)) fpsEl.style.display = 'block';
   state.init();
   const clock = new THREE.Clock();
   (function loop() {
@@ -52,9 +56,10 @@ try {
     flows.update(dt, ui.inPausa());
     figures.update(dt, clock.elapsedTime);
     ui.ordinaEtichette(dt);
+    fps.n++; fps.t += dt; if (fps.t >= 1) { fps.v = Math.round(fps.n / fps.t); fps.n = 0; fps.t = 0; fpsEl.textContent = fps.v + ' fps'; }
     world.update(dt);
   })();
-  window.fabbrica = { cfg, world, state, ui, flows, figures };                         // per prove e collaudo
+  window.fabbrica = { cfg, world, state, ui, flows, figures, guida, fps: () => fps.v };                         // per prove e collaudo
 } catch (e) {
   const el = document.getElementById('err');
   el.style.display = 'flex'; el.textContent = 'Impossibile avviare la fabbrica: ' + e.message;

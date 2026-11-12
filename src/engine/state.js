@@ -85,6 +85,8 @@ export function createState(cfg, world, flows) {
   /* [REQ-WL-06] si accende solo il workload scelto: le dipendenze non vengono toccate */
   function set(wl, st, immediato) { if (!(wl in stato) || stato[wl] === st) return; stato[wl] = st; applica(immediato); }
   function setTutti(st) { for (const k of cfg.ordine) stato[k] = st; applica(false); }
+  /* [REQ-NAR-03] stato completo di un capitolo: workload ed elementi con stato proprio, in un solo passaggio animato */
+  function imposta(wl, propri) { for (const k of cfg.ordine) if (wl[k]) stato[k] = wl[k]; for (const r of recs) if (r.proprio !== undefined && propri[r.el.id]) r.proprio = propri[r.el.id]; applica(false); }
 
   function update(dt, t) {
     for (let i = tweens.length - 1; i >= 0; i--) {
@@ -96,7 +98,7 @@ export function createState(cfg, world, flows) {
   }
 
   return api = {
-    stato, recs, set, setTutti, setElemento, effettivo, update,
+    stato, recs, set, setTutti, setElemento, imposta, effettivo, update,
     onChange: (fn) => listeners.push(fn),
     elemento: (id) => recs.find((r) => r.el.id === id),
     diWorkload: (wl) => recs.filter((r) => r.el.wl === wl),

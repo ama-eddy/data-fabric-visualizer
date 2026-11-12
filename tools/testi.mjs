@@ -5,7 +5,7 @@
 import vm from 'node:vm';
 import { readFileSync } from 'node:fs';
 
-const CAMPI = new Set(['nome', 'titolo', 'sottotitolo', 'fabbrica', 'perTe', 'testo', 'gestoreTesto', 'chi', 'come', 'tecnico']);
+const CAMPI = new Set(['nome', 'titolo', 'sottotitolo', 'fabbrica', 'perTe', 'testo', 'gestoreTesto', 'chi', 'come', 'tecnico', 'cosa', 'tu', 'messaggio']);
 
 export function caricaConfig(file = 'src/config.js') {
   const ctx = { window: {} }; vm.runInNewContext(readFileSync(file, 'utf8'), ctx); return ctx.window.CONFIG;

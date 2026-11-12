@@ -15,7 +15,14 @@ window.CONFIG = {
     gestori: { hub: 'Il team dati (hub)', spoke: 'La tua funzione (spoke)', entrambi: 'Il team dati insieme alla tua funzione' },
     lavori: 'Lavori in corso', segnaposto: 'in arrivo',
     aiuto: 'Trascina per ruotare · rotellina per lo zoom · tasto destro o WASD per spostarti · clic su un elemento per la scheda',
-    chiudi: 'Chiudi', tecnico: 'In Fabric', legenda: 'Legenda', materiali: 'Materiali', mezzi: 'Trasporto',
+    chiudi: 'Chiudi', tecnico: 'In Fabric',
+    presentazione: 'Presentazione', percorsi: 'Percorsi', avanti: 'Avanti', indietro: 'Indietro', esci: 'Esci', tornaQui: 'Torna qui',
+    capitolo: 'Capitolo', tappa: 'Tappa', di: 'di', chi: 'Chi', tu: 'Cosa fai tu', ricorda: 'Da ricordare', nessunaTappa: 'Questo percorso attraversa reparti non ancora accesi.',
+    aiutoGuida: 'Avanti: → o spazio · Indietro: ← · Esci: Esc',
+    benvenutoTitolo: 'La fabbrica dei dati', esplora: 'Esplora liberamente', menu: 'Pannello',
+    benvenuto1: 'I numeri che leggi nei report non nascono nei report: nascono nei sistemi che usi ogni giorno e fanno un viaggio, come in una fabbrica.',
+    benvenuto2: 'Qui vedi quel viaggio: i fornitori, il lago dove arriva il materiale, i reparti che lo lavorano, i semilavorati certificati e le officine delle funzioni.',
+    benvenuto3: 'Puoi seguire la presentazione, un capitolo alla volta, oppure esplorare da solo: accendi i reparti dal pannello e clicca su ciò che vedi.', legenda: 'Legenda', materiali: 'Materiali', mezzi: 'Trasporto',
     mezzo: 'Come arriva il materiale', statoElemento: 'Stato', categoria: 'Tipo di sistema',
     apri: 'Mostra uno per uno', team: 'Team dati', fuoriServizio: 'non in servizio',
   },
@@ -102,7 +109,7 @@ window.CONFIG = {
 
   // [REQ-SCN-11] team dati: una figura per persona. m = uomini, f = donne. Sostituito dal profilo, se presente.
   team: {
-    colore: '#1d4ed8', casco: '#facc15', turno: 14,   // turno = secondi tra un cambio di postazione e l'altro
+    colore: '#1d4ed8', casco: '#facc15', turno: 14, corridoio: 42.3,   // corridoio = z del passaggio davanti al capannone, usato per spostarsi   // turno = secondi tra un cambio di postazione e l'altro
     // un gruppo per mestiere. m = uomini, f = donne. ruota: true = le sue persone ruotano tra le postazioni dei workload accesi [RDM-030]
     gruppi: {
       integration: { m: 2, f: 0, wl: 'INT', breve: 'Integration', nome: 'Team dati — Data Integration', tecnico: 'Data engineer',
@@ -261,7 +268,101 @@ window.CONFIG = {
       fabbrica: 'I contatori della centrale: più reparti lavorano, più energia si consuma. Qui si vede quanto consuma ciascuno.',
       perTe: 'Anche la tua officina ha il suo contatore: sapere quanto consuma aiuta a decidere dove vale la pena investire.' },
     // --- Workload opzionali [REQ-SCN-05, REQ-FLW-10, REQ-FLW-11] ---
-    { id: 'sensori', wl: 'RTI', tipo: 'salasensori', nome: 'Sala sensori', tecnico: 'Eventstream · Eventhouse · Activator', pos: [58, -20], dim: [14, 12, 8] },
-    { id: 'archivio', wl: 'KNW', tipo: 'archiviotecnico', nome: 'Ufficio tecnico e archivio', tecnico: 'Ontology (Fabric IQ)', pos: [58, 14], dim: [14, 12, 10] },
+    { id: 'sensori', wl: 'RTI', tipo: 'salasensori', nome: 'Sala sensori', tecnico: 'Eventstream · Eventhouse · Activator', pos: [58, -20], dim: [14, 12, 8],
+      fabbrica: 'La sala sensori: il materiale dei sensori arriva sul nastro veloce e viene guardato subito, sul grande schermo, senza passare dal lago e dal magazzino.',
+      perTe: 'Vedi cosa sta succedendo in questo momento, e puoi farti avvisare appena un valore esce dalla norma.' },
+    { id: 'archivio', wl: 'KNW', tipo: 'archiviotecnico', nome: 'Ufficio tecnico e archivio', tecnico: 'Ontology (Fabric IQ)', pos: [58, 14], dim: [14, 12, 10],
+      fabbrica: "L'ufficio tecnico: sul tetto, la mappa di come le cose dell'azienda sono collegate tra loro. I fili d'oro la legano alla linea di assemblaggio e ai semilavorati.",
+      perTe: 'Cliente, ordine, margine: qui si scrive una volta per tutte cosa significano, così tutti parlano la stessa lingua e si possono fare domande ai dati con parole semplici.' },
   ],
 };
+
+// ===== [REQ-NAR-01…04, REQ-NAR-08] Capitoli della modalità narrativa =====
+// Ogni capitolo accende i workload indicati in `accendi` (restano accesi nei capitoli successivi).
+// incluso: false = Avanti lo salta (D-34). sorgenti: true = le sorgenti compaiono nello stato del profilo.
+// vista: elementi da inquadrare (se manca: quelli dei workload accesi nel capitolo).
+window.CONFIG.chapters = [
+  { id: 'inizio', incluso: true, accendi: { SRC: 'on' }, vista: 'insieme', titolo: 'Il punto di partenza',
+    testo: 'Oggi ogni funzione lavora nei propri sistemi e i numeri si passano a mano, tra fogli di calcolo e mail. Qui c\'è un terreno vuoto: costruiamo insieme la fabbrica dei dati, un pezzo alla volta.' },
+  { id: 'sorgenti', incluso: true, accendi: { SRC: 'on' }, sorgenti: true, titolo: 'I fornitori: i sistemi che usate ogni giorno',
+    testo: 'Gestionale, CRM, fogli di calcolo: il dato nasce qui, nel lavoro di tutti i giorni. Ogni sistema è un fornitore di materia prima, e resta dov\'è: voi continuate a lavorarci come sempre.' },
+  { id: 'architettura', incluso: true, accendi: { ARC: 'on' }, vista: 'insieme', titolo: 'Data Architecture: le fondamenta',
+    testo: 'Prima si costruisce lo spazio comune: il capannone, la centrale che dà energia e il lago dei dati, un solo posto dove arriverà il materiale di tutti i fornitori.' },
+  { id: 'coordinamento', incluso: true, accendi: { PMO: 'on' }, titolo: 'Project Management: chi fa cosa',
+    testo: 'Il team dati è fatto di poche persone e le richieste sono tante. Dall\'ufficio di coordinamento si decide cosa viene prima e si dà a ogni richiesta un responsabile e una data.' },
+  { id: 'integrazione', incluso: true, accendi: { INT: 'on' }, vista: ['lago', 'pontile', 'bronze'], titolo: 'Data Integration: il materiale arriva in fabbrica',
+    testo: 'Dai fornitori il materiale scivola nel lago a orari stabiliti: per questo un dato di oggi può arrivare domani. Il team dati lo pesca e lo mette nel magazzino materie prime, così com\'è. Nessuno deve più estrarre dati a mano.' },
+  { id: 'trasformazione', incluso: true, accendi: { TRF: 'on' }, vista: ['silver', 'gold', 'confezionamento', 'laboratorio'], titolo: 'Data Transformation: dal grezzo al semilavorato',
+    testo: 'Il materiale viene pulito, assemblato e confezionato in semilavorati: dati certificati, con i calcoli già pronti. Ogni semilavorato passa dal laboratorio prove prima di uscire dalla fabbrica.' },
+  { id: 'sicurezza', incluso: true, accendi: { SEC: 'on' }, vista: 'insieme', titolo: 'Security: proteggere ciò che vale',
+    testo: 'Recinzione, telecamere e caveau: i dati riservati li vede solo chi deve, e si sa sempre chi ha guardato cosa.' },
+  { id: 'accessi', incluso: true, accendi: { ACC: 'on' }, titolo: 'Accessi: chi entra e cosa può fare',
+    testo: 'In fabbrica si entra con il badge. Ogni funzione decide chi dei suoi entra, e ognuno raggiunge solo ciò che gli serve.' },
+  { id: 'visualizzazione', incluso: true, accendi: { VIS: 'on' }, titolo: 'Data Visualization: i report ufficiali',
+    testo: 'Nello showroom nascono i report ufficiali, in Power BI, costruiti sui semilavorati collaudati: gli stessi numeri per tutta l\'azienda.' },
+  { id: 'officine', incluso: true, accendi: { SSR: 'on' }, titolo: 'Self-service: le officine delle funzioni',
+    testo: 'Ogni funzione riceve i semilavorati e ci costruisce i propri report, aggiungendo se serve i propri dati. Non si parte da zero e non si aspetta nessuno.' },
+  { id: 'governance', incluso: true, accendi: { GOV: 'on' }, titolo: 'Data Governance: regole, qualità, sportello',
+    testo: 'La torre fissa le regole comuni e mette il marchio di qualità. La sala controllo sorveglia che ogni reparto lavori. Allo sportello si chiede, si segnala un problema, si entra nella fabbrica.' },
+  { id: 'costi', incluso: true, accendi: { FIN: 'on' }, titolo: 'Monitoraggio costi: quanto consuma la fabbrica',
+    testo: 'La fabbrica ha un costo, e i contatori mostrano quanto consuma ogni reparto e ogni officina: serve a decidere dove vale la pena investire.' },
+  { id: 'conoscenza', incluso: true, accendi: { KNW: 'on' }, titolo: 'Knowledge: parlare la stessa lingua',
+    testo: 'L\'ufficio tecnico tiene la mappa di cosa sono le cose dell\'azienda e di come sono collegate: mette tutti d\'accordo sul significato delle parole e permette di fare domande ai dati nel linguaggio di tutti i giorni.' },
+  { id: 'tempo-reale', incluso: true, accendi: { RTI: 'on' }, titolo: 'Real-Time: quando non si può aspettare domani',
+    testo: 'Alcuni segnali vanno visti subito. Il nastro veloce porta il materiale dai sensori alla sala sensori nel momento in cui nasce, senza passare dal lago e dal magazzino.' },
+];
+
+// ===== [REQ-PER-01…05, REQ-LIT-05, REQ-LIT-06] Percorsi: come un evento attraversa la fabbrica =====
+// tappa: el = elemento della scena · wl = workload che devono essere accesi (altrimenti la tappa viene saltata) · cosa = cosa succede · chi · tu = cosa fa la funzione
+window.CONFIG.paths = [
+  { id: 'incidente', sottotitolo: 'Incident', colore: '#ef4444', titolo: 'Il numero nel mio report è sbagliato',
+    messaggio: 'Non devi sapere dove sta il problema: lo segnali allo sportello e il team dati risale la filiera per te.',
+    tappe: [
+      { el: 'spoke-0', wl: ['SSR'], chi: 'La funzione', cosa: 'Nel report della funzione un numero non torna, o non si è aggiornato.', tu: 'Ti accorgi del problema e non provi a sistemarlo a mano.' },
+      { el: 'sportello', wl: ['GOV'], chi: 'La funzione e il team dati', cosa: 'La segnalazione arriva allo sportello dell\'hub.', tu: 'Segnali quale report, quale numero e da quando.' },
+      { el: 'salacontrollo', wl: ['GOV'], chi: 'Il team dati', cosa: 'In sala controllo si guarda se qualche reparto si è fermato: una spia rossa dice già dove cercare.' },
+      { el: 'confezionamento', wl: ['TRF'], chi: 'Il team dati', cosa: 'Si controlla il semilavorato: il calcolo è quello giusto?' },
+      { el: 'gold', wl: ['TRF'], chi: 'Il team dati', cosa: 'Si risale la filiera, un reparto alla volta: i componenti sono stati assemblati bene?' },
+      { el: 'silver', wl: ['TRF'], chi: 'Il team dati', cosa: 'Ancora più a monte: la pulizia ha scartato o corretto qualcosa che non doveva?' },
+      { el: 'bronze', wl: ['INT'], chi: 'Il team dati', cosa: 'Nel magazzino si guarda il materiale così com\'era arrivato: l\'errore c\'era già?' },
+      { el: 'lago', wl: ['INT'], chi: 'Il team dati', cosa: 'Si trova la causa: un carico non è arrivato nel lago, oppure il dato era sbagliato già dal fornitore.' },
+      { el: 'laboratorio', wl: ['TRF'], chi: 'Il team dati', cosa: 'Corretta la causa, il materiale ripercorre la filiera e il semilavorato viene collaudato di nuovo.' },
+      { el: 'spoke-0', wl: ['SSR'], chi: 'La funzione', cosa: 'Il report torna corretto e la funzione viene avvisata.', tu: 'Controlli che il numero ora torni.' },
+    ] },
+  { id: 'richiesta', sottotitolo: 'Change request', colore: '#f59e0b', titolo: 'Mi serve un nuovo indicatore',
+    messaggio: 'Quello che serve a tutti entra nel semilavorato; quello che serve solo a te lo costruisci nella tua officina.',
+    tappe: [
+      { el: 'spoke-0', wl: ['SSR'], chi: 'La funzione', cosa: 'Alla funzione serve un indicatore nuovo, o un\'informazione in più.', tu: 'Descrivi cosa ti serve e per quale decisione.' },
+      { el: 'sportello', wl: ['GOV'], chi: 'Il team dati con la funzione', cosa: 'Allo sportello si capisce: esiste già? Serve a tutti o solo a questa funzione? Se serve solo a te, lo costruisci nella tua officina, con il nostro aiuto.', tu: 'Porti la richiesta allo sportello.' },
+      { el: 'coordinamento', wl: ['PMO'], chi: 'Il team dati', cosa: 'La richiesta entra nel piano di lavoro: ha un responsabile e una data.' },
+      { el: 'gold', wl: ['TRF'], chi: 'Il team dati', cosa: 'Si modifica la lavorazione: il nuovo calcolo entra nei componenti.' },
+      { el: 'confezionamento', wl: ['TRF'], chi: 'Il team dati', cosa: 'Il semilavorato viene aggiornato con il nuovo indicatore.' },
+      { el: 'laboratorio', wl: ['TRF'], chi: 'Il team dati con la funzione', cosa: 'In laboratorio la modifica si prova prima che arrivi a tutti.', tu: 'Provi il nuovo indicatore e confermi che è quello che ti serviva.' },
+      { el: 'torre', wl: ['GOV'], chi: 'Il team dati', cosa: 'Il semilavorato aggiornato riceve il marchio di qualità.' },
+      { el: 'spedizioni', wl: ['TRF'], chi: 'Il team dati', cosa: 'Il semilavorato aggiornato parte verso tutte le officine.' },
+      { el: 'spoke-0', wl: ['SSR'], chi: 'La funzione', cosa: 'L\'indicatore è disponibile: per la tua funzione e per tutte le altre.', tu: 'Lo usi nei tuoi report.' },
+    ] },
+  { id: 'progetto', sottotitolo: 'New project · il viaggio del dato', colore: '#22c55e', titolo: 'Vogliamo analizzare un\'area nuova',
+    messaggio: 'Ogni numero che leggi ha fatto questo viaggio, con un controllo a ogni reparto: per questo ti puoi fidare. E un\'area nuova non è un report nuovo: è una nuova linea della fabbrica, che poi serve a tutti.',
+    tappe: [
+      { el: 'fornitori', wl: ['SRC'], chi: 'La funzione', cosa: 'Il dato nasce in un sistema che la funzione usa ogni giorno: è lì il nuovo fornitore da collegare.', tu: 'Indichi il sistema e chi lo conosce bene.' },
+      { el: 'lago', wl: ['INT'], chi: 'Il team dati', cosa: 'Si costruisce lo scivolo: da ora il materiale scende nel lago a orari stabiliti. Per questo un dato di oggi può arrivare domani.' },
+      { el: 'bronze', wl: ['INT'], chi: 'Il team dati', cosa: 'Il materiale viene pescato e messo nel magazzino, così com\'è, con la data di arrivo.' },
+      { el: 'silver', wl: ['TRF'], chi: 'Il team dati', cosa: 'Viene pulito e controllato: qui nasce la qualità.' },
+      { el: 'gold', wl: ['TRF'], chi: 'Il team dati con la funzione', cosa: 'Viene assemblato con il materiale degli altri fornitori, secondo le regole della funzione.', tu: 'Spieghi come si calcolano i tuoi numeri.' },
+      { el: 'confezionamento', wl: ['TRF'], chi: 'Il team dati', cosa: 'Nasce un nuovo semilavorato, collaudato in laboratorio e certificato.' },
+      { el: 'showroom', wl: ['VIS'], chi: 'Il team dati', cosa: 'Sul semilavorato nascono i report: il manager legge il numero, e dietro quel numero c\'è tutto il viaggio appena visto.', tu: 'Leggi il numero e decidi.' },
+    ] },
+  { id: 'ingresso', sottotitolo: 'Onboarding', colore: '#3b82f6', titolo: 'Come entra la mia funzione nella fabbrica?',
+    messaggio: 'Non parti da zero: ricevi semilavorati già controllati e ci costruisci sopra quello che ti serve.',
+    tappe: [
+      { el: 'sportello', wl: ['GOV'], chi: 'La funzione', cosa: 'La funzione si presenta allo sportello dell\'hub.', tu: 'Racconti cosa vorresti capire dai tuoi dati.' },
+      { el: 'coordinamento', wl: ['PMO'], chi: 'Il team dati', cosa: 'L\'ingresso della funzione entra nel piano di lavoro.' },
+      { el: 'spoke-0', wl: ['SSR'], chi: 'Il team dati', cosa: 'Si costruisce l\'officina della funzione.' },
+      { el: 'cancelli', wl: ['ACC'], chi: 'La funzione', cosa: 'Si distribuiscono i badge.', tu: 'Decidi chi dei tuoi entra e cosa può fare.' },
+      { el: 'caveau', wl: ['SEC'], chi: 'Il team dati con la funzione', cosa: 'Si fissano le regole su chi vede cosa.', tu: 'Indichi quali dati sono riservati.' },
+      { el: 'spedizioni', wl: ['TRF'], chi: 'Il team dati', cosa: 'Parte il primo semilavorato verso la nuova officina.' },
+      { el: 'spoke-0', wl: ['SSR'], chi: 'La funzione', cosa: 'Nasce il primo report della funzione.', tu: 'Costruisci il report, con il supporto del team dati.' },
+      { el: 'contatori', wl: ['FIN'], chi: 'La funzione', cosa: 'La funzione vede quanta energia consuma la sua officina.' },
+    ] },
+];

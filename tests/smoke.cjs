@@ -14,6 +14,8 @@ const path = require('path'), fs = require('fs');
   await page.waitForFunction(() => window.fabbrica);
   const shot = async (n, ms = 2200) => { await page.waitForTimeout(ms); await page.screenshot({ path: path.join(out, n + '.png') }); };
   const check = (c, m) => { if (!c) { errors.push('ATTESO: ' + m); } };
+  check(await page.locator('#benvenuto.open').count() === 1, 'schermata di benvenuto all\'apertura');   // [REQ-LIT-04]
+  await page.getByText('Esplora liberamente').click();
 
   await page.evaluate(() => fabbrica.world.flyTo([0, 40, -40], [0, 0, -86], 0.01));
   await shot('0-area-fornitori-vuota', 1500);
@@ -70,9 +72,9 @@ const path = require('path'), fs = require('fs');
   check(Object.values(t).every((n) => !n), 'senza Architettura a monte tutto resta fermo: ' + JSON.stringify(t));
   check(await page.evaluate(() => fabbrica.state.elemento('silver').on.visible), 'i reparti restano visibili anche se fermi');
   await page.evaluate(() => fabbrica.state.set('ARC', 'on'));
-  await page.evaluate(() => fabbrica.state.setElemento('src-erp', 'off')); await page.waitForTimeout(1500);              // [REQ-SRC-08]
+  await page.evaluate(() => fabbrica.state.setElemento('src-erp', 'off')); await page.waitForFunction(() => { const r = fabbrica.state.elemento('src-erp'); return !r.on.visible && !r.wip.visible; }, null, { timeout: 15000 }).catch(() => {});              // [REQ-SRC-08]
   check(await page.evaluate(() => { const r = fabbrica.state.elemento('src-erp'); return !r.on.visible && !r.wip.visible; }), 'sorgente spenta: assente');
-  await page.evaluate(() => fabbrica.state.setElemento('src-erp', 'wip')); await page.waitForTimeout(1500);
+  await page.evaluate(() => fabbrica.state.setElemento('src-erp', 'wip')); await page.waitForFunction(() => fabbrica.state.elemento('src-erp').wip.visible, null, { timeout: 15000 }).catch(() => {});
   check(await page.evaluate(() => fabbrica.state.elemento('src-erp').wip.visible), 'sorgente in cantiere');
   await page.evaluate(() => { fabbrica.state.setElemento('src-erp', 'on'); fabbrica.ui.mostraElemento('src-lake'); const r = fabbrica.state.elemento('src-lake'); fabbrica.world.flyTo([r.el.pos[0] - 35, 38, -30], [r.el.pos[0] - 14, 3, -58]); });
   await shot('7-sorgenti', 5000);
@@ -151,7 +153,8 @@ const path = require('path'), fs = require('fs');
   // profilo di esempio [REQ-CFG-03]
   const pe = await browser.newPage({ viewport: { width: 1440, height: 860 } });
   pe.on('pageerror', (e) => errors.push('esempio: ' + e.message));
-  await pe.goto('file://' + path.join(__dirname, 'esempio.html')); await pe.waitForFunction(() => window.fabbrica);
+  await pe.goto('file://' + path.join(__dirname, 'esempio.html') + '?avvio=libero'); await pe.waitForFunction(() => window.fabbrica);
+  check(await pe.locator('#benvenuto.open').count() === 0, 'avvio=libero salta il benvenuto');
   await pe.getByText('Tutto on').click(); await pe.waitForTimeout(2500);
   const ep = await pe.evaluate(() => { const S = fabbrica.state, st = (t) => S.recs.filter((r) => r.el.tipo === t).map((r) => r.el.nome + ':' + S.effettivo(r)); fabbrica.ui.mostraElemento('pontile');
     return { titolo: document.getElementById('titolo').textContent, spoke: st('officina'), src: st('sorgente'), team: fabbrica.figures.conta().totale, scheda: document.getElementById('info').textContent }; });
@@ -160,6 +163,49 @@ const path = require('path'), fs = require('fs');
   check(ep.src.join() === 'Il gestionale:on,CRM vendite:on,Budget (Excel):on,Presenze:off', 'profilo: sorgenti e flussi: ' + ep.src);
   check(ep.team === 5 && ep.scheda.includes('dati@esempio.example'), 'profilo: team e contatto');
   await pe.screenshot({ path: path.join(out, '11-profilo-esempio.png') }); await pe.close();
+
+  // ---- Batch 5: narrativa, percorsi, benvenuto ----
+  await page.evaluate(() => { fabbrica.ui.chiudi(); fabbrica.state.setTutti('on'); fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente').forEach((r) => fabbrica.state.setElemento(r.el.id, 'on')); });
+  await page.getByText('Percorsi').click(); await page.getByText('Il numero nel mio report è sbagliato').click(); await page.waitForTimeout(600);
+  let g = await page.evaluate(() => ({ modo: fabbrica.guida.modo(), n: fabbrica.guida.passi().length, num: fabbrica.guida.passi().filter((x) => x.num).length, testo: document.querySelector('#guida .testo').textContent }));
+  check(g.modo === 'percorso' && g.n === 11 && g.num === 10, 'percorso Incident: 10 tappe più il messaggio finale: ' + JSON.stringify(g));
+  await shot('20-percorso-incident', 2600);
+  await page.keyboard.press('ArrowRight'); await page.keyboard.press('PageDown'); await page.waitForTimeout(300);
+  check(await page.evaluate(() => fabbrica.guida.passo()) === 2 && (await page.locator('#guida h3').textContent()) === 'Sala controllo', 'tastiera e telecomando: avanti di due tappe');
+  await shot('21-percorso-tappa', 2200);
+  for (let i = 0; i < 12; i++) await page.keyboard.press('Space');
+  check((await page.locator('#guida .testo').textContent()).includes('risale la filiera per te'), 'ultima scheda: messaggio da ricordare');
+  await page.keyboard.press('Escape'); await page.waitForTimeout(200);
+  check(await page.evaluate(() => fabbrica.guida.modo() === null && document.querySelectorAll('.num').length === 0), 'Esc chiude il percorso e toglie la linea');
+  await page.evaluate(() => { fabbrica.state.set('GOV', 'off'); fabbrica.guida.avviaPercorso('incidente'); });                     // [REQ-PER-05]
+  check(await page.evaluate(() => fabbrica.guida.passi().length) === 9, 'con la Data Governance spenta le sue due tappe vengono saltate');
+  await page.evaluate(() => { fabbrica.guida.esci(); fabbrica.state.set('GOV', 'on'); });
+
+  await page.getByText('Presentazione').first().click(); await page.waitForTimeout(500);
+  g = await page.evaluate(() => ({ modo: fabbrica.guida.modo(), n: fabbrica.guida.passi().length, st: fabbrica.state.stato, src: fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente' && r.proprio === 'on').length, sx: getComputedStyle(document.getElementById('left')).display }));
+  check(g.modo === 'narrativa' && g.n === 14 && g.sx === 'none' && g.src === 0 && Object.entries(g.st).every(([k, v]) => v === (k === 'SRC' ? 'on' : 'off')), 'capitolo 1: terreno vuoto, pannelli nascosti: ' + JSON.stringify(g));
+  await shot('22-narrativa-inizio', 1800);
+  await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowRight'); await page.waitForTimeout(400);
+  g = await page.evaluate(() => ({ p: fabbrica.guida.passo(), arc: fabbrica.state.stato.ARC, int: fabbrica.state.stato.INT, src: fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente' && r.proprio === 'on').length }));
+  check(g.p === 2 && g.arc === 'on' && g.int === 'off' && g.src === 11, 'capitolo 3: sorgenti accese e Data Architecture: ' + JSON.stringify(g));
+  await page.keyboard.press('PageUp'); await page.waitForTimeout(300);
+  check(await page.evaluate(() => fabbrica.state.stato.ARC === 'off' && fabbrica.guida.passo() === 1), 'indietro: lo stato torna a quello del capitolo precedente');
+  for (let i = 0; i < 5; i++) await page.keyboard.press('ArrowRight');
+  await shot('23-narrativa-trasformazione', 4500);
+  check(await page.evaluate(() => getComputedStyle(document.querySelector('#guida .testo')).fontSize) === '20px', 'testo del capitolo leggibile a distanza');
+  await page.keyboard.press('Escape'); await page.waitForTimeout(300);
+  g = await page.evaluate(() => ({ modo: fabbrica.guida.modo(), trf: fabbrica.state.stato.TRF, vis: fabbrica.state.stato.VIS, sx: getComputedStyle(document.getElementById('left')).display }));
+  check(g.modo === null && g.trf === 'on' && g.vis === 'off' && g.sx !== 'none', 'uscendo dalla narrativa la scena resta com\'era e i pannelli tornano: ' + JSON.stringify(g));
+  await page.evaluate(() => { fabbrica.cfg.chapters[3].incluso = false; fabbrica.guida.avviaNarrativa(0); });
+  check(await page.evaluate(() => fabbrica.guida.passi().length) === 13, 'un capitolo escluso viene saltato');
+  await page.evaluate(() => { fabbrica.cfg.chapters[3].incluso = true; fabbrica.guida.esci(); });
+  await page.locator('#bar > button[title="La fabbrica dei dati"]').click();
+  check(await page.locator('#benvenuto.open').count() === 1, 'il benvenuto si riapre con "?"');
+  await page.getByText('Esplora liberamente').click();
+  await page.setViewportSize({ width: 1100, height: 700 }); await page.waitForTimeout(400);                                   // [REQ-UI-08]
+  await shot('24-schermo-piccolo', 800);
+  check(await page.locator('#apri-menu').isVisible(), 'schermo piccolo: pulsante del pannello visibile');
+  await page.setViewportSize({ width: 1440, height: 860 });
 
   await page.getByText('Tutto off').click();
   await page.waitForTimeout(1500);

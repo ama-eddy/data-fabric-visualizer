@@ -25,7 +25,8 @@ export function createScene(cfg, sceneEl, labelsEl) {
   controls.enableDamping = true; controls.dampingFactor = 0.08;
   controls.maxPolarAngle = Math.PI * 0.48; controls.minDistance = 18; controls.maxDistance = 420;
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xa8b5a0, 1.15));
+  const cielo = new THREE.HemisphereLight(0xffffff, 0xa8b5a0, 1.15); scene.add(cielo);
+  let margine = cfg.layout.margineSinistro || 0;
   const sun = new THREE.DirectionalLight(0xffffff, 1.9);
   sun.position.set(-70, 130, 90); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
   Object.assign(sun.shadow.camera, { left: -150, right: 150, top: 150, bottom: -150, near: 10, far: 400 });
@@ -66,7 +67,7 @@ export function createScene(cfg, sceneEl, labelsEl) {
 
   function resize() {
     const W = innerWidth, H = innerHeight;
-    const off = W > 1100 ? (cfg.layout.margineSinistro || 0) : 0;     // centra la scena a destra del pannello
+    const off = W > 1100 ? margine : 0;     // centra la scena a destra del pannello
     camera.aspect = (W + off) / H;
     if (off) camera.setViewOffset(W + off, H, 0, 0, W, H); else camera.clearViewOffset();
     camera.updateProjectionMatrix();
@@ -92,6 +93,9 @@ export function createScene(cfg, sceneEl, labelsEl) {
     renderer.render(scene, camera); labels.render(scene, camera);
   }
 
-  return { scene, camera, renderer, controls, flyTo, frame, update, pickables: [],
+  /* [REQ-PER-02] durante un percorso il resto della fabbrica si attenua */
+  function attenua(v) { cielo.intensity = v ? 0.42 : 1.15; sun.intensity = v ? 0.55 : 1.9; scene.background.set(v ? '#8a949c' : '#dfe8ee'); scene.fog.color.set(v ? '#8a949c' : '#dfe8ee'); }
+  return { scene, camera, renderer, controls, flyTo, frame, update, pickables: [], attenua,
+    setMargine: (px) => { margine = px; resize(); },
     home: () => flyTo(home.pos, home.target), setKeyboardMove: (v) => { keyboardMove = v; keys.clear(); } };
 }
