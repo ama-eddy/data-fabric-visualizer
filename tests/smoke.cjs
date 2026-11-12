@@ -47,6 +47,38 @@ const path = require('path'), fs = require('fs');
   await page.keyboard.down('KeyD'); await page.waitForTimeout(400); await page.keyboard.up('KeyD');
   check(await page.evaluate((x) => fabbrica.world.controls.target.x > x + 1, x0), 'WASD sposta la vista');
 
+  // ---- Batch 2: catena del valore ----
+  await page.evaluate(() => fabbrica.ui.chiudi());
+  const tipi = () => page.evaluate(() => { const o = {}; for (const r of fabbrica.flows.routes) o[r.tipo] = (o[r.tipo] || 0) + r.items.length; return o; });
+  await shot('6-catena-del-valore', 9000);
+  const visti = await page.waitForFunction(() => { const v = (window.__visti = window.__visti || {}); for (const r of fabbrica.flows.routes) if (r.items.length) v[r.tipo] = 1; return v.camion && v.officina && v.impulso; }, null, { timeout: 20000 }).then(() => true, () => false);
+  check(visti, 'camion, camion-officina e condotta in movimento');
+  let t = await tipi();
+  check(t.grezzo > 0 && t.bronze > 0 && t.silver > 0 && t.gold > 0 && t.semilavorato > 0, 'materiale a ogni stadio: ' + JSON.stringify(t));
+  check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente' && r.on.visible).length) === 9, '9 sorgenti visibili');
+  await page.evaluate(() => fabbrica.state.set('TRF', 'wip')); await page.waitForTimeout(400);    // [REQ-FLW-09]
+  t = await tipi();
+  check(t.grezzo > 0 && !t.bronze && !t.silver && !t.gold && !t.semilavorato, 'con TRF in cantiere il flusso si ferma al Bronze: ' + JSON.stringify(t));
+  await page.evaluate(() => { fabbrica.state.set('TRF', 'on'); fabbrica.state.set('ARC', 'off'); }); await page.waitForTimeout(400);  // [REQ-WL-06]
+  t = await tipi();
+  check(Object.values(t).every((n) => !n), 'senza Architettura a monte tutto resta fermo: ' + JSON.stringify(t));
+  check(await page.evaluate(() => fabbrica.state.elemento('silver').on.visible), 'i reparti restano visibili anche se fermi');
+  await page.evaluate(() => fabbrica.state.set('ARC', 'on'));
+  await page.evaluate(() => fabbrica.state.setElemento('src-erp', 'off')); await page.waitForTimeout(1500);              // [REQ-SRC-08]
+  check(await page.evaluate(() => { const r = fabbrica.state.elemento('src-erp'); return !r.on.visible && !r.wip.visible; }), 'sorgente spenta: assente');
+  await page.evaluate(() => fabbrica.state.setElemento('src-erp', 'wip')); await page.waitForTimeout(1500);
+  check(await page.evaluate(() => fabbrica.state.elemento('src-erp').wip.visible), 'sorgente in cantiere');
+  await page.evaluate(() => { fabbrica.state.setElemento('src-erp', 'on'); fabbrica.ui.mostraElemento('src-hr'); const r = fabbrica.state.elemento('src-lake'); fabbrica.world.flyTo([r.el.pos[0] - 35, 38, -30], [r.el.pos[0] - 14, 3, -58]); });
+  await shot('7-sorgenti', 5000);
+  check((await page.locator('#info').textContent()).includes('non passa dalla banchina'), 'scheda della condotta: non passa dalla banchina');
+  check(await page.locator('#legenda .voce').count() === 10, 'legenda: 5 materiali e 5 mezzi');
+  await page.getByText('Pausa flussi').click(); const p0 = await page.evaluate(() => fabbrica.flows.routes.find((r) => r.items.length).items[0].u);
+  await page.waitForTimeout(500);
+  check(await page.evaluate((u) => fabbrica.flows.routes.find((r) => r.items.length).items[0].u === u, p0), 'pausa: il materiale si ferma');
+  await page.getByText('Riprendi flussi').click();
+  await page.evaluate(() => fabbrica.world.flyTo([38, 26, 44], [4, 2, -6]));
+  await shot('8-reparti', 4000);
+
   await page.getByText('Tutto off').click();
   await page.waitForTimeout(1500);
   check(await page.evaluate(() => fabbrica.state.recs.every((r) => !r.on.visible && !r.wip.visible)), 'tutto off svuota la scena');

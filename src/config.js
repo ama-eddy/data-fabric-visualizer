@@ -14,7 +14,8 @@ window.CONFIG = {
     gestori: { hub: 'Il team dati (hub)', spoke: 'La tua funzione (spoke)', entrambi: 'Il team dati insieme alla tua funzione' },
     lavori: 'Lavori in corso', segnaposto: 'in arrivo',
     aiuto: 'Trascina per ruotare · rotellina per lo zoom · tasto destro o WASD per spostarti · clic su un elemento per la scheda',
-    chiudi: 'Chiudi',
+    chiudi: 'Chiudi', legenda: 'Legenda', materiali: 'Materiali', mezzi: 'Trasporto',
+    mezzo: 'Come arriva il materiale', statoElemento: 'Stato',
   },
 
   // [REQ-LIT-02] contatto mostrato se il profilo non ne indica uno
@@ -27,7 +28,69 @@ window.CONFIG = {
   layout: {
     capannone: { x: [-32, 32], z: [-40, 40], pavimento: 0.8, altezza: 14 },
     camera: { pos: [0, 122, 188], target: [0, 0, 4] },
+    sorgenti: { z: -86, passo: 13.5, larghezza: 116 },   // [REQ-SRC-07] area fornitori sul fondo
     margineSinistro: 332, // larghezza occupata dal pannello: la scena viene centrata nello spazio libero
+  },
+
+  // [REQ-FLW-08] materiali: l'aspetto del materiale a ogni stadio
+  materiali: {
+    grezzo: { nome: 'Grezzo', colore: '#9ca3af' },
+    bronze: { nome: 'Bronze — conservato', colore: '#b87333' },
+    silver: { nome: 'Silver — pulito', colore: '#d7dbe2' },
+    gold: { nome: 'Gold — assemblato', colore: '#f5c518' },
+    semilavorato: { nome: 'Semilavorato certificato', colore: '#22d3ee' },
+  },
+
+  // [REQ-SRC-03, REQ-SRC-04, REQ-SRC-05] modalità di acquisizione → mezzo di trasporto (testi senza termini tecnici)
+  modalita: {
+    copy: { nome: 'Camion', colore: '#f97316', landing: true,
+      testo: 'Il materiale viene caricato su un camion a orari stabiliti e scaricato alla banchina.' },
+    dataflow: { nome: 'Camion con officina a bordo', colore: '#a16207', landing: true,
+      testo: 'Il materiale viaggia su un camion che lo sistema un po\' già durante il viaggio, poi lo scarica alla banchina.' },
+    mirroring: { nome: 'Condotta continua', colore: '#0ea5e9', landing: false,
+      testo: 'Una copia sempre aggiornata scorre senza sosta in una condotta ed entra direttamente nel magazzino: non passa dalla banchina.' },
+    shortcut: { nome: 'Ponte di vetro', colore: '#a5f3fc', landing: false,
+      testo: 'Il materiale non si sposta: resta dal fornitore e la fabbrica lo usa attraverso un ponte, senza copiarlo. Non passa dalla banchina.' },
+    streaming: { nome: 'Nastro veloce', colore: '#ea580c', landing: false,
+      testo: 'Il materiale arriva in diretta, un pezzo dopo l\'altro, alla sala sensori: funziona solo quando il Real-Time è attivo.' },
+  },
+
+  // [REQ-SRC-02] categoria della sorgente → forma dell'edificio e modalità di default
+  categorie: {
+    erp: { forma: 'stabilimento', modalita: 'copy', fabbrica: 'Un grande stabilimento: il fornitore principale, con tanto materiale ben organizzato.', perTe: 'È il gestionale: ordini, fatture, contabilità.' },
+    crm: { forma: 'negozio', modalita: 'copy', fabbrica: 'Un negozio: qui nasce tutto ciò che riguarda il rapporto con i clienti.', perTe: 'È il sistema dove si seguono clienti, contatti e trattative.' },
+    db: { forma: 'silo', modalita: 'mirroring', fabbrica: 'Dei silos: materiale già stoccato in modo ordinato, pronto da prelevare.', perTe: 'È un archivio strutturato di un\'applicazione aziendale.' },
+    file: { forma: 'archivio', modalita: 'dataflow', fabbrica: 'Un archivio di scatoloni: materiale sfuso, preparato a mano.', perTe: 'Sono i fogli di calcolo e i file che oggi qualcuno compila e si passa a mano.' },
+    api: { forma: 'sportello', modalita: 'copy', fabbrica: 'Uno sportello: si chiede e si riceve, un pezzo alla volta.', perTe: 'È un servizio esterno a cui l\'azienda è abbonata e da cui si ritirano i dati.' },
+    iot: { forma: 'sensori', modalita: 'streaming', fabbrica: 'Un campo di sensori: il materiale arriva in continuazione, senza pause.', perTe: 'Sono macchine e sensori che mandano segnali in ogni momento.' },
+    esterni: { forma: 'mercato', modalita: 'copy', fabbrica: 'Un mercato: materiale che viene da fuori, acquistato o pubblico.', perTe: 'Sono dati di mercato o dati pubblici che arricchiscono quelli dell\'azienda.' },
+    storage: { forma: 'container', modalita: 'shortcut', fabbrica: 'Un deposito di container: grandi quantità di materiale già raccolto altrove.', perTe: 'È un archivio dati che l\'azienda ha già: si usa così com\'è, senza duplicarlo.' },
+  },
+
+  // [REQ-SRC-01] catalogo standard delle sorgenti (sostituito da quello del profilo, se presente)
+  sources: [
+    { id: 'src-erp', nome: 'Gestionale', categoria: 'erp', stato: 'on' },
+    { id: 'src-crm', nome: 'CRM', categoria: 'crm', stato: 'on' },
+    { id: 'src-hr', nome: 'Sistema del personale', categoria: 'db', stato: 'on' },
+    { id: 'src-bud', nome: 'Budget e forecast (Excel)', categoria: 'file', stato: 'on' },
+    { id: 'src-wms', nome: 'Magazzino e produzione', categoria: 'db', stato: 'on' },
+    { id: 'src-iot', nome: 'Sensori di impianto', categoria: 'iot', stato: 'on' },
+    { id: 'src-mkt', nome: 'Marketing', categoria: 'api', stato: 'on' },
+    { id: 'src-ext', nome: 'Dati di mercato', categoria: 'esterni', stato: 'on' },
+    { id: 'src-lake', nome: 'Archivio dati esistente', categoria: 'storage', stato: 'on' },
+  ],
+
+  // [REQ-FLW-02…06, REQ-FLW-09] nastri dentro il capannone: tre corsie, il materiale cambia aspetto a ogni tratto.
+  // wl = workload a cui appartiene il nastro · richiede = workload che devono essere 'on' perché il materiale si muova
+  flussi: {
+    corsie: [-18, 0, 18],
+    tratti: [
+      { id: 'banchina-bronze', z: [-33, -23], materiale: 'grezzo', wl: 'INT', richiede: ['INT'], alimentato: 'landing' },
+      { id: 'bronze-silver', z: [-23, -9], materiale: 'bronze', wl: 'TRF', richiede: ['INT', 'TRF'], alimentato: 'bronze' },
+      { id: 'silver-gold', z: [-9, 3], materiale: 'silver', wl: 'TRF', richiede: ['INT', 'TRF'], alimentato: 'bronze' },
+      { id: 'gold-confezionamento', z: [3, 12.5], materiale: 'gold', wl: 'TRF', richiede: ['INT', 'TRF'], alimentato: 'bronze' },
+    ],
+    uscita: { id: 'confezionamento-spedizioni', punti: [[16, 16], [16, 27]], materiale: 'semilavorato', wl: 'TRF', richiede: ['INT', 'TRF'], alimentato: 'bronze' },
   },
 
   // [REQ-WL-10, REQ-WL-11] catalogo dei workload — tutti 'off' nel modello standard [REQ-WL-05]
@@ -90,14 +153,31 @@ window.CONFIG = {
       perTe: 'Quando chiedi una modifica, la provi insieme al team dati prima che arrivi a tutti: niente sorprese nei report.' },
 
     // --- Segnaposto degli altri workload (batch 2-4) ---
-    { id: 'fornitori', wl: 'INT', tipo: 'segnaposto', nome: 'Area fornitori (sorgenti)', pos: [0, -86], dim: [110, 12, 5] },
-    { id: 'banchina', wl: 'INT', tipo: 'segnaposto', nome: 'Banchina di scarico', pos: [0, -34], dim: [56, 9, 5] },
-    { id: 'bronze', wl: 'INT', tipo: 'segnaposto', nome: 'Magazzino materie prime (Bronze)', pos: [0, -22], dim: [56, 10, 6] },
-    { id: 'silver', wl: 'TRF', tipo: 'segnaposto', nome: 'Reparto lavorazione (Silver)', pos: [0, -9], dim: [56, 10, 6] },
-    { id: 'gold', wl: 'TRF', tipo: 'segnaposto', nome: 'Linea di assemblaggio (Gold)', pos: [0, 3], dim: [56, 9, 6] },
-    { id: 'confezionamento', wl: 'TRF', tipo: 'segnaposto', nome: 'Confezionamento semilavorati', pos: [0, 14], dim: [56, 8, 6] },
-    { id: 'spedizioni', wl: 'TRF', tipo: 'segnaposto', nome: 'Spedizioni', pos: [16, 30], dim: [26, 12, 5] },
-    { id: 'showroom', wl: 'VIS', tipo: 'segnaposto', nome: 'Showroom', pos: [-16, 30], dim: [26, 12, 6] },
+    // --- Data Integration [REQ-FLW-01…03, REQ-SCN-02] ---
+    { id: 'fornitori', wl: 'INT', tipo: 'piazzale', nome: 'Area fornitori', pos: [0, -86], dim: [124, 16, 0.2], etichetta: [-58, 3, -96], cantiere: false,
+      fabbrica: "L'area dei fornitori: i sistemi dell'azienda da cui parte il materiale grezzo. Ogni tipo di fornitore ha un edificio diverso.",
+      perTe: 'Sono i sistemi che usi ogni giorno: gestionale, CRM, fogli di calcolo. Tu continui a lavorare lì, il materiale parte da solo.' },
+    { id: 'banchina', wl: 'INT', tipo: 'banchina', nome: 'Banchina di scarico', pos: [0, -34.5], dim: [60, 9, 5], zona: true,
+      fabbrica: "La banchina di scarico: i camion arrivano e il materiale viene scaricato così com'è, senza aprirlo né modificarlo.",
+      perTe: "Qui arriva una copia fedele dei dati dei tuoi sistemi: nulla viene toccato nel sistema d'origine." },
+    { id: 'bronze', wl: 'INT', tipo: 'bronze', nome: 'Magazzino materie prime (Bronze)', pos: [0, -22], dim: [60, 12, 6], zona: true,
+      fabbrica: "Il magazzino materie prime: il materiale viene messo a scaffale con l'etichetta di arrivo e conservato, ancora grezzo.",
+      perTe: "Tutto ciò che arriva resta conservato con la sua data: si può sempre tornare a vedere com'era il dato in origine." },
+
+    // --- Data Transformation [REQ-FLW-04…06, REQ-SCN-02] ---
+    { id: 'silver', wl: 'TRF', tipo: 'silver', nome: 'Reparto lavorazione (Silver)', pos: [0, -9], dim: [60, 12, 6], zona: true,
+      fabbrica: 'Il reparto lavorazione: il materiale viene pulito, controllato e portato a misura. Qui nasce la qualità.',
+      perTe: 'Doppioni, errori di battitura, codici diversi per la stessa cosa: vengono sistemati qui, una volta per tutti.' },
+    { id: 'gold', wl: 'TRF', tipo: 'gold', nome: 'Linea di assemblaggio (Gold)', pos: [0, 3], dim: [60, 10, 6], zona: true,
+      fabbrica: 'La linea di assemblaggio: i pezzi puliti vengono montati in componenti pensati per il business (vendite, clienti, costi).',
+      perTe: 'I dati di sistemi diversi vengono messi insieme: finalmente il cliente del CRM e quello del gestionale sono la stessa cosa.' },
+    { id: 'confezionamento', wl: 'TRF', tipo: 'confezionamento', nome: 'Confezionamento semilavorati', pos: [0, 14], dim: [60, 8, 6], zona: true,
+      fabbrica: 'Il confezionamento: i componenti diventano semilavorati, con le istruzioni dentro e il marchio di qualità sopra.',
+      perTe: 'Il semilavorato è un dato certificato, con i calcoli già pronti: lo stesso per tutti, pronto per costruirci i report.' },
+    { id: 'spedizioni', wl: 'TRF', tipo: 'spedizioni', nome: 'Spedizioni', pos: [16, 30], dim: [28, 14, 5], zona: true,
+      fabbrica: 'Il reparto spedizioni: da qui i semilavorati partono verso le officine delle funzioni.',
+      perTe: 'È da qui che i dati certificati arrivano alla tua funzione.' },
+    { id: 'showroom', wl: 'VIS', tipo: 'segnaposto', nome: 'Showroom', pos: [-16, 30], dim: [28, 14, 6] },
     { id: 'officine', wl: 'SSR', tipo: 'segnaposto', nome: 'Officine degli spoke', pos: [0, 80], dim: [110, 12, 5] },
     { id: 'cancelli', wl: 'ACC', tipo: 'segnaposto', nome: 'Cancelli e tornelli', pos: [0, 52], dim: [16, 4, 5] },
     { id: 'recinzione', wl: 'SEC', tipo: 'segnaposto', nome: 'Recinzione e telecamere', pos: [28, 52], dim: [12, 4, 4] },

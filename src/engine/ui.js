@@ -40,23 +40,36 @@ export function createUI(cfg, world, state) {
   btn(ui.tuttoOn, () => state.setTutti('on'));
   btn(ui.tuttoOff, () => state.setTutti('off'));
 
+  /* ===== [REQ-FLW-08, REQ-SRC-03] Legenda dei materiali e dei mezzi di trasporto ===== */
+  const leg = $('legenda');
+  const voce = (colore, nome, cls = '') => { const c = h('span', { className: 'chip ' + cls }); c.style.background = colore; return h('div', { className: 'voce' }, c, nome); };
+  leg.append(h('h4', { textContent: ui.materiali }), h('div', { className: 'riga' }, ...Object.values(cfg.materiali).map((m) => voce(m.colore, m.nome))),
+    h('h4', { textContent: ui.mezzi }), h('div', { className: 'riga' }, ...Object.values(cfg.modalita).map((m) => voce(m.colore, m.nome, 'linea'))));
+  btn(ui.legenda, () => leg.classList.toggle('open'));
+
   /* ===== [REQ-UI-02, REQ-LIT-01, REQ-LIT-02] Scheda: nessuna sezione tecnica ===== */
   let aperta = null;
-  function scheda(titolo, wlKey, d) {
-    const wl = cfg.workloads[wlKey], st = state.stato[wlKey], box = $('info');
+  function scheda(titolo, wlKey, d, rec) {
+    const wl = cfg.workloads[wlKey], st = rec ? state.effettivo(rec) : state.stato[wlKey], box = $('info');
     box.innerHTML = '';
     const x = h('button', { className: 'x', textContent: '×', title: ui.chiudi }); x.onclick = chiudi;
     const b1 = h('span', { className: 'badge', textContent: wl.nome }); b1.style.background = wl.colore;
     const b2 = h('span', { className: 'badge stato', textContent: ui.statoLungo[st] });
     box.append(x, h('h3', { textContent: titolo }), h('div', { className: 'badges' }, b1, b2));
     const sez = (t, txt) => { if (txt) box.append(h('h4', { textContent: t }), h('p', { textContent: txt })); };
+    if (rec && rec.proprio !== undefined) {           /* [REQ-UI-09] stato di una singola sorgente o di un singolo spoke, dal vivo */
+      const seg = h('div', { className: 'seg' });
+      for (const s of ['off', 'wip', 'on']) { const b = h('button', { textContent: ui.stati[s], className: rec.proprio === s ? 'sel' : '' }); b.dataset.s = s; b.onclick = () => state.setElemento(rec.el.id, s); seg.append(b); }
+      box.append(h('h4', { textContent: ui.statoElemento }), seg);
+    }
     sez(ui.nellaFabbrica, d.fabbrica || wl.fabbrica);
+    sez(ui.mezzo, d.mezzo);
     sez(ui.perTe, d.perTe || wl.perTe);
     sez(ui.contatto, [cfg.contatto.chi, cfg.contatto.come].filter(Boolean).join(' — '));
     sez(ui.gestore, ui.gestori[d.gestore || wl.gestore]);
     box.classList.add('open');
   }
-  function mostraElemento(id) { const r = state.elemento(id); if (!r) return; aperta = () => scheda(r.el.nome, r.el.wl, r.el); aperta(); }
+  function mostraElemento(id) { const r = state.elemento(id); if (!r) return; aperta = () => scheda(r.el.nome, r.el.wl, r.el, r); aperta(); }
   function mostraWorkload(k) { aperta = () => scheda(cfg.workloads[k].nome, k, {}); aperta(); }
   function chiudi() { aperta = null; $('info').classList.remove('open'); }
 
@@ -73,7 +86,8 @@ export function createUI(cfg, world, state) {
     return null;
   }
   let down = null;
-  canvas.addEventListener('pointerdown', (e) => { down = [e.clientX, e.clientY]; });
+  canvas.addEventListener('pointerdown', (e) => { down = [e.clientX, e.clientY]; $('tip').style.display = 'none'; });
+  canvas.addEventListener('wheel', () => { $('tip').style.display = 'none'; }, { passive: true });
   canvas.addEventListener('pointerup', (e) => {
     if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 5) return;
     const id = pick(e); if (id) mostraElemento(id); else chiudi();
