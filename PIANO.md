@@ -1,0 +1,36 @@
+# Fabbrica Dati 3D — Piano di implementazione
+
+> Realizza `REQUISITI.md` v1.1 in **6 batch**. Ogni batch è pensato per stare in **una sessione di lavoro** e si chiude con un file `fabbrica-dati.html` **funzionante e provabile**.
+
+## Regole comuni a tutti i batch
+
+1. **Si parte dai file salvati**: `REQUISITI.md`, `PIANO.md`, `profili/`, `src/`, `build.py`. Ogni sessione riparte da lì, senza bisogno di ricordare la conversazione precedente.
+2. **Sorgenti separati, consegna in un file unico**: il codice vive in `src/` (un file per modulo); `build.py` lo unisce con three.js in `fabbrica-dati.html`, unico e offline (NFR-01).
+3. **Ogni blocco di codice porta il suo `[REQ-…]`** (REQ-PRC-01).
+4. **Chiusura di ogni batch**: build, prova automatica nel browser con schermate, aggiornamento della matrice di tracciabilità (§13 dei requisiti) e della tabella "Stato" qui sotto.
+5. **Se la sessione finisce prima del batch**: ci si ferma all'ultimo punto funzionante e la tabella "Stato" dice da dove riprendere.
+6. **Una richiesta nuova durante un batch** passa prima da una RDM nei requisiti, poi diventa codice.
+
+## I batch
+
+| # | Batch | Cosa si vede alla fine | Requisiti |
+|---|---|---|---|
+| 1 | **Motore e fondamenta** | Terreno vuoto; pannello con i 12 workload e selettore off/wip/on; accendendo Architettura compaiono capannone, centrale, riserva idrica e laboratorio prove, con animazione di costruzione; cantiere generico per lo stato wip; clic su un elemento → scheda; navigazione libera | REQ-CFG-01/02/04 · REQ-WL-01…08, 10…12 · REQ-SCN-01/04/06/08/10 · REQ-UI-01…07, 09 · REQ-LIT-01/02 · NFR-01/04/06 |
+| 2 | **Catena del valore** | Sorgenti (8 forme, 5 mezzi di trasporto) → banchina → Bronze → Silver → Gold → confezionamento, con materiale che cambia aspetto; i flussi si fermano dove manca un workload a monte; legenda | REQ-FLW-01…06, 08, 09 · REQ-SRC-01…05, 07…09 · REQ-SCN-02 |
+| 3 | **Consumo, spoke e persone** | Showroom dell'hub; officine degli spoke con deposito dei dati locali e camion dei semilavorati; figure del team dati (trasporto e rotazione tra le postazioni) e delle funzioni nelle officine; ufficio di coordinamento; profilo aziendale applicato (spoke, sorgenti, flussi, team, contatto) con un profilo di esempio | REQ-FLW-07 · REQ-HS-01…07 · REQ-SCN-07/11/12/13 · REQ-CFG-03/05 |
+| 4 | **Workload trasversali e opzionali** | Accessi, Security, Governance (con sportello dell'hub), Monitoraggio, Costi; Real-Time e Knowledge. **A questo punto l'esplorazione libera è completa: si può provare tutto e decidere cosa entra nella presentazione** | REQ-SCN-03/05/09 · REQ-FLW-10/11 · REQ-SRC-06 |
+| 5 | **Narrativa e percorsi** | Modalità narrativa con Avanti/Indietro, tastiera e telecomando; capitoli includibili/escludibili; i 4 percorsi con linea luminosa e tappe; schermata di benvenuto; testi rivisti sul lessico | REQ-NAR-01…08 · REQ-PER-01…07 · REQ-UI-10 · REQ-LIT-03…06 · REQ-SRC-10 |
+| 6 | **Collaudo e rifinitura** | Verifica di tutti i criteri di accettazione; prestazioni; prova su Chrome, Edge, Firefox; matrice di tracciabilità completa; profilo reale dell'azienda | NFR-02/03/05 · REQ-UI-08 · REQ-PRC-01…03 · REQ-CFG-06 (se avanza tempo) |
+
+**Tra il batch 4 e il 5** c'è una pausa voluta: prove in esplorazione libera, poi scelta dei capitoli e stesura dei testi della narrazione (D-34).
+
+## Stato
+
+| Batch | Stato | Note / da dove riprendere |
+|---|---|---|
+| 1 | Da iniziare | |
+| 2 | Da iniziare | |
+| 3 | Da iniziare | |
+| 4 | Da iniziare | |
+| 5 | Da iniziare | |
+| 6 | Da iniziare | |
