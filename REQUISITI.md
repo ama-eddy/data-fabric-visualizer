@@ -5,7 +5,7 @@
 
 | Campo | Valore |
 |---|---|
-| Versione documento | 1.9 |
+| Versione documento | 1.10 |
 | Data | 2026-11-12 |
 | Stato | Requisiti approvati — implementazione da avviare (vedi `PIANO.md`) |
 | Approva | Il responsabile del progetto (richiedente) |
@@ -360,7 +360,7 @@ Una sorgente per categoria, così da poter raccontare ogni caso.
 | REQ-SCN-08 | Lo stile è **originale** e "da plastico" (low-poly), senza marchi, loghi o asset di terze parti. | Nessun logo Microsoft o di altri marchi in scena. | M | Implementato |
 | REQ-SCN-09 | Lo **sportello dell'hub** (reception / Center of Excellence) è il punto in cui le funzioni entrano in contatto con la piattaforma: segnalazioni, richieste, onboarding. Appartiene a `WL-GOV`. | L'elemento è presente e cliccabile, ed è la tappa di partenza o di contatto dei percorsi. | M | Implementato |
 | REQ-SCN-10 | Il **laboratorio prove** sta **dentro il capannone**, subito dopo il confezionamento, e compare con la **Data Transformation** (`WL-TRF`): ogni semilavorato viene collaudato qui prima di uscire, e qui si provano le modifiche prima della produzione. | L'elemento compare con `WL-TRF`; il flusso dei semilavorati lo attraversa; è usato da Change request e New project. | M | Implementato |
-| REQ-SCN-11 | Il **team dati** è rappresentato da **figure stilizzate, una per persona reale**, con due sagome (uomo / donna) e un colore unico per l'hub, **divise in quattro gruppi**, ognuno legato al suo workload: **Integration** (`WL-INT`: uno costruisce e ripara gli scivoli, l'altro manovra dal pannello le gru che pescano dal lago), **Architecture** (`WL-ARC`: al tavolo dei progetti accanto al capannone), **Visualization** (`WL-VIS`: nello showroom) e **Coordination** (`WL-PMO`: all'ufficio di coordinamento). Numero e composizione vengono dal profilo; di default sono 5: 2 + 1 + 1 + 1. | Ogni gruppo compare solo con il suo workload `on`; in scena ci sono esattamente le figure del profilo. | M | Implementato |
+| REQ-SCN-11 | Il **team dati** è rappresentato da **figure stilizzate, una per persona reale**, con due sagome (uomo / donna) e un colore unico per l'hub. Le figure di **Integration** (`WL-INT`) restano ai loro compiti: una costruisce e ripara gli scivoli, l'altra manovra dal pannello le gru che pescano dal lago. Le altre **ruotano a turno tra le postazioni dei workload accesi**: **Architecture** (`WL-ARC`, tavolo dei progetti), **Visualization** (`WL-VIS`, showroom) e **Coordination** (`WL-PMO`, ufficio di coordinamento). Numero e composizione vengono dal profilo; di default sono 5: 2 fisse e 3 a rotazione. | Chi ruota va solo alle postazioni dei workload `on`: con uno solo acceso stanno tutti lì, con nessuno non compaiono; a ogni turno le postazioni cambiano. | M | Implementato |
 | REQ-SCN-12 | Nelle officine degli spoke lavorano **figure delle funzioni business**, con il colore dello spoke, che usano i semilavorati e guardano i report. | Le figure compaiono con l'officina. | S | Implementato |
 | REQ-SCN-13 | L'**ufficio di coordinamento** è la postazione del project management. Appartiene al workload **Project Management** (`WL-PMO`), indipendente dall'architettura. | L'ufficio compare con `WL-PMO`, anche a Data Architecture spenta, e non compare con la sola Data Architecture. | M | Implementato |
 | REQ-SCN-14 | Lo **showroom** è un **edificio a sé, vicino al capannone ma staccato**, collegato al laboratorio prove da una passerella coperta. | Lo showroom è fuori dal capannone; la passerella è visibile e i semilavorati la percorrono. | M | Implementato |
@@ -474,7 +474,7 @@ Un **percorso** mostra come un evento tipico della vita aziendale **attraversa l
 | REQ-UI-09 | Durante il meeting il presentatore può **cambiare dal vivo lo stato** (off/wip/on) di workload, **singoli spoke** e **singole sorgenti**, dal pannello o cliccando sull'elemento; la scena alla fine rappresenta l'as-is di business costruito insieme. | Cambio di stato in ≤ 2 clic, con effetto immediato in scena. | M | Implementato |
 | REQ-UI-10 | Due **modalità**: **esplorazione libera** (navigazione, clic sugli elementi, stati dal vivo, percorsi) e **narrativa** (tutti i workload in ordine, §8). Si passa dall'una all'altra con un pulsante; uscendo dalla narrativa, la scena resta nello stato raggiunto. | Il cambio di modalità non ricarica la scena e non perde lo stato. | M | Approvato |
 | REQ-UI-11 | Nel pannello, i workload con elementi a **stato proprio** (Data Integration → sorgenti, Self-service → spoke) si aprono **a tendina**: ogni sorgente o spoke ha il suo selettore off/cantiere/on, per **accenderli uno alla volta**. | Aprendo la tendina di Data Integration e spegnendo una sorgente, si spegne solo quella. | M | Implementato |
-| REQ-UI-12 | **In alto a destra**, il pannello **Team dati** mostra **un pupazzino per persona** (sagoma uomo/donna), **raggruppati per gruppo** (Integration, Architecture, Visualization, Coordination) con il colore del workload. Il clic su un pupazzino lo **evidenzia in scena** (anello a terra e freccia sopra la testa), inquadra la figura e apre la scheda del gruppo; un secondo clic toglie l'evidenziazione. Le figure non in servizio sono attenuate. | Clic su un pupazzino: figura evidenziata, scheda aperta. | M | Implementato |
+| REQ-UI-12 | **In alto a destra**, il pannello **Team dati** mostra **un pupazzino per persona** (sagoma uomo/donna); sotto ciascuno, il **gruppo in cui sta lavorando in quel momento**, con il colore del workload. Il clic su un pupazzino lo **evidenzia in scena** (anello a terra e freccia sopra la testa), inquadra la figura e apre la scheda del gruppo; un secondo clic toglie l'evidenziazione. Le figure non in servizio sono attenuate. | Clic su un pupazzino: figura evidenziata, scheda aperta; la scritta sotto chi ruota cambia a ogni turno. | M | Implementato |
 
 ---
 
@@ -626,7 +626,7 @@ const CONFIG = {
 | D-33 | Due modalità: **narrativa** (la presentazione: Avanti → tutti i workload in ordine) ed **esplorazione libera** (dal vivo, con stati modificabili e percorsi). | Utente | Confermata |
 | D-34 | Si progetta l'intero modello; **quali capitoli entrano nella presentazione** si decide dopo le prove in esplorazione libera (REQ-NAR-02). | Utente | Confermata |
 | D-35 | Il percorso New project contiene **solo le tappe del viaggio del dato**: sorgente, lavorazione, semilavorato, report. | Utente | Confermata |
-| D-36 | Team dati di default: **5 figure** in quattro gruppi: Integration 2 uomini, Architecture 1 uomo, Visualization 1 donna, Coordination 1 uomo. Ogni figura sta alla postazione del suo gruppo: non c'è rotazione tra postazioni. | Utente (gruppi) · interpretazione (composizione per gruppo, niente rotazione) | Confermata |
+| D-36 | Team dati di default: **5 figure**. 2 uomini di Integration, fissi ai loro compiti; 2 uomini e 1 donna che **ruotano tra le postazioni attive** di Architecture, Visualization e Coordination. | Utente | Confermata |
 | D-37 | Pubblicazione su **GitHub Pages** del solo modello standard; i profili aziendali reali restano in locale, fuori dal repository pubblico. | Utente | Confermata |
 | D-38 | I testi si rivedono in **`TESTI.md`** (Markdown, una chiave per titolo), fonte unica letta dalla build; la pagina pubblica si rigenera da sola con un'azione di GitHub. | Utente (file modificabile su GitHub) · proposta (formato e automazione) | Confermata |
 | D-39 | Lo **showroom è staccato** dal capannone; il **laboratorio prove** entra nel capannone e **ogni semilavorato passa dal collaudo** prima di andare allo showroom e agli spoke. | Utente | Confermata |
@@ -694,6 +694,7 @@ const CONFIG = {
 | RDM-027 | Data Sources come primo workload, poi Data Architecture | Standard · WL, NAR | §5.1, REQ-NAR-02, D-08, D-49 | Approvata |
 | RDM-028 | Sistemare le etichette affollate | Standard · SCN | REQ-SCN-06, D-51 | Approvata |
 | RDM-029 | Team diviso in Data Integration, Data Visualization, Architecture e Project Management; il coordinamento non si accende più con l'architettura | Standard · SCN, WL, UI, CFG | §5.1, §5.2, REQ-SCN-11, REQ-SCN-13, REQ-UI-12, REQ-CFG-03, D-28, D-36, D-50 | Approvata |
+| RDM-030 | Gli omini non di Data Integration ruotano tra i flussi attivi | Standard · SCN, UI | REQ-SCN-11, REQ-UI-12, D-36 | Approvata |
 
 ---
 
@@ -701,4 +702,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.9 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…029 |
+| 1.10 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…030 |

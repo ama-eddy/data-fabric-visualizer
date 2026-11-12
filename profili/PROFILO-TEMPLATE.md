@@ -9,7 +9,7 @@
 | Campo | Valore |
 |---|---|
 | Azienda | |
-| Basato su standard | REQUISITI.md v1.9 |
+| Basato su standard | REQUISITI.md v1.10 |
 
 ---
 
@@ -35,7 +35,7 @@
 ## 3. Team dati (REQ-SCN-11)
 
 > Una figura per ogni persona reale del team, divisa per gruppo. Lasciare vuoto per usare il default (5 figure: 2 + 1 + 1 + 1).
-> Ogni gruppo compare quando il suo workload è acceso.
+> Le persone di Integration restano ai loro compiti; le altre ruotano a turno tra le postazioni dei workload accesi (Architecture, Visualization, Coordination).
 
 | Gruppo | Cosa fa | Uomini | Donne |
 |---|---|---|---|

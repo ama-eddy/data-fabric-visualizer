@@ -102,22 +102,22 @@ window.CONFIG = {
 
   // [REQ-SCN-11] team dati: una figura per persona. m = uomini, f = donne. Sostituito dal profilo, se presente.
   team: {
-    colore: '#1d4ed8', casco: '#facc15',
-    // un gruppo per mestiere: compare quando il suo workload è 'on'. m = uomini, f = donne.
+    colore: '#1d4ed8', casco: '#facc15', turno: 14,   // turno = secondi tra un cambio di postazione e l'altro
+    // un gruppo per mestiere. m = uomini, f = donne. ruota: true = le sue persone ruotano tra le postazioni dei workload accesi [RDM-030]
     gruppi: {
       integration: { m: 2, f: 0, wl: 'INT', breve: 'Integration', nome: 'Team dati — Data Integration', tecnico: 'Data engineer',
         fabbrica: 'Uno costruisce e ripara gli scivoli che portano il materiale dai fornitori al lago; l\'altro, da un pannello di comando, manovra le gru che pescano il materiale dal lago e lo mettono nel magazzino materie prime.',
         perTe: 'Sono le persone che collegano i tuoi sistemi alla fabbrica e controllano che i carichi arrivino ogni giorno.',
         compiti: [{ nome: 'Costruisce e ripara gli scivoli', tipo: 'scivoli', z: -77 }, { nome: 'Manovra le gru dal pannello di comando', tipo: 'pannello', pos: [28.5, -44] }] },
-      architecture: { m: 1, f: 0, wl: 'ARC', breve: 'Architecture', nome: 'Team dati — Data Architecture', tecnico: 'Data architect',
+      architecture: { ruota: true, m: 1, f: 0, wl: 'ARC', breve: 'Architecture', nome: 'Team dati — Data Architecture', tecnico: 'Data architect',
         fabbrica: 'Progetta la fabbrica: dove vanno i reparti, quanta energia serve, come si collegano tra loro. Lavora al tavolo dei progetti accanto al capannone.',
         perTe: 'È la persona che fa in modo che ogni nuova esigenza trovi posto nella fabbrica senza doverla rifare.',
         compiti: [{ nome: 'Al tavolo dei progetti', tipo: 'postazione', pos: [-38, 6], verso: 1.57, tavolo: true }] },
-      visualization: { m: 0, f: 1, wl: 'VIS', breve: 'Visualization', nome: 'Team dati — Data Visualization', tecnico: 'BI developer',
+      visualization: { ruota: true, m: 0, f: 1, wl: 'VIS', breve: 'Visualization', nome: 'Team dati — Data Visualization', tecnico: 'BI developer',
         fabbrica: 'Costruisce nello showroom i report ufficiali, partendo dai semilavorati collaudati.',
         perTe: 'È la persona che trasforma i dati certificati nei report che apri ogni giorno.',
         compiti: [{ nome: 'Nello showroom', tipo: 'postazione', pos: [-48, 37.5], verso: 3.14 }] },
-      coordination: { m: 1, f: 0, wl: 'PMO', breve: 'Coordination', nome: 'Team dati — Project Management', tecnico: 'Project manager',
+      coordination: { ruota: true, m: 1, f: 0, wl: 'PMO', breve: 'Coordination', nome: 'Team dati — Project Management', tecnico: 'Project manager',
         fabbrica: 'Coordina tutti gli operatori della fabbrica: chi fa cosa, in che ordine, entro quando.',
         perTe: 'È la persona che mette in fila le richieste e ti dice quando arriverà ciò che hai chiesto.',
         compiti: [{ nome: "All'ufficio di coordinamento", tipo: 'postazione', pos: [44, 40], verso: 0 }] },

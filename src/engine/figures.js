@@ -22,18 +22,19 @@ export function createFigures(cfg, world, state, flows) {
   const quota = (x, z) => (state.stato.ARC === 'on' && x > cap.x[0] && x < cap.x[1] && z > cap.z[0] && z < cap.z[1] ? cap.pavimento : 0);
   const scivoli = () => cfg.elements.filter((e) => e.tipo === 'trasporto' && (e.modalita === 'copy' || e.modalita === 'dataflow') && state.effettivo(state.elemento(e.id)) !== 'off').map((e) => e.pos[0]);
 
-  /* ===== [REQ-SCN-11] Una figura per persona, divisa per gruppo: Integration, Architecture, Visualization, Coordination ===== */
+  /* ===== [REQ-SCN-11] Una figura per persona. Integration ai suoi compiti; gli altri ruotano tra le postazioni dei workload accesi ===== */
   const tutte = [];
+  const tavolo = (comp) => {                                           // tavolo dei progetti dell'architettura
+    const t = new THREE.Group(); t.position.set(comp.pos[0] - 1.8, 0, comp.pos[1]); t.visible = false; world.scene.add(t);
+    box(t, 1.6, 0.12, 2.6, mat('#e2e8f0'), 0, 1.3, 0).rotation.z = 0.25; for (const z of [-1, 1]) box(t, 0.12, 1.3, 0.12, mat('#64748b'), 0, 0, z);
+    box(t, 1.2, 0.03, 2, mat('#3b82f6'), 0.02, 1.4, 0).rotation.z = 0.25; comp.oggetto = t;
+  };
   for (const [gruppo, G] of Object.entries(T.gruppi)) elenco(G).forEach((sesso, i) => {
-    const o = figura(T.colore, sesso, T.casco); o.traverse((m) => { m.userData.el = 'team:' + gruppo; }); o.visible = false; world.scene.add(o); world.pickables.push(o);
+    const o = figura(T.colore, sesso, T.casco); o.traverse((m) => { m.userData.el = 'team:' + gruppo; });
+    if (G.ruota && G.compiti[0].tavolo && !G.compiti[0].oggetto) tavolo(G.compiti[0]); o.visible = false; world.scene.add(o); world.pickables.push(o);
     const comp = G.compiti[i % G.compiti.length], n = Math.floor(i / G.compiti.length);
     const attrezzo = box(o, 0.15, 0.9, 0.15, mat('#78350f'), 0.55, 0.9, 0.25); attrezzo.rotation.x = 0.6; attrezzo.visible = comp.tipo !== 'postazione';
-    if (comp.tavolo) {                                                 // tavolo dei progetti dell'architetto
-      const t = new THREE.Group(); t.position.set(comp.pos[0] - 1.8, 0, comp.pos[1]); t.visible = false; world.scene.add(t);
-      box(t, 1.6, 0.12, 2.6, mat('#e2e8f0'), 0, 1.3, 0).rotation.z = 0.25; for (const z of [-1, 1]) box(t, 0.12, 1.3, 0.12, mat('#64748b'), 0, 0, z);
-      box(t, 1.2, 0.03, 2, mat('#3b82f6'), 0.02, 1.4, 0).rotation.z = 0.25; comp.oggetto = t;
-    }
-    tutte.push({ o, sesso, gruppo, wl: G.wl, compito: comp.nome, tipo: comp.tipo, comp, n, attrezzo, pos: null, meta: 0, sosta: 0 });
+    tutte.push({ o, sesso, gruppo, ruota: !!G.ruota, wl: G.wl, compito: comp.nome, tipo: comp.tipo, comp, n, attrezzo, pos: null, verso: null, da: null, k: 1, meta: 0, sosta: 0 });
   });
 
   /* [REQ-UI-12] evidenziazione: anello a terra e freccia sopra la testa, seguono la figura */
@@ -44,11 +45,30 @@ export function createFigures(cfg, world, state, flows) {
   let scelta = -1;
   const evidenzia = (i) => { scelta = scelta === i ? -1 : i; return scelta === i; };
   const descrizione = (f) => f.compito + ' · ' + T.gruppi[f.gruppo].nome;
+  const rotanti = Object.entries(T.gruppi).filter(([, G]) => G.ruota);
+  let turno = 0, tTurno = 0;
 
   function update(dt, t) {
+    /* [RDM-030] rotazione: ogni `turno` secondi chi ruota passa alla postazione successiva tra quelle dei workload accesi */
+    tTurno += dt; if (tTurno > T.turno) { tTurno = 0; turno++; }
+    const attive = rotanti.filter(([, G]) => state.stato[G.wl] === 'on');
+    for (const [, G] of rotanti) if (G.compiti[0].oggetto) G.compiti[0].oggetto.visible = state.stato[G.wl] === 'on';
+    let ir = 0;
     for (const f of tutte) {
+      if (f.ruota) {
+        const i = ir++; f.o.visible = attive.length > 0; if (!attive.length) { f.pos = null; continue; }
+        const [g, G] = attive[(i + turno) % attive.length], comp = G.compiti[0], quanti = Math.floor(i / attive.length);
+        if (f.gruppo !== g) { f.gruppo = g; f.wl = G.wl; f.compito = comp.nome; f.o.traverse((m) => { m.userData.el = 'team:' + g; }); }
+        const meta = new THREE.Vector3(comp.pos[0] + quanti * 1.8, 0, comp.pos[1] + quanti * 1.4);
+        if (!f.pos) { f.pos = meta.clone(); f.verso = meta; f.k = 1; }
+        if (!f.verso.equals(meta)) { f.da = f.pos.clone(); f.verso = meta; f.k = 0; }
+        if (f.k < 1) { f.k = Math.min(1, f.k + (dt * 11) / Math.max(1, f.da.distanceTo(f.verso))); f.pos.lerpVectors(f.da, f.verso, f.k); f.o.rotation.y = Math.atan2(f.verso.x - f.da.x, f.verso.z - f.da.z); }
+        else f.o.rotation.y = (comp.verso || 0) + Math.sin(t * 0.6 + i) * 0.35;
+        f.o.position.set(f.pos.x, quota(f.pos.x, f.pos.z) + (f.k < 1 ? Math.abs(Math.sin(t * 9)) * 0.12 : 0), f.pos.z);
+        continue;
+      }
       const on = state.stato[f.wl] === 'on', lavora = flows.lavora(f.wl);
-      f.o.visible = on; if (f.comp.oggetto) f.comp.oggetto.visible = on; if (!on) continue;
+      f.o.visible = on; if (!on) continue;
       if (f.tipo === 'postazione') {                                   // alla propria postazione
         const p = f.comp.pos, x = p[0] + f.n * 1.8, z = p[1] + f.n * 1.2;
         f.o.position.set(x, quota(x, z), z); f.o.rotation.y = (f.comp.verso || 0) + Math.sin(t * 0.6 + f.n) * 0.35;

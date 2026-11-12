@@ -130,15 +130,18 @@ export function createUI(cfg, world, state) {
     figure = fig; const box = $('team');
     box.append(h('h2', { textContent: ui.team }));
     const riga = h('div', { className: 'pupazzi' }); box.append(riga);
-    const gruppi = {};
-    fig.tutte.forEach((f, i) => {
-      if (!gruppi[f.gruppo]) { const G = cfg.team.gruppi[f.gruppo], c = h('div', { className: 'gruppo' }, h('div', { className: 'riga' }), h('small', { textContent: G.breve })); c.style.borderColor = cfg.workloads[G.wl].colore; riga.append(c); gruppi[f.gruppo] = c.firstChild; }
+    fig.tutte.forEach((f, i) => {                          // un riquadro per persona: sotto, il gruppo in cui sta lavorando ora
       const b = h('button', { className: 'pupazzo' }); b.dataset.i = i;
       b.innerHTML = `<svg viewBox="0 0 20 30" width="18" height="27"><circle cx="10" cy="6" r="4.6" fill="#f1c9a5"/><path d="${f.sesso === 'f' ? 'M10 11 L17 27 L3 27 Z' : 'M5 11 h10 v11 h-10 Z M6 22 h3 v6 h-3 Z M11 22 h3 v6 h-3 Z'}" fill="${cfg.team.colore}"/><path d="M5.2 5.5 a4.8 4.8 0 0 1 9.6 0 Z" fill="${f.sesso === 'f' ? '#78350f' : cfg.team.casco}"/></svg>`;
       b.onclick = () => { const on = fig.evidenzia(i); document.querySelectorAll('.pupazzo').forEach((x) => x.classList.toggle('sel', on && x === b)); if (on) { world.frame([[f.o.position.x, f.o.position.z]], 6); mostraElemento('team:' + f.gruppo); } };
-      gruppi[f.gruppo].append(b);
+      const c = h('div', { className: 'gruppo' }, h('div', { className: 'riga' }, b), h('small')); c.dataset.i = i; riga.append(c);
     });
-    setInterval(() => document.querySelectorAll('.pupazzo').forEach((b) => { const f = fig.tutte[+b.dataset.i]; b.classList.toggle('off', !f.o.visible); b.title = f.o.visible ? fig.descrizione(f) : ui.fuoriServizio; }), 500);
+    const aggiorna = () => document.querySelectorAll('#team .gruppo').forEach((c) => {
+      const f = fig.tutte[+c.dataset.i], G = cfg.team.gruppi[f.gruppo], b = c.querySelector('.pupazzo');
+      c.style.borderColor = cfg.workloads[G.wl].colore; c.querySelector('small').textContent = G.breve;
+      b.classList.toggle('off', !f.o.visible); b.title = f.o.visible ? fig.descrizione(f) : ui.fuoriServizio;
+    });
+    aggiorna(); setInterval(aggiorna, 500);
   }
 
   /* ===== [REQ-SCN-06, RDM-028] Etichette senza sovrapposizioni: vince la più importante, poi la più vicina; le altre si nascondono =====

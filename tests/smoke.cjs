@@ -94,13 +94,16 @@ const path = require('path'), fs = require('fs');
   await shot('9-spoke', 2500);
   check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'officina' && r.on.visible).length) === 5, '5 officine visibili');
   let f = await page.evaluate(() => fabbrica.figures.conta());
-  check(f.integration === 2 && f.architecture === 1 && f.visualization === 1 && f.coordination === 1 && f.totale === 5, 'team dati: 2 integration, 1 architecture, 1 visualization, 1 coordination: ' + JSON.stringify(f));
+  check(f.integration === 2 && f.architecture + f.visualization + f.coordination === 3 && f.totale === 5, 'team dati: 2 integration e 3 a rotazione tra le postazioni attive: ' + JSON.stringify(f));
   await page.evaluate(() => fabbrica.state.set('ACC', 'off')); await page.waitForTimeout(400);       // [REQ-WL-06] SSR dipende dagli Accessi
   check(await page.evaluate(() => !fabbrica.flows.routes.some((r) => r.tipo === 'furgone' && r.items.length)), 'senza Accessi i furgoni si fermano');
   await page.evaluate(() => { fabbrica.state.set('ACC', 'on'); fabbrica.state.set('VIS', 'off'); fabbrica.state.set('PMO', 'off'); });
   await page.waitForTimeout(300);
   f = await page.evaluate(() => fabbrica.figures.conta());
-  check(f.visualization === 0 && f.coordination === 0 && f.architecture === 1 && await page.evaluate(() => fabbrica.state.effettivo(fabbrica.state.elemento('coordinamento')) === 'off' && fabbrica.state.stato.ARC === 'on'), 'ogni gruppo segue il suo workload; il coordinamento non dipende più dall\'architettura: ' + JSON.stringify(f));
+  check(f.visualization === 0 && f.coordination === 0 && f.architecture === 3 && await page.evaluate(() => fabbrica.state.effettivo(fabbrica.state.elemento('coordinamento')) === 'off' && fabbrica.state.stato.ARC === 'on'), 'chi ruota va solo alle postazioni dei workload accesi; il coordinamento non dipende più dall\'architettura: ' + JSON.stringify(f));
+  await page.evaluate(() => fabbrica.state.setTutti('on'));
+  const g0 = await page.evaluate(() => fabbrica.figures.tutte.filter((x) => x.ruota).map((x) => x.gruppo).join());
+  check(await page.waitForFunction((g) => fabbrica.figures.tutte.filter((x) => x.ruota).map((x) => x.gruppo).join() !== g, g0, { timeout: 40000 }).then(() => true, () => false), 'rotazione: le postazioni cambiano a ogni turno');
   await page.evaluate(() => { fabbrica.state.setTutti('on'); fabbrica.ui.mostraElemento('team:visualization'); fabbrica.world.flyTo([-30, 30, 78], [-22, 3, 40]); });
   await shot('10-team-e-showroom', 3500);
   check((await page.locator('#info h3').textContent()).startsWith('Team dati'), 'scheda del team dati');
