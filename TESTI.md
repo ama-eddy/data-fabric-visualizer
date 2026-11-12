@@ -3,6 +3,7 @@
 > **Come si usa.** Ogni testo ha un titolo con la sua chiave (`### chiave`): si cambia **solo il testo sotto il titolo**, mai la chiave.
 > Il testo può andare a capo liberamente: viene unito in un'unica riga. Niente apici o caratteri speciali da rispettare.
 > Si modifica anche da GitHub nel browser (matita in alto a destra): al salvataggio la pagina pubblica si aggiorna da sola in un paio di minuti.
+> **Nome tecnico**: le chiavi che finiscono con `.tecnico` sono la riga "In Fabric" della scheda: qui (e solo qui) vanno i termini tecnici.
 > **Lessico** (REQUISITI §1.2): ammessi report, Power BI, dato certificato, Bronze / Silver / Gold. Gli altri termini tecnici (Lakehouse, pipeline, modello semantico…) vanno tradotti: se ne compare uno, la pagina **non** viene aggiornata e l'azione su GitHub diventa rossa indicando dove.
 > Le parole del profilo di un'azienda (nomi degli spoke, delle sorgenti, contatto) non stanno qui: stanno nel profilo.
 
@@ -88,6 +89,9 @@ Trascina per ruotare · rotellina per lo zoom · tasto destro o WASD per spostar
 ### ui.chiudi
 Chiudi
 
+### ui.tecnico
+In Fabric
+
 ### ui.legenda
 Legenda
 
@@ -126,7 +130,10 @@ Il punto di contatto del team dati
 ## Workload: schede
 
 ### workloads.ARC.nome
-Architettura
+Data Architecture
+
+### workloads.ARC.tecnico
+Fabric capacity · OneLake · workspace
 
 ### workloads.ARC.fabbrica
 Il terreno, le fondamenta e il capannone: lo spazio in cui tutto il resto viene costruito, con la centrale che dà energia e il lago dei dati, unico, tra i fornitori e la fabbrica.
@@ -137,6 +144,9 @@ Il terreno, le fondamenta e il capannone: lo spazio in cui tutto il resto viene 
 ### workloads.ACC.nome
 Accessi
 
+### workloads.ACC.tecnico
+Microsoft Entra ID · ruoli di workspace · permessi sugli item
+
 ### workloads.ACC.fabbrica
 Cancelli, tornelli e badge: si entra solo se autorizzati, e ognuno va solo nei reparti che gli servono.
 
@@ -145,6 +155,9 @@ Decidi tu chi della tua funzione entra e cosa può fare. Chiedere un accesso è 
 
 ### workloads.SEC.nome
 Security
+
+### workloads.SEC.tecnico
+RLS / OLS · sensitivity label · OneLake security
 
 ### workloads.SEC.fabbrica
 Recinzione, telecamere, caveau e sigilli sui pacchi: proteggono il materiale prezioso.
@@ -155,6 +168,9 @@ I dati riservati li vede solo chi deve: le regole su chi vede cosa viaggiano ins
 ### workloads.SRC.nome
 Data Sources
 
+### workloads.SRC.tecnico
+Sistemi sorgente · on-premises data gateway
+
 ### workloads.SRC.fabbrica
 L'area dei fornitori: i sistemi dell'azienda da cui parte il materiale grezzo. Ogni tipo di software ha un edificio diverso, e si possono accendere uno alla volta.
 
@@ -163,6 +179,9 @@ Sono i sistemi che usi ogni giorno: gestionale, CRM, fogli di calcolo. Esistono 
 
 ### workloads.INT.nome
 Data Integration
+
+### workloads.INT.tecnico
+Data Factory: Data pipeline, Copy job, Dataflow Gen2, Shortcut
 
 ### workloads.INT.fabbrica
 I fornitori fanno arrivare il materiale nel lago dei dati con scivoli e scialuppe; il team dati lo pesca e lo porta nel magazzino materie prime (Bronze), dove viene conservato così com'è.
@@ -173,6 +192,9 @@ I dati dei sistemi che usi ogni giorno arrivano qui da soli, a orari stabiliti: 
 ### workloads.TRF.nome
 Data Transformation
 
+### workloads.TRF.tecnico
+Warehouse Silver e Gold · Semantic model
+
 ### workloads.TRF.fabbrica
 Il materiale viene pulito e controllato (Silver), assemblato in componenti (Gold) e confezionato in semilavorati con il marchio di qualità.
 
@@ -181,6 +203,9 @@ Ricevi dati già puliti e con i calcoli già pronti: non devi più sistemarli a 
 
 ### workloads.VIS.nome
 Data Visualization
+
+### workloads.VIS.tecnico
+Power BI: report e app istituzionali
 
 ### workloads.VIS.fabbrica
 Lo showroom: i prodotti finiti ufficiali dell'azienda, uguali per tutti.
@@ -191,6 +216,9 @@ Sono i report ufficiali, in Power BI: gli stessi numeri per tutta l'azienda, da 
 ### workloads.SSR.nome
 Self-service (spoke)
 
+### workloads.SSR.tecnico
+Workspace di dominio · report self-service · composite model
+
 ### workloads.SSR.fabbrica
 Le officine delle funzioni: ricevono i semilavorati e li personalizzano, aggiungendo se serve il proprio materiale.
 
@@ -199,6 +227,9 @@ Le officine delle funzioni: ricevono i semilavorati e li personalizzano, aggiung
 
 ### workloads.GOV.nome
 Data Governance
+
+### workloads.GOV.tecnico
+Microsoft Purview · domini · endorsement · Monitoring hub
 
 ### workloads.GOV.fabbrica
 La torre di controllo e la sala controllo: fissano le regole comuni, sorvegliano che ogni reparto lavori e mettono il marchio di qualità sui prodotti controllati. Qui c'è anche lo sportello a cui rivolgersi.
@@ -209,6 +240,9 @@ Quando vedi il marchio "dato certificato" sai che quel numero è lo stesso per t
 ### workloads.FIN.nome
 Monitoraggio costi
 
+### workloads.FIN.tecnico
+Capacity Metrics app · chargeback
+
 ### workloads.FIN.fabbrica
 I contatori della centrale: misurano quanta energia consuma ogni reparto e ogni officina.
 
@@ -218,6 +252,9 @@ La fabbrica ha un costo, e si può vedere quanto consuma ogni funzione: aiuta a 
 ### workloads.RTI.nome
 Real-Time
 
+### workloads.RTI.tecnico
+Real-Time Intelligence: Eventstream, Eventhouse, Activator
+
 ### workloads.RTI.fabbrica
 La sala sensori: lavora il materiale in diretta, nel momento in cui arriva, senza passare dal magazzino.
 
@@ -226,6 +263,9 @@ Serve quando non puoi aspettare domani: vedere cosa succede adesso e ricevere un
 
 ### workloads.KNW.nome
 Knowledge
+
+### workloads.KNW.tecnico
+Ontology (Fabric IQ)
 
 ### workloads.KNW.fabbrica
 L'ufficio tecnico e l'archivio dei progetti: la mappa di cosa sono le cose dell'azienda e di come sono collegate.
@@ -238,6 +278,9 @@ Mette tutti d'accordo sul significato delle parole ("cliente", "ordine", "margin
 ### elements.capannone.nome
 Capannone dell'hub
 
+### elements.capannone.tecnico
+Tenant · workspace dell'hub
+
 ### elements.capannone.fabbrica
 Fondamenta, pavimento e struttura del capannone. Dentro prenderanno posto i reparti.
 
@@ -246,6 +289,9 @@ Fondamenta, pavimento e struttura del capannone. Dentro prenderanno posto i repa
 
 ### elements.lago.nome
 Lago dei dati
+
+### elements.lago.tecnico
+OneLake (Landing: file in un Lakehouse)
 
 ### elements.lago.fabbrica
 Il lago dei dati: un'unica riserva tra i fornitori e la fabbrica. Il materiale di tutti i fornitori arriva qui così com'è, prima di essere pescato e portato nel magazzino.
@@ -256,6 +302,9 @@ Un solo posto dove arrivano i dati di tutti i sistemi: niente copie sparse, e si
 ### elements.centrale.nome
 Centrale elettrica
 
+### elements.centrale.tecnico
+Fabric capacity
+
 ### elements.centrale.fabbrica
 La centrale dà energia a tutti i reparti. Se un reparto ne consuma troppa, gli altri rallentano.
 
@@ -264,6 +313,9 @@ L'energia della fabbrica ha un costo ed è condivisa: per questo si pianifica ch
 
 ### elements.laboratorio.nome
 Laboratorio prove
+
+### elements.laboratorio.tecnico
+Workspace Dev e Test · deployment pipeline
 
 ### elements.laboratorio.fabbrica
 Il laboratorio prove: ogni semilavorato viene collaudato qui prima di uscire dalla fabbrica, e ogni modifica si prova qui prima di entrare in produzione.
@@ -274,6 +326,9 @@ Quello che ricevi è già stato provato. E quando chiedi una modifica, la provi 
 ### elements.fornitori.nome
 Area fornitori
 
+### elements.fornitori.tecnico
+Sistemi sorgente
+
 ### elements.fornitori.fabbrica
 L'area dei fornitori: i sistemi dell'azienda da cui parte il materiale grezzo. Ogni tipo di fornitore ha un edificio diverso.
 
@@ -282,6 +337,9 @@ Sono i sistemi che usi ogni giorno: gestionale, CRM, fogli di calcolo. Tu contin
 
 ### elements.pontile.nome
 Pontile di pesca
+
+### elements.pontile.tecnico
+Data pipeline di caricamento nel Bronze
 
 ### elements.pontile.fabbrica
 Il pontile sulla riva del lago: da un pannello di comando il team dati manovra le gru, che pescano il materiale arrivato dai fornitori e lo mettono sui nastri verso il magazzino materie prime.
@@ -292,6 +350,9 @@ Il pontile sulla riva del lago: da un pannello di comando il team dati manovra l
 ### elements.bronze.nome
 Magazzino materie prime (Bronze)
 
+### elements.bronze.tecnico
+Warehouse Bronze
+
 ### elements.bronze.fabbrica
 Il magazzino materie prime: il materiale viene messo a scaffale con l'etichetta di arrivo e conservato, ancora grezzo.
 
@@ -300,6 +361,9 @@ Tutto ciò che arriva resta conservato con la sua data: si può sempre tornare a
 
 ### elements.silver.nome
 Reparto lavorazione (Silver)
+
+### elements.silver.tecnico
+Warehouse Silver
 
 ### elements.silver.fabbrica
 Il reparto lavorazione: il materiale viene pulito, controllato e portato a misura. Qui nasce la qualità.
@@ -310,6 +374,9 @@ Doppioni, errori di battitura, codici diversi per la stessa cosa: vengono sistem
 ### elements.gold.nome
 Linea di assemblaggio (Gold)
 
+### elements.gold.tecnico
+Warehouse Gold (modello a stella)
+
 ### elements.gold.fabbrica
 La linea di assemblaggio: i pezzi puliti vengono montati in componenti pensati per il business (vendite, clienti, costi).
 
@@ -318,6 +385,9 @@ I dati di sistemi diversi vengono messi insieme: finalmente il cliente del CRM e
 
 ### elements.confezionamento.nome
 Confezionamento semilavorati
+
+### elements.confezionamento.tecnico
+Semantic model
 
 ### elements.confezionamento.fabbrica
 Il confezionamento: i componenti diventano semilavorati, con le istruzioni dentro e il marchio di qualità sopra.
@@ -328,6 +398,9 @@ Il semilavorato è un dato certificato, con i calcoli già pronti: lo stesso per
 ### elements.spedizioni.nome
 Spedizioni
 
+### elements.spedizioni.tecnico
+Condivisione dei Semantic model (permesso Build)
+
 ### elements.spedizioni.fabbrica
 Il reparto spedizioni: da qui i semilavorati collaudati partono verso le officine delle funzioni.
 
@@ -336,6 +409,9 @@ Il reparto spedizioni: da qui i semilavorati collaudati partono verso le officin
 
 ### elements.showroom.nome
 Showroom
+
+### elements.showroom.tecnico
+Report e app Power BI
 
 ### elements.showroom.fabbrica
 Lo showroom dell'hub, accanto alla fabbrica: i prodotti finiti ufficiali, costruiti dal team dati sui semilavorati collaudati e uguali per tutta l'azienda.
@@ -346,6 +422,9 @@ Sono i report ufficiali, in Power BI: li apri e leggi il numero, senza costruire
 ### elements.coordinamento.nome
 Ufficio di coordinamento
 
+### elements.coordinamento.tecnico
+Project management del team dati
+
 ### elements.coordinamento.fabbrica
 L'ufficio da cui si coordinano tutti gli operatori della fabbrica: chi fa cosa, in che ordine, entro quando.
 
@@ -354,6 +433,9 @@ Quando chiedi qualcosa, è qui che la richiesta trova posto nel piano di lavoro 
 
 ### elements.cancelli.nome
 Cancelli e tornelli
+
+### elements.cancelli.tecnico
+Microsoft Entra ID · ruoli e permessi
 
 ### elements.cancelli.fabbrica
 Il cancello, i tornelli e il lettore di badge: si entra solo se autorizzati, e ognuno raggiunge solo i reparti che gli servono.
@@ -364,6 +446,9 @@ Per far entrare una persona della tua funzione si chiede un badge: decidi tu chi
 ### elements.recinzione.nome
 Recinzione e telecamere
 
+### elements.recinzione.tecnico
+Sicurezza di rete · audit degli accessi
+
 ### elements.recinzione.fabbrica
 La recinzione attorno alla fabbrica e le telecamere: tengono fuori chi non deve entrare e registrano chi passa.
 
@@ -372,6 +457,9 @@ I dati della tua funzione sono protetti come quelli di tutte le altre: si sa sem
 
 ### elements.caveau.nome
 Caveau
+
+### elements.caveau.tecnico
+RLS / OLS · sensitivity label
 
 ### elements.caveau.fabbrica
 Il caveau: il materiale più delicato sta qui, sotto chiave.
@@ -382,6 +470,9 @@ I dati riservati (stipendi, dati personali) li vede solo chi deve: le regole su 
 ### elements.torre.nome
 Torre di controllo
 
+### elements.torre.tecnico
+Microsoft Purview · domini · endorsement (certificazione)
+
 ### elements.torre.fabbrica
 La torre di controllo: da qui si governa la fabbrica, si fissano le regole comuni e si mette il marchio di qualità sui prodotti controllati.
 
@@ -390,6 +481,9 @@ Il marchio "dato certificato" nasce qui: quando lo vedi, quel numero è lo stess
 
 ### elements.sportello.nome
 Sportello dell'hub
+
+### elements.sportello.tecnico
+Center of Excellence (CoE)
 
 ### elements.sportello.fabbrica
 Lo sportello dell'hub: il punto in cui le funzioni incontrano il team dati per chiedere, segnalare un problema o entrare nella fabbrica.
@@ -400,6 +494,9 @@ Non devi sapere a quale reparto rivolgerti: vieni qui, e la tua richiesta arriva
 ### elements.salacontrollo.nome
 Sala controllo
 
+### elements.salacontrollo.tecnico
+Monitoring hub · alert
+
 ### elements.salacontrollo.fabbrica
 La sala controllo: una spia per ogni reparto. Verde se lavora, gialla se è in costruzione, rossa se è fermo.
 
@@ -408,6 +505,9 @@ Se un caricamento salta, il team dati lo vede qui prima che tu apra il report: s
 
 ### elements.contatori.nome
 Contatori della centrale
+
+### elements.contatori.tecnico
+Capacity Metrics app
 
 ### elements.contatori.fabbrica
 I contatori della centrale: più reparti lavorano, più energia si consuma. Qui si vede quanto consuma ciascuno.
@@ -418,33 +518,60 @@ Anche la tua officina ha il suo contatore: sapere quanto consuma aiuta a decider
 ### elements.sensori.nome
 Sala sensori
 
+### elements.sensori.tecnico
+Eventstream · Eventhouse · Activator
+
 ### elements.archivio.nome
 Ufficio tecnico e archivio
+
+### elements.archivio.tecnico
+Ontology (Fabric IQ)
 
 ## Legenda: materiali
 
 ### materiali.grezzo.nome
 Grezzo
 
+### materiali.grezzo.tecnico
+Dati grezzi (file in OneLake)
+
 ### materiali.bronze.nome
 Bronze — conservato
+
+### materiali.bronze.tecnico
+Layer Bronze
 
 ### materiali.silver.nome
 Silver — pulito
 
+### materiali.silver.tecnico
+Layer Silver
+
 ### materiali.gold.nome
 Gold — assemblato
+
+### materiali.gold.tecnico
+Layer Gold
 
 ### materiali.semilavorato.nome
 Semilavorato certificato
 
+### materiali.semilavorato.tecnico
+Semantic model certificato
+
 ### materiali.report.nome
 Report — prodotto finito
+
+### materiali.report.tecnico
+Report Power BI
 
 ## Legenda e schede: mezzi di trasporto
 
 ### modalita.copy.nome
 Scivolo
+
+### modalita.copy.tecnico
+Data pipeline / Copy job
 
 ### modalita.copy.testo
 A orari stabiliti il materiale scivola dal fornitore nel lago dei dati; da lì il team dati lo pesca e lo porta nel magazzino.
@@ -452,17 +579,26 @@ A orari stabiliti il materiale scivola dal fornitore nel lago dei dati; da lì i
 ### modalita.dataflow.nome
 Scialuppa
 
+### modalita.dataflow.tecnico
+Dataflow Gen2
+
 ### modalita.dataflow.testo
 Il materiale scende su una scialuppa che lo sistema un po' già durante il viaggio, attraversa il lago e lo lascia al pontile.
 
 ### modalita.shortcut.nome
 Ponte di vetro
 
+### modalita.shortcut.tecnico
+Shortcut di OneLake
+
 ### modalita.shortcut.testo
 Il materiale non si sposta: resta dal fornitore, e attraverso un ponte di vetro compare nel lago senza essere copiato. Da lì il team dati lo recupera come il resto.
 
 ### modalita.streaming.nome
 Nastro veloce
+
+### modalita.streaming.tecnico
+Eventstream
 
 ### modalita.streaming.testo
 Il materiale arriva in diretta, un pezzo dopo l'altro, alla sala sensori: funziona solo quando il Real-Time è attivo.
@@ -471,6 +607,9 @@ Il materiale arriva in diretta, un pezzo dopo l'altro, alla sala sensori: funzio
 
 ### categorie.erp.nome
 ERP
+
+### categorie.erp.tecnico
+Enterprise Resource Planning
 
 ### categorie.erp.fabbrica
 Un grande stabilimento: il fornitore principale, con tanto materiale ben organizzato.
@@ -481,6 +620,9 @@ Un grande stabilimento: il fornitore principale, con tanto materiale ben organiz
 ### categorie.crm.nome
 CRM
 
+### categorie.crm.tecnico
+Customer Relationship Management
+
 ### categorie.crm.fabbrica
 Un negozio: qui nasce tutto ciò che riguarda il rapporto con i clienti.
 
@@ -489,6 +631,9 @@ Un negozio: qui nasce tutto ciò che riguarda il rapporto con i clienti.
 
 ### categorie.pim.nome
 PIM
+
+### categorie.pim.tecnico
+Product Information Management
 
 ### categorie.pim.fabbrica
 La sala cataloghi: schede ordinate di ogni prodotto, con codici, descrizioni e immagini.
@@ -499,6 +644,9 @@ La sala cataloghi: schede ordinate di ogni prodotto, con codici, descrizioni e i
 ### categorie.hr.nome
 HR
 
+### categorie.hr.tecnico
+Human Capital Management
+
 ### categorie.hr.fabbrica
 Una palazzina di uffici: le informazioni sulle persone dell'azienda.
 
@@ -507,6 +655,9 @@ Una palazzina di uffici: le informazioni sulle persone dell'azienda.
 
 ### categorie.mes.nome
 Produzione e magazzino
+
+### categorie.mes.tecnico
+MES / WMS
 
 ### categorie.mes.fabbrica
 Dei silos: materiale già stoccato in modo ordinato, pronto da prelevare.
@@ -517,6 +668,9 @@ Sono i sistemi della produzione e del magazzino: giacenze, lotti, avanzamento de
 ### categorie.ecommerce.nome
 E-commerce
 
+### categorie.ecommerce.tecnico
+Piattaforma e-commerce
+
 ### categorie.ecommerce.fabbrica
 Un centro pacchi: ordini che arrivano dal negozio online, uno dopo l'altro.
 
@@ -525,6 +679,9 @@ Un centro pacchi: ordini che arrivano dal negozio online, uno dopo l'altro.
 
 ### categorie.marketing.nome
 Marketing
+
+### categorie.marketing.tecnico
+Marketing automation (API)
 
 ### categorie.marketing.fabbrica
 Uno sportello: si chiede e si riceve, un pezzo alla volta.
@@ -535,6 +692,9 @@ Sono i servizi di marketing a cui l'azienda è abbonata: campagne, newsletter, s
 ### categorie.excel.nome
 Fogli di calcolo
 
+### categorie.excel.tecnico
+File Excel / CSV
+
 ### categorie.excel.fabbrica
 Un archivio di scatoloni: materiale sfuso, preparato a mano.
 
@@ -543,6 +703,9 @@ Sono i fogli di calcolo che oggi qualcuno compila e si passa a mano: budget, pre
 
 ### categorie.iot.nome
 Sensori
+
+### categorie.iot.tecnico
+Dispositivi IoT
 
 ### categorie.iot.fabbrica
 Un campo di sensori: il materiale arriva in continuazione, senza pause.
@@ -553,6 +716,9 @@ Sono macchine e sensori che mandano segnali in ogni momento.
 ### categorie.esterni.nome
 Dati esterni
 
+### categorie.esterni.tecnico
+Dati esterni / open data
+
 ### categorie.esterni.fabbrica
 Un mercato: materiale che viene da fuori, acquistato o pubblico.
 
@@ -561,6 +727,9 @@ Sono dati di mercato o dati pubblici che arricchiscono quelli dell'azienda.
 
 ### categorie.datalake.nome
 Data lake esistente
+
+### categorie.datalake.tecnico
+Data lake esterno (ADLS, S3)
 
 ### categorie.datalake.fabbrica
 Un deposito di container: grandi quantità di materiale già raccolto altrove.
@@ -614,6 +783,9 @@ Semilavorato + dati tuoi = prodotto su misura: parti da dati certificati, aggiun
 ### spoke.gestoreTesto
 I report e i dati locali sono della funzione. Il dato di base, dentro il semilavorato, resta del team dati: per questo è uguale per tutti.
 
+### spoke.tecnico
+Workspace di dominio · composite model
+
 ## Spoke standard: nomi
 
 ### spokes.0.nome
@@ -636,6 +808,9 @@ Marketing
 ### team.trasporto.nome
 Team dati — trasporto
 
+### team.trasporto.tecnico
+Data engineer (integrazione)
+
 ### team.trasporto.fabbrica
 Uno costruisce e ripara gli scivoli che portano il materiale dai fornitori al lago; l'altro, da un pannello di comando, manovra le gru che pescano il materiale dal lago e lo mettono nel magazzino materie prime.
 
@@ -650,6 +825,9 @@ Manovra le gru dal pannello di comando
 
 ### team.rotazione.nome
 Team dati — governo, coordinamento e report
+
+### team.rotazione.tecnico
+Data governance · project manager · BI developer
 
 ### team.rotazione.fabbrica
 Si alternano tra tre postazioni: la cabina di controllo (governo della fabbrica), il coordinamento degli operatori e lo showroom, dove nascono i report ufficiali.

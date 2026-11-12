@@ -57,9 +57,9 @@ export function createUI(cfg, world, state) {
 
   /* ===== [REQ-FLW-08, REQ-SRC-03] Legenda dei materiali e dei mezzi di trasporto ===== */
   const leg = $('legenda');
-  const voce = (colore, nome, cls = '') => { const c = h('span', { className: 'chip ' + cls }); c.style.background = colore; return h('div', { className: 'voce' }, c, nome); };
-  leg.append(h('h4', { textContent: ui.materiali }), h('div', { className: 'riga' }, ...Object.values(cfg.materiali).map((m) => voce(m.colore, m.nome))),
-    h('h4', { textContent: ui.mezzi }), h('div', { className: 'riga' }, ...Object.values(cfg.modalita).map((m) => voce(m.colore, m.nome, 'linea'))));
+  const voce = (colore, nome, cls = '', tec = '') => { const c = h('span', { className: 'chip ' + cls }); c.style.background = colore; return h('div', { className: 'voce', title: tec ? ui.tecnico + ': ' + tec : '' }, c, nome); };
+  leg.append(h('h4', { textContent: ui.materiali }), h('div', { className: 'riga' }, ...Object.values(cfg.materiali).map((m) => voce(m.colore, m.nome, '', m.tecnico))),
+    h('h4', { textContent: ui.mezzi }), h('div', { className: 'riga' }, ...Object.values(cfg.modalita).map((m) => voce(m.colore, m.nome, 'linea', m.tecnico))));
   btn(ui.legenda, () => leg.classList.toggle('open'));
 
   /* ===== [REQ-UI-02, REQ-LIT-01, REQ-LIT-02] Scheda: nessuna sezione tecnica ===== */
@@ -70,7 +70,10 @@ export function createUI(cfg, world, state) {
     const x = h('button', { className: 'x', textContent: '×', title: ui.chiudi }); x.onclick = chiudi;
     const b1 = h('span', { className: 'badge', textContent: wl.nome }); b1.style.background = wl.colore;
     const b2 = h('span', { className: 'badge stato', textContent: ui.statoLungo[st] });
-    box.append(x, h('h3', { textContent: titolo }), h('div', { className: 'badges' }, b1, b2));
+    box.append(x, h('h3', { textContent: titolo }));
+    const tec = d.tecnico || (rec ? '' : wl.tecnico);                /* [REQ-UI-02, RDM-026] il nome tecnico: solo qui, mai nel nome */
+    if (tec) box.append(h('div', { className: 'tecnico' }, h('b', { textContent: ui.tecnico + ': ' }), tec));
+    box.append(h('div', { className: 'badges' }, b1, b2));
     const sez = (t, txt) => { if (txt) box.append(h('h4', { textContent: t }), h('p', { textContent: txt })); };
     if (d.categoriaNome) sez(ui.categoria, d.categoriaNome);
     if (rec && rec.proprio !== undefined) {           /* [REQ-UI-09] stato di una singola sorgente o di un singolo spoke, dal vivo */
@@ -87,7 +90,7 @@ export function createUI(cfg, world, state) {
   }
   const nomeDi = (id) => (id.startsWith('team:') ? cfg.team[id.slice(5)].nome : state.elemento(id).el.nome);
   function mostraElemento(id) {
-    if (id.startsWith('team:')) { const t = cfg.team[id.slice(5)]; aperta = () => scheda(t.nome, t.wl, { fabbrica: t.fabbrica, perTe: t.perTe, gestore: 'hub' }); aperta(); return; }   // [REQ-SCN-11] scheda del team dati
+    if (id.startsWith('team:')) { const t = cfg.team[id.slice(5)]; aperta = () => scheda(t.nome, t.wl, { fabbrica: t.fabbrica, perTe: t.perTe, gestore: 'hub', tecnico: t.tecnico }); aperta(); return; }   // [REQ-SCN-11] scheda del team dati
     const r = state.elemento(id); if (!r) return; aperta = () => scheda(r.el.nome, r.el.wl, r.el, r); aperta(); }
   function mostraWorkload(k) { aperta = () => scheda(cfg.workloads[k].nome, k, {}); aperta(); }
   function chiudi() { aperta = null; $('info').classList.remove('open'); }

@@ -13,11 +13,11 @@ export function elementiSorgenti(cfg) {
       /* [REQ-SRC-01] l'edificio del fornitore: appartiene alle Data Sources */
       { id, wl: 'SRC', tipo: 'sorgente', nome: s.nome, categoria: s.categoria, forma: cat.forma, modalita,
         pos: [x, L.z], dim: [10, 10, 7], stato: s.stato || 'on', categoriaNome: cat.nome, etichetta: [0, i % 2 ? 15 : 10.5, 0],
-        fabbrica: cat.fabbrica, perTe: cat.perTe, mezzo: mz.nome + '. ' + mz.testo },
+        fabbrica: cat.fabbrica, perTe: cat.perTe, mezzo: mz.nome + '. ' + mz.testo, tecnico: cat.tecnico + ' · ' + mz.tecnico },
       /* [REQ-SRC-03] il suo trasporto: appartiene alla Data Integration (il nastro veloce al Real-Time) e segue lo stato della sorgente */
       { id: 'tr-' + id, wl: modalita === 'streaming' ? 'RTI' : 'INT', tipo: 'trasporto', segue: id, nome: mz.nome + ' · ' + s.nome, modalita,
         pos: [x, L.z], dim: [10, 10, 7], arrivo: x * 0.4, cantiere: false, senzaEtichetta: true,
-        fabbrica: mz.testo, perTe: cfg.workloads[modalita === 'streaming' ? 'RTI' : 'INT'].perTe },
+        fabbrica: mz.testo, perTe: cfg.workloads[modalita === 'streaming' ? 'RTI' : 'INT'].perTe, tecnico: mz.tecnico },
     ];
   });
 }

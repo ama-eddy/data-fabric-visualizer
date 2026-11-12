@@ -15,6 +15,7 @@ if (!existsSync('TESTI.md')) {
 > **Come si usa.** Ogni testo ha un titolo con la sua chiave (\`### chiave\`): si cambia **solo il testo sotto il titolo**, mai la chiave.
 > Il testo può andare a capo liberamente: viene unito in un'unica riga. Niente apici o caratteri speciali da rispettare.
 > Si modifica anche da GitHub nel browser (matita in alto a destra): al salvataggio la pagina pubblica si aggiorna da sola in un paio di minuti.
+> **Nome tecnico**: le chiavi che finiscono con \`.tecnico\` sono la riga "In Fabric" della scheda: qui (e solo qui) vanno i termini tecnici.
 > **Lessico** (REQUISITI §1.2): ammessi report, Power BI, dato certificato, Bronze / Silver / Gold. Gli altri termini tecnici (Lakehouse, pipeline, modello semantico…) vanno tradotti: se ne compare uno, la pagina **non** viene aggiornata e l'azione su GitHub diventa rossa indicando dove.
 > Le parole del profilo di un'azienda (nomi degli spoke, delle sorgenti, contatto) non stanno qui: stanno nel profilo.
 `;

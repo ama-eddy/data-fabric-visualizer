@@ -56,7 +56,7 @@ export function elementiSpoke(cfg) {
   const S = cfg.spoke, n = cfg.spokes.length, passo = Math.min(S.passo, S.larghezza / Math.max(n, 1));
   return cfg.spokes.map((s, i) => ({ id: 'spoke-' + i, wl: 'SSR', tipo: 'officina', nome: 'Officina ' + s.nome, stato: s.stato || 'on',
     pos: [(i - (n - 1) / 2) * passo, S.z], dim: [Math.min(15, passo - 3), 11, 6], colore: s.colore || S.colori[i % S.colori.length], indice: i,
-    fabbrica: S.fabbrica, perTe: S.perTe, gestore: 'spoke', gestoreTesto: S.gestoreTesto }));
+    fabbrica: S.fabbrica, perTe: S.perTe, gestore: 'spoke', gestoreTesto: S.gestoreTesto, tecnico: S.tecnico }));
 }
 
 /* ===== [REQ-HS-01, REQ-HS-04, REQ-HS-05, REQ-SCN-12] Officina di uno spoke ===== */
