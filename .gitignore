@@ -6,3 +6,4 @@ profili/*
 !profili/PROFILO-TEMPLATE.md
 src/profile.local.js
 fabbrica-dati.locale.html
+tests/esempio.html

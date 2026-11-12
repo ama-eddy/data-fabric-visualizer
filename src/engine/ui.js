@@ -66,10 +66,13 @@ export function createUI(cfg, world, state) {
     sez(ui.mezzo, d.mezzo);
     sez(ui.perTe, d.perTe || wl.perTe);
     sez(ui.contatto, [cfg.contatto.chi, cfg.contatto.come].filter(Boolean).join(' — '));
-    sez(ui.gestore, ui.gestori[d.gestore || wl.gestore]);
+    sez(ui.gestore, [ui.gestori[d.gestore || wl.gestore], d.gestoreTesto].filter(Boolean).join('. '));
     box.classList.add('open');
   }
-  function mostraElemento(id) { const r = state.elemento(id); if (!r) return; aperta = () => scheda(r.el.nome, r.el.wl, r.el, r); aperta(); }
+  const nomeDi = (id) => (id.startsWith('team:') ? cfg.team[id.slice(5)].nome : state.elemento(id).el.nome);
+  function mostraElemento(id) {
+    if (id.startsWith('team:')) { const t = cfg.team[id.slice(5)]; aperta = () => scheda(t.nome, t.wl, { fabbrica: t.fabbrica, perTe: t.perTe, gestore: 'hub' }); aperta(); return; }   // [REQ-SCN-11] scheda del team dati
+    const r = state.elemento(id); if (!r) return; aperta = () => scheda(r.el.nome, r.el.wl, r.el, r); aperta(); }
   function mostraWorkload(k) { aperta = () => scheda(cfg.workloads[k].nome, k, {}); aperta(); }
   function chiudi() { aperta = null; $('info').classList.remove('open'); }
 
@@ -78,7 +81,7 @@ export function createUI(cfg, world, state) {
   function pick(ev) {
     p.set((ev.clientX / innerWidth) * 2 - 1, -(ev.clientY / innerHeight) * 2 + 1);
     ray.setFromCamera(p, world.camera);
-    for (const hit of ray.intersectObjects(state.recs.map((r) => r.root), true)) {
+    for (const hit of ray.intersectObjects([...state.recs.map((r) => r.root), ...world.pickables], true)) {
       let o = hit.object, vis = true;
       while (o) { if (!o.visible) { vis = false; break; } o = o.parent; }
       if (vis && hit.object.userData.el) return hit.object.userData.el;
@@ -97,7 +100,7 @@ export function createUI(cfg, world, state) {
     if (e.buttons || performance.now() - last < 60) return; last = performance.now();
     const id = pick(e), tip = $('tip');
     canvas.style.cursor = id ? 'pointer' : '';
-    if (id) { tip.textContent = state.elemento(id).el.nome; tip.style.display = 'block'; tip.style.left = e.clientX + 14 + 'px'; tip.style.top = e.clientY + 14 + 'px'; }
+    if (id) { tip.textContent = nomeDi(id); tip.style.display = 'block'; tip.style.left = e.clientX + 14 + 'px'; tip.style.top = e.clientY + 14 + 'px'; }
     else tip.style.display = 'none';
   });
   canvas.addEventListener('pointerleave', () => { $('tip').style.display = 'none'; });

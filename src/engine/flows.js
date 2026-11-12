@@ -20,6 +20,11 @@ export function createFlows(cfg, world) {
     semilavorato() { const g = new THREE.Group(); g.add(new THREE.Mesh(geo.pacco, mat(M.semilavorato.colore, { e: '#0891b2', ei: 0.3 }))); const n = new THREE.Mesh(geo.nastro, mat('#ffffff')); n.position.y = 0.4; g.add(n); return g; },
     impulso: () => new THREE.Mesh(geo.sfera, mat('#e0f2fe', { e: '#38bdf8', ei: 1.4 })),
     camion() { return camion(false); }, officina() { return camion(true); },
+    furgone() {                                                        // [REQ-HS-04] consegna dei semilavorati agli spoke
+      const g = new THREE.Group(); box(g, 1.9, 1.5, 1.5, mat('#f8fafc'), 0, 0.5, 1.7); box(g, 1.7, 0.55, 0.1, mat('#bae6fd'), 0, 1.35, 2.47); box(g, 2, 0.3, 3.4, mat('#374151'), 0, 0.5, -0.8);
+      for (const z of [-1.7, -0.3]) { const p = pezzo.semilavorato(); p.position.set(0, 1.25, z); g.add(p); }
+      for (const z of [-1.8, 1.6]) for (const x of [-0.95, 0.95]) { const w = cyl(g, 0.42, 0.42, 0.3, mat('#111827'), x, 0, z, 10); w.rotation.z = Math.PI / 2; w.position.y = 0.42; }
+      return g; },
   };
   function camion(officina) {
     const g = new THREE.Group(), c = cfg.modalita[officina ? 'dataflow' : 'copy'].colore;
@@ -62,7 +67,7 @@ export function createFlows(cfg, world) {
     addBelt([x, t.z[0]], [x, t.z[1]], t.wl);
     addRoute({ punti: [[x, Y, t.z[0]], [x, Y, t.z[1]]], tipo: t.materiale, dentro: true, attivo: regola(t), t0: Math.abs(x) * 0.03 });
   }
-  { const u = F.uscita; addBelt(u.punti[0], u.punti[1], u.wl);
+  for (const u of F.uscite) { addBelt(u.punti[0], u.punti[1], u.wl);
     addRoute({ punti: u.punti.map(([x, z]) => [x, Y, z]), tipo: u.materiale, dentro: true, attivo: regola(u), ogni: 2.4 }); }
 
   function collega(st) {
@@ -85,7 +90,7 @@ export function createFlows(cfg, world) {
         const it = r.items[i]; it.u += (dt * r.vel) / r.len;
         if (it.u >= 1) { r.parent.remove(it.o); r.items.splice(i, 1); continue; }
         r.path.getPointAt(it.u, it.o.position);
-        if (r.tipo === 'camion' || r.tipo === 'officina') { const tg = r.path.getTangentAt(it.u); it.o.rotation.y = Math.atan2(tg.x, tg.z); }
+        if (r.tipo === 'camion' || r.tipo === 'officina' || r.tipo === 'furgone') { const tg = r.path.getTangentAt(it.u); it.o.rotation.y = Math.atan2(tg.x, tg.z); }
       }
     }
   }

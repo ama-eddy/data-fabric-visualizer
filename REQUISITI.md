@@ -540,17 +540,17 @@ const CONFIG = {
 | REQ-SRC-01…05, 07…09 | WL-INT | `CONFIG.sources` · `CONFIG.categorie` · `CONFIG.modalita` · `src/engine/sources.js` | `npm test` | Implementato |
 | REQ-SRC-06, 10 | WL-RTI, narrativa | `src/engine/sources.js` · `CONFIG.chapters` | — | Approvato |
 | REQ-FLW-04…06 | WL-TRF | `src/engine/reparti.js` (silver, gold, confezionamento) · `CONFIG.flussi` | `npm test` | Implementato |
-| REQ-FLW-07 | WL-VIS, WL-SSR | `CONFIG.routes.toShowroom/toSpokes` | — | Approvato |
+| REQ-FLW-07 | WL-VIS, WL-SSR | `CONFIG.flussi.uscite` · `src/engine/spoke.js` (furgoni) | `npm test` | Implementato |
 | REQ-FLW-08…09 | — | `src/engine/flows.js` · `CONFIG.materiali` · legenda in `src/engine/ui.js` | `npm test` | Implementato |
 | REQ-FLW-10 | WL-RTI | `CONFIG.routes.rti` | — | Approvato |
 | REQ-FLW-11 | WL-KNW | `CONFIG.routes.knw` | — | Approvato |
 | REQ-SCN-01…10 | tutti | `engine/sceneBuilder` · `CONFIG.layout` · `CONFIG.elements` | — | Approvato |
-| REQ-SCN-11…13 | tutti | `engine/figures` · `CONFIG.team` | — | Approvato |
+| REQ-SCN-11…13 | tutti | `src/engine/figures.js` · `src/engine/spoke.js` (ufficio) · `CONFIG.team` | `npm test` | Implementato |
 | REQ-NAR-01…08 | — | `engine/narrator` · `CONFIG.chapters` | — | Approvato |
 | REQ-PER-01…07 | trasversale | `CONFIG.paths` · `engine/pathPlayer` | — | Approvato |
 | REQ-LIT-01…06 | trasversale | `CONFIG.*.forYou` / `contact` · `engine/ui` (benvenuto) | — | Approvato |
 | REQ-UI-01…10 | — | `engine/ui` · `engine/camera` · `engine/modes` | — | Approvato |
-| REQ-HS-01…07 | WL-SSR | `CONFIG.spokes` · `engine/spokeLayout` | — | Approvato |
+| REQ-HS-01…07 | WL-SSR | `CONFIG.spokes` · `CONFIG.spoke` · `src/engine/spoke.js` | `npm test` | Implementato |
 | REQ-CFG-01…07 | — | `src/config.js` · `src/profile.js` · `src/main.js` · `build.mjs` · `.gitignore` | — | Approvato |
 | NFR-01…06 | — | build/packaging | — | Approvato |
 

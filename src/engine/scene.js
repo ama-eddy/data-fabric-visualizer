@@ -92,6 +92,6 @@ export function createScene(cfg, sceneEl, labelsEl) {
     renderer.render(scene, camera); labels.render(scene, camera);
   }
 
-  return { scene, camera, renderer, controls, flyTo, frame, update,
+  return { scene, camera, renderer, controls, flyTo, frame, update, pickables: [],
     home: () => flyTo(home.pos, home.target), setKeyboardMove: (v) => { keyboardMove = v; keys.clear(); } };
 }

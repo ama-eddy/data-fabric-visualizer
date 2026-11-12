@@ -4,6 +4,7 @@ import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { builders, buildCantiere } from './builders.js';
 import './sources.js';
 import './reparti.js';
+import './spoke.js';
 import { mat } from './kit.js';
 import { ease } from './kit.js';
 

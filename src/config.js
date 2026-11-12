@@ -39,6 +39,7 @@ window.CONFIG = {
     silver: { nome: 'Silver — pulito', colore: '#d7dbe2' },
     gold: { nome: 'Gold — assemblato', colore: '#f5c518' },
     semilavorato: { nome: 'Semilavorato certificato', colore: '#22d3ee' },
+    report: { nome: 'Report — prodotto finito', colore: '#f59e0b' },
   },
 
   // [REQ-SRC-03, REQ-SRC-04, REQ-SRC-05] modalità di acquisizione → mezzo di trasporto (testi senza termini tecnici)
@@ -80,6 +81,36 @@ window.CONFIG = {
     { id: 'src-lake', nome: 'Archivio dati esistente', categoria: 'storage', stato: 'on' },
   ],
 
+  // [REQ-HS-02, REQ-HS-03, REQ-HS-07] spoke standard (sostituiti da quelli del profilo, se presente)
+  spokes: [
+    { nome: 'Finance', stato: 'on' }, { nome: 'Commerciale', stato: 'on' }, { nome: 'HR', stato: 'on' },
+    { nome: 'Operations', stato: 'on' }, { nome: 'Marketing', stato: 'on' },
+  ],
+  spoke: {
+    z: 82, passo: 27, larghezza: 132,
+    colori: ['#0284c7', '#e11d48', '#65a30d', '#ea580c', '#9333ea', '#0d9488', '#ca8a04', '#db2777', '#4f46e5', '#57534e'],
+    fabbrica: "L'officina della funzione: riceve i semilavorati dall'hub e li personalizza. Accanto c'è il piccolo deposito del materiale proprio.",
+    perTe: 'Semilavorato + dati tuoi = prodotto su misura: parti da dati certificati, aggiungi i tuoi fogli di calcolo e costruisci i report che ti servono.',
+    gestoreTesto: 'I report e i dati locali sono della funzione. Il dato di base, dentro il semilavorato, resta del team dati: per questo è uguale per tutti.',  // [REQ-HS-06]
+  },
+
+  // [REQ-SCN-11] team dati: una figura per persona. m = uomini, f = donne. Sostituito dal profilo, se presente.
+  team: {
+    colore: '#1d4ed8', casco: '#facc15', turno: 14,
+    trasporto: { m: 2, f: 0, wl: 'INT', nome: 'Team dati — trasporto',
+      fabbrica: 'Portano il materiale dai fornitori alla banchina e dalla banchina al magazzino.',
+      perTe: 'Sono le persone che collegano i tuoi sistemi alla fabbrica e controllano che i carichi arrivino ogni giorno.',
+      compiti: [{ da: [30, -76], a: [30, -42] }, { da: [25, -33.5], a: [25, -23] }] },
+    rotazione: { m: 2, f: 1, wl: 'GOV', nome: 'Team dati — governo, coordinamento e report',
+      fabbrica: 'Si alternano tra tre postazioni: la cabina di controllo (governo della fabbrica), il coordinamento degli operatori e lo showroom, dove nascono i report ufficiali.',
+      perTe: 'Sono poche persone che fanno più mestieri: per questo le richieste si mettono in fila e si pianificano.',
+      postazioni: [
+        { nome: 'Cabina di controllo', pos: [-42, 47], attiva: ['GOV', 'ARC'] },
+        { nome: 'Ufficio di coordinamento', pos: [46, 44], attiva: ['ARC'] },
+        { nome: 'Showroom', pos: [-16, 35.5], attiva: ['VIS'] },
+      ] },
+  },
+
   // [REQ-FLW-02…06, REQ-FLW-09] nastri dentro il capannone: tre corsie, il materiale cambia aspetto a ogni tratto.
   // wl = workload a cui appartiene il nastro · richiede = workload che devono essere 'on' perché il materiale si muova
   flussi: {
@@ -90,7 +121,11 @@ window.CONFIG = {
       { id: 'silver-gold', z: [-9, 3], materiale: 'silver', wl: 'TRF', richiede: ['INT', 'TRF'], alimentato: 'bronze' },
       { id: 'gold-confezionamento', z: [3, 12.5], materiale: 'gold', wl: 'TRF', richiede: ['INT', 'TRF'], alimentato: 'bronze' },
     ],
-    uscita: { id: 'confezionamento-spedizioni', punti: [[16, 16], [16, 27]], materiale: 'semilavorato', wl: 'TRF', richiede: ['INT', 'TRF'], alimentato: 'bronze' },
+    uscite: [
+      { id: 'confezionamento-spedizioni', punti: [[16, 16], [16, 27]], materiale: 'semilavorato', wl: 'TRF', richiede: ['INT', 'TRF'], alimentato: 'bronze' },
+      // [REQ-FLW-07] verso lo showroom dell'hub: compare solo con la Data Visualization
+      { id: 'confezionamento-showroom', punti: [[-16, 16], [-16, 25]], materiale: 'semilavorato', wl: 'VIS', richiede: ['INT', 'TRF', 'VIS'], alimentato: 'bronze' },
+    ],
   },
 
   // [REQ-WL-10, REQ-WL-11] catalogo dei workload — tutti 'off' nel modello standard [REQ-WL-05]
@@ -177,8 +212,14 @@ window.CONFIG = {
     { id: 'spedizioni', wl: 'TRF', tipo: 'spedizioni', nome: 'Spedizioni', pos: [16, 30], dim: [28, 14, 5], zona: true,
       fabbrica: 'Il reparto spedizioni: da qui i semilavorati partono verso le officine delle funzioni.',
       perTe: 'È da qui che i dati certificati arrivano alla tua funzione.' },
-    { id: 'showroom', wl: 'VIS', tipo: 'segnaposto', nome: 'Showroom', pos: [-16, 30], dim: [28, 14, 6] },
-    { id: 'officine', wl: 'SSR', tipo: 'segnaposto', nome: 'Officine degli spoke', pos: [0, 80], dim: [110, 12, 5] },
+    // --- Data Visualization [REQ-FLW-07, REQ-SCN-07] ---
+    { id: 'showroom', wl: 'VIS', tipo: 'showroom', nome: 'Showroom', pos: [-16, 30], dim: [28, 14, 6], zona: true,
+      fabbrica: "Lo showroom dell'hub: i prodotti finiti ufficiali, costruiti dal team dati sui semilavorati e uguali per tutta l'azienda.",
+      perTe: "Sono i report ufficiali, in Power BI: li apri e leggi il numero, senza costruire nulla. È lo stesso numero che vedono tutti." },
+    // --- Ufficio di coordinamento [REQ-SCN-13] ---
+    { id: 'coordinamento', wl: 'ARC', tipo: 'ufficio', nome: 'Ufficio di coordinamento', pos: [52, 38], dim: [12, 8, 5],
+      fabbrica: "L'ufficio da cui si coordinano tutti gli operatori della fabbrica: chi fa cosa, in che ordine, entro quando.",
+      perTe: 'Quando chiedi qualcosa, è qui che la richiesta trova posto nel piano di lavoro e un responsabile.' },
     { id: 'cancelli', wl: 'ACC', tipo: 'segnaposto', nome: 'Cancelli e tornelli', pos: [0, 52], dim: [16, 4, 5] },
     { id: 'recinzione', wl: 'SEC', tipo: 'segnaposto', nome: 'Recinzione e telecamere', pos: [28, 52], dim: [12, 4, 4] },
     { id: 'torre', wl: 'GOV', tipo: 'segnaposto', nome: 'Torre di controllo', pos: [-48, 46], dim: [8, 8, 18] },

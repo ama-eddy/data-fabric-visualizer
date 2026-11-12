@@ -71,13 +71,43 @@ const path = require('path'), fs = require('fs');
   await page.evaluate(() => { fabbrica.state.setElemento('src-erp', 'on'); fabbrica.ui.mostraElemento('src-hr'); const r = fabbrica.state.elemento('src-lake'); fabbrica.world.flyTo([r.el.pos[0] - 35, 38, -30], [r.el.pos[0] - 14, 3, -58]); });
   await shot('7-sorgenti', 5000);
   check((await page.locator('#info').textContent()).includes('non passa dalla banchina'), 'scheda della condotta: non passa dalla banchina');
-  check(await page.locator('#legenda .voce').count() === 10, 'legenda: 5 materiali e 5 mezzi');
+  check(await page.locator('#legenda .voce').count() === 11, 'legenda: 6 materiali e 5 mezzi');
   await page.getByText('Pausa flussi').click(); const p0 = await page.evaluate(() => fabbrica.flows.routes.find((r) => r.items.length).items[0].u);
   await page.waitForTimeout(500);
   check(await page.evaluate((u) => fabbrica.flows.routes.find((r) => r.items.length).items[0].u === u, p0), 'pausa: il materiale si ferma');
   await page.getByText('Riprendi flussi').click();
   await page.evaluate(() => fabbrica.world.flyTo([38, 26, 44], [4, 2, -6]));
   await shot('8-reparti', 4000);
+
+  // ---- Batch 3: consumo, spoke e persone ----
+  await page.evaluate(() => { fabbrica.ui.chiudi(); fabbrica.world.flyTo([10, 60, 150], [0, 2, 52]); });
+  check(await page.waitForFunction(() => fabbrica.flows.routes.some((r) => r.tipo === 'furgone' && r.items.length), null, { timeout: 20000 }).then(() => true, () => false), 'furgoni verso gli spoke');
+  await shot('9-spoke', 2500);
+  check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'officina' && r.on.visible).length) === 5, '5 officine visibili');
+  let f = await page.evaluate(() => fabbrica.figures.conta());
+  check(f.trasporto === 2 && f.rotazione === 3 && f.totale === 5, 'team dati: 2 al trasporto e 3 a rotazione: ' + JSON.stringify(f));
+  await page.evaluate(() => fabbrica.state.set('ACC', 'off')); await page.waitForTimeout(400);       // [REQ-WL-06] SSR dipende dagli Accessi
+  check(await page.evaluate(() => !fabbrica.flows.routes.some((r) => r.tipo === 'furgone' && r.items.length)), 'senza Accessi i furgoni si fermano');
+  await page.evaluate(() => { fabbrica.state.set('ACC', 'on'); fabbrica.state.set('VIS', 'off'); fabbrica.state.set('GOV', 'off'); fabbrica.state.set('ARC', 'wip'); });
+  await page.waitForTimeout(300);
+  f = await page.evaluate(() => fabbrica.figures.conta());
+  check(f.rotazione === 0, 'senza postazioni attive le figure a rotazione non compaiono: ' + JSON.stringify(f));
+  await page.evaluate(() => { fabbrica.state.setTutti('on'); fabbrica.ui.mostraElemento('team:rotazione'); fabbrica.world.flyTo([-30, 30, 78], [-22, 3, 40]); });
+  await shot('10-team-e-showroom', 3500);
+  check((await page.locator('#info h3').textContent()).startsWith('Team dati'), 'scheda del team dati');
+
+  // profilo di esempio [REQ-CFG-03]
+  const pe = await browser.newPage({ viewport: { width: 1440, height: 860 } });
+  pe.on('pageerror', (e) => errors.push('esempio: ' + e.message));
+  await pe.goto('file://' + path.join(__dirname, 'esempio.html')); await pe.waitForFunction(() => window.fabbrica);
+  await pe.getByText('Tutto on').click(); await pe.waitForTimeout(2500);
+  const ep = await pe.evaluate(() => { const S = fabbrica.state, st = (t) => S.recs.filter((r) => r.el.tipo === t).map((r) => r.el.nome + ':' + S.effettivo(r)); fabbrica.ui.mostraElemento('banchina');
+    return { titolo: document.getElementById('titolo').textContent, spoke: st('officina'), src: st('sorgente'), team: fabbrica.figures.conta().totale, scheda: document.getElementById('info').textContent }; });
+  check(ep.titolo.includes('Esempio S.p.A.'), 'profilo: nome azienda');
+  check(ep.spoke.join() === 'Officina Amministrazione:on,Officina Vendite:on,Officina Acquisti:wip,Officina Personale:off', 'profilo: spoke e stati: ' + ep.spoke);
+  check(ep.src.join() === 'Il gestionale:on,CRM vendite:on,Budget (Excel):on,Presenze:off', 'profilo: sorgenti e flussi: ' + ep.src);
+  check(ep.team === 5 && ep.scheda.includes('dati@esempio.example'), 'profilo: team e contatto');
+  await pe.screenshot({ path: path.join(out, '11-profilo-esempio.png') }); await pe.close();
 
   await page.getByText('Tutto off').click();
   await page.waitForTimeout(1500);

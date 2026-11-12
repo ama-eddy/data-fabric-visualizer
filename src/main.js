@@ -5,6 +5,8 @@ import { createState } from './engine/state.js';
 import { createUI } from './engine/ui.js';
 import { createFlows } from './engine/flows.js';
 import { elementiSorgenti } from './engine/sources.js';
+import { elementiSpoke } from './engine/spoke.js';
+import { createFigures } from './engine/figures.js';
 
 /* ===== [REQ-CFG-02] Il profilo dell'azienda si sovrappone al modello standard ===== */
 function applicaProfilo(cfg, p) {
@@ -13,17 +15,21 @@ function applicaProfilo(cfg, p) {
   if (p.contatto && p.contatto.chi) cfg.contatto = p.contatto;        // [REQ-LIT-02]
   /* [REQ-CFG-03] sorgenti del profilo: nome, categoria e flusso on/off sostituiscono il catalogo standard */
   if (p.sorgenti && p.sorgenti.length) cfg.sources = p.sorgenti.map((s, i) => ({ id: 'src-' + i, nome: s.nome, categoria: s.categoria, stato: s.flusso === 'off' ? 'off' : 'on' }));
-  cfg.profilo = { spoke: p.spoke || null, team: p.team || null }; // usati dal batch 3
+  /* [REQ-HS-02, REQ-HS-07] spoke del profilo: nome e stato on/wip/off */
+  if (p.spoke && p.spoke.length) cfg.spokes = p.spoke.map((s) => ({ nome: s.nome, stato: ['on', 'wip', 'off'].includes(s.stato) ? s.stato : 'on' }));
+  /* [REQ-SCN-11] team dati del profilo: uomini e donne al trasporto e a rotazione */
+  for (const k of ['trasporto', 'rotazione']) if (p.team && p.team[k]) { cfg.team[k].m = p.team[k].m || 0; cfg.team[k].f = p.team[k].f || 0; }
   return cfg;
 }
 
 try {
   const cfg = applicaProfilo(window.CONFIG, window.PROFILE);
   const world = createScene(cfg, document.getElementById('scene'), document.getElementById('labels'));
-  cfg.elements.push(...elementiSorgenti(cfg));
+  cfg.elements.push(...elementiSorgenti(cfg), ...elementiSpoke(cfg));
   const flows = createFlows(cfg, world);
   const state = createState(cfg, world, flows);
   flows.collega(state);
+  const figures = createFigures(cfg, world, state, flows);
   const ui = createUI(cfg, world, state);
   state.init();
   const clock = new THREE.Clock();
@@ -32,9 +38,10 @@ try {
     const dt = Math.min(clock.getDelta(), 0.1);
     state.update(dt, clock.elapsedTime);
     flows.update(dt, ui.inPausa());
+    figures.update(dt, clock.elapsedTime);
     world.update(dt);
   })();
-  window.fabbrica = { cfg, world, state, ui, flows };                         // per prove e collaudo
+  window.fabbrica = { cfg, world, state, ui, flows, figures };                         // per prove e collaudo
 } catch (e) {
   const el = document.getElementById('err');
   el.style.display = 'flex'; el.textContent = 'Impossibile avviare la fabbrica: ' + e.message;

@@ -17,6 +17,7 @@ writeFileSync('fabbrica-dati.html', html);
 console.log(`fabbrica-dati.html: ${(html.length / 1024).toFixed(0)} KB`);
 // [REQ-CFG-07] Il profilo reale dell'azienda resta in locale: src/profile.local.js non entra nel repository,
 // e produce fabbrica-dati.locale.html (anch'esso escluso), da usare al meeting.
+writeFileSync('tests/esempio.html', page('src/profile.esempio.js'));   // profilo di esempio, per la prova automatica [REQ-CFG-03]
 if (existsSync('src/profile.local.js')) {
   writeFileSync('fabbrica-dati.locale.html', page('src/profile.local.js'));
   console.log('fabbrica-dati.locale.html: versione con il profilo aziendale (non pubblicata)');
