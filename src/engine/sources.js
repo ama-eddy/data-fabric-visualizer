@@ -6,12 +6,19 @@ import { builders } from './builders.js';
 /* ===== [REQ-SRC-01, REQ-SRC-07] Dal catalogo agli elementi: area fornitori sul fondo, nessun legame con gli spoke ===== */
 export function elementiSorgenti(cfg) {
   const L = cfg.layout.sorgenti, n = cfg.sources.length, passo = Math.min(L.passo, L.larghezza / Math.max(n, 1));
-  return cfg.sources.map((s, i) => {
-    const cat = cfg.categorie[s.categoria] || cfg.categorie.erp, modalita = s.modalita || cat.modalita;
-    const x = (i - (n - 1) / 2) * passo;
-    return { id: s.id || 'src-' + i, wl: 'INT', tipo: 'sorgente', nome: s.nome, categoria: s.categoria, forma: cat.forma, modalita,
-      pos: [x, L.z], dim: [10, 10, 7], stato: s.stato || 'on', arrivo: x * 0.4, categoriaNome: cat.nome, etichetta: [0, i % 2 ? 15 : 10.5, 0],
-      fabbrica: cat.fabbrica, perTe: cat.perTe, mezzo: cfg.modalita[modalita].nome + '. ' + cfg.modalita[modalita].testo };
+  return cfg.sources.flatMap((s, i) => {
+    const cat = cfg.categorie[s.categoria] || cfg.categorie.erp, modalita = s.modalita || cat.modalita, mz = cfg.modalita[modalita];
+    const x = (i - (n - 1) / 2) * passo, id = s.id || 'src-' + i;
+    return [
+      /* [REQ-SRC-01] l'edificio del fornitore: appartiene alle Data Sources */
+      { id, wl: 'SRC', tipo: 'sorgente', nome: s.nome, categoria: s.categoria, forma: cat.forma, modalita,
+        pos: [x, L.z], dim: [10, 10, 7], stato: s.stato || 'on', categoriaNome: cat.nome, etichetta: [0, i % 2 ? 15 : 10.5, 0],
+        fabbrica: cat.fabbrica, perTe: cat.perTe, mezzo: mz.nome + '. ' + mz.testo },
+      /* [REQ-SRC-03] il suo trasporto: appartiene alla Data Integration (il nastro veloce al Real-Time) e segue lo stato della sorgente */
+      { id: 'tr-' + id, wl: modalita === 'streaming' ? 'RTI' : 'INT', tipo: 'trasporto', segue: id, nome: mz.nome + ' · ' + s.nome, modalita,
+        pos: [x, L.z], dim: [10, 10, 7], arrivo: x * 0.4, cantiere: false, senzaEtichetta: true,
+        fabbrica: mz.testo, perTe: cfg.workloads[modalita === 'streaming' ? 'RTI' : 'INT'].perTe },
+    ];
   });
 }
 
@@ -87,7 +94,7 @@ const forme = {
 function infrastruttura(g, el, ctx) {
   const [sx, sz] = el.pos, ax = el.arrivo, cap = ctx.cfg.layout.capannone, zb = cap.z[0];
   const L = (x, y, z) => [x - sx, y, z - sz];                       // dal mondo alle coordinate dell'elemento
-  const attivo = () => ctx.flows.lavora('INT') && ctx.state().effettivo(ctx.state().elemento(el.id)) === 'on';
+  const attivo = () => ctx.flows.lavora('INT') && ctx.state().effettivo(ctx.state().elemento(el.id)) === 'on';   // lo stato del trasporto include quello della sorgente
   const tratto = (a, b, r, material) => {                           // tubo, ponte o strada tra due punti del mondo
     const A = new THREE.Vector3(...L(...a)), B = new THREE.Vector3(...L(...b)), dir = B.clone().sub(A), len = dir.length();
     const piatto = !!r.w;
@@ -99,29 +106,31 @@ function infrastruttura(g, el, ctx) {
   const m = el.modalita;
   const lago = ctx.cfg.elements.find((e) => e.tipo === 'lago'), lz = lago.pos[1], lw = lago.dim[0] / 2 - 6, ld = lago.dim[1] / 2;
   const xl = Math.max(-lw, Math.min(lw, sx)), arrivo = [ax * 0.9, lz + ld - 3];       // dove il materiale entra nel lago · dove arriva al pontile
+  const scivolo = (top, fondo, colore) => {                          // scivolo dal fornitore al lago: nessuna strada
+    const sc = tratto(top, fondo, { w: 1.8, h: 0.2 }, mat(colore)); sc.castShadow = true;
+    for (const s of [-1, 1]) tratto([top[0] + s * 0.9, top[1] + 0.4, top[2]], [fondo[0] + s * 0.9, fondo[1] + 0.4, fondo[2]], 0.08, mat('#fde68a')).castShadow = false;
+    cyl(g, 0.25, 0.3, top[1], mat('#64748b'), ...L(top[0], 0, top[2] + 0.4), 8);
+  };
+  const top = [sx, 4.2, sz + 5.5], riva = lz - ld - 1;
   if (m === 'copy') {                                               // [RDM-019] scivolo: il materiale scivola nel lago e galleggia fino al pontile
-    const top = [sx, 4.2, sz + 5.5], fondo = [xl, 0.5, lz - ld + 1.5];
-    const scivolo = tratto(top, fondo, { w: 1.8, h: 0.2 }, mat('#f97316')); scivolo.castShadow = true;
-    for (const s of [-1, 1]) { const b = tratto([top[0] + s * 0.9, top[1] + 0.4, top[2]], [fondo[0] + s * 0.9, fondo[1] + 0.4, fondo[2]], 0.08, mat('#fdba74')); b.castShadow = false; }
-    cyl(g, 0.25, 0.3, 4.2, mat('#64748b'), ...L(top[0], 0, top[2] + 0.4), 8);
+    const fondo = [xl, 0.5, lz - ld + 1.5];
+    scivolo(top, fondo, '#f97316');
     ctx.flows.addRoute({ punti: [[top[0], top[1] + 0.6, top[2]], [fondo[0], 0.9, fondo[2]]], tipo: 'grezzo', attivo, ogni: 2.2 + Math.random(), vel: 9 });
     ctx.flows.addRoute({ punti: [[fondo[0], 0.35, fondo[2] + 1], [arrivo[0], 0.35, arrivo[1]]], tipo: 'galleggiante', attivo, ogni: 2.2 + Math.random(), vel: 2.6 });
-  } else if (m === 'dataflow') {                                    // [RDM-019] scialuppa: attraversa il lago fino al pontile
-    const molo = [xl, lz - ld - 0.5];
-    tratto([sx, 0.1, sz + 5.5], [molo[0], 0.1, molo[1]], { w: 2, h: 0.1 }, mat('#a8a29e'));
-    tratto([molo[0], 0.45, molo[1] - 1], [molo[0], 0.45, molo[1] + 3], { w: 2.2, h: 0.3 }, mat('#a16207'));
-    ctx.flows.addRoute({ punti: [[molo[0], 0.25, molo[1] + 4], [(molo[0] + arrivo[0]) / 2 + 4, 0.25, lz], [arrivo[0], 0.25, arrivo[1]]], tipo: 'scialuppa', attivo, ogni: 7 + Math.random() * 2, vel: 4 });
-  } else if (m === 'mirroring' || m === 'shortcut') {               // condotta / ponte: scavalcano la banchina ed entrano nel Bronze
-    const h = 9, zB = -22, pts = [[sx, 3, sz + 5], [sx, h, sz + 12], [ax, h, sz + 28], [ax, h, zB - 2], [ax, 3.5, zB]];
-    const material = m === 'mirroring' ? mat('#7dd3fc', { op: 0.55, r: 0.2, e: '#0ea5e9', ei: 0.15 }) : mat('#cffafe', { op: 0.38, r: 0.1, m: 0.2 });
-    for (let i = 0; i < 4; i++) tratto(pts[i], pts[i + 1], m === 'mirroring' ? 0.55 : { w: 2.6, h: 0.25 }, material).castShadow = false;
-    for (const p of [pts[1], pts[2], [ax, h, zb - 6]]) cyl(g, 0.22, 0.3, p[1], mat('#64748b'), ...L(p[0], 0, p[2]), 8);
-    if (m === 'mirroring') ctx.flows.addRoute({ punti: pts, tipo: 'impulso', attivo, ogni: 0.7, vel: 14 });
-    else {                                                          // [REQ-SRC-05] nessun pezzo viaggia: nel Bronze compare l'"ombra" del materiale
-      const ombra = new THREE.Group(); g.add(ombra);
-      for (let i = 0; i < 3; i++) box(ombra, 1.4, 1.1, 1.4, mat('#a5f3fc', { op: 0.45, e: '#22d3ee', ei: 0.5 }), ...L(ax + (i - 1) * 1.6, 1.0 + (i === 1 ? 1.15 : 0), zB + 1.5)).castShadow = false;
-      ctx.animate(() => { ombra.visible = attivo(); });
-    }
+  } else if (m === 'dataflow') {                                    // [RDM-019] scivolo fino a un piccolo molo, poi la scialuppa attraversa il lago
+    const molo = [xl, riva];
+    scivolo(top, [molo[0], 0.9, molo[1] - 0.5], '#a16207');
+    tratto([molo[0], 0.45, molo[1] - 1], [molo[0], 0.45, molo[1] + 4], { w: 2.4, h: 0.3 }, mat('#78350f'));
+    for (const dz of [0.5, 3.5]) for (const s of [-1, 1]) cyl(g, 0.12, 0.12, 0.9, mat('#57534e'), ...L(molo[0] + s * 1.1, -0.2, molo[1] + dz), 6);
+    ctx.flows.addRoute({ punti: [[molo[0], 0.25, molo[1] + 5], [(molo[0] + arrivo[0]) / 2 + 4, 0.25, lz], [arrivo[0], 0.25, arrivo[1]]], tipo: 'scialuppa', attivo, ogni: 7 + Math.random() * 2, vel: 4 });
+  } else if (m === 'shortcut') {                                    // [RDM-019] ponte di vetro fino al lago: il materiale compare nel lago senza muoversi
+    const fine = [Math.max(-lw + 6, Math.min(lw - 6, ax)), lz - 2];
+    const pts = [[sx, 3, sz + 5], [sx, 5, sz + 9], [fine[0], 3.2, fine[1] - 5], [fine[0], 1.2, fine[1]]];
+    for (let i = 0; i < 3; i++) tratto(pts[i], pts[i + 1], { w: 2.6, h: 0.25 }, mat('#cffafe', { op: 0.42, r: 0.1, m: 0.2 })).castShadow = false;
+    cyl(g, 0.22, 0.3, 5, mat('#64748b'), ...L(sx, 0, sz + 9), 8); cyl(g, 0.22, 0.3, 3.2, mat('#64748b'), ...L(fine[0], 0, fine[1] - 5), 8);
+    const ombra = new THREE.Group(); g.add(ombra);                  // [REQ-SRC-05] "ombra" del materiale, in conto deposito nel lago
+    for (let i = 0; i < 4; i++) box(ombra, 1.3, 1, 1.3, mat('#a5f3fc', { op: 0.45, e: '#22d3ee', ei: 0.6 }), ...L(fine[0] + (i % 2 ? 1.6 : -1.6), 0.15, fine[1] + 1.5 + Math.floor(i / 2) * 1.7)).castShadow = false;
+    ctx.animate((t) => { ombra.visible = attivo(); ombra.position.y = Math.sin(t * 2) * 0.1; });
   } else if (m === 'streaming') {                                   // [REQ-SRC-06, REQ-FLW-10] nastro veloce: dritto alla sala sensori, salta banchina e magazzino
     const s = ctx.cfg.elements.find((e) => e.tipo === 'salasensori'), tx = s ? s.pos[0] + 4 : 62, tz = s ? s.pos[1] : -20;
     const pts = [[sx, 3, sz + 5], [sx, 8, sz + 13], [tx, 8, sz + 22], [tx, 8, tz - 9], [tx, 6.5, tz - 5]];
@@ -139,8 +148,8 @@ builders.sorgente = (g, el, ctx) => {
   const f = new THREE.Group(); f.position.y = 0.2; g.add(f);
   (forme[el.forma] || forme.silo)(f, ctx);
   f.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-  infrastruttura(g, el, ctx);
 };
+builders.trasporto = (g, el, ctx) => infrastruttura(g, el, ctx);
 
 /* ===== [REQ-SRC-07] Piazzale dell'area fornitori ===== */
 builders.piazzale = (g, el) => { const [w, d] = el.dim; box(g, w, 0.08, d, mat('#e5e0d5', { r: 1 })).castShadow = false; };

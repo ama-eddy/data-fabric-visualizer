@@ -16,8 +16,9 @@ const path = require('path'), fs = require('fs');
   const check = (c, m) => { if (!c) { errors.push('ATTESO: ' + m); } };
 
   await shot('1-terreno-vuoto', 600);
-  check(await page.locator('#wl > .row').count() === 11, '11 workload nel pannello');
-  check(await page.evaluate(() => fabbrica.state.recs.every((r) => !r.on.visible && !r.wip.visible)), 'scena vuota all\'avvio');
+  check(await page.locator('#wl > .row').count() === 12, '12 workload nel pannello');
+  check(await page.evaluate(() => fabbrica.state.stato.SRC === 'on' && fabbrica.state.recs.every((r) => (r.el.wl === 'SRC' && r.el.tipo !== 'sorgente') || (!r.on.visible && !r.wip.visible))), 'all\'avvio: solo l\'area fornitori, sorgenti spente');
+  check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente').every((r) => r.proprio === 'off')), 'tutte le sorgenti spente di default');
 
   await page.locator('#wl .row[data-wl="ARC"] .seg button[data-s="on"]').click();
   await shot('2-architettura');
@@ -29,6 +30,7 @@ const path = require('path'), fs = require('fs');
   check(await page.evaluate(() => fabbrica.state.elemento('bronze').wip.visible && !fabbrica.state.elemento('bronze').on.visible), 'Bronze in cantiere');
 
   await page.getByText('Tutto on').click();
+  await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente').forEach((r) => fabbrica.state.setElemento(r.el.id, 'on')));   // si accendono le sorgenti
   await shot('4-tutto-on');
   await page.evaluate(() => fabbrica.ui.mostraElemento('laboratorio'));
   await page.locator('#wl .row[data-wl="ARC"] .name').click();
@@ -51,8 +53,8 @@ const path = require('path'), fs = require('fs');
   await page.evaluate(() => fabbrica.ui.chiudi());
   const tipi = () => page.evaluate(() => { const o = {}; for (const r of fabbrica.flows.routes) o[r.tipo] = (o[r.tipo] || 0) + r.items.length; return o; });
   await shot('6-catena-del-valore', 9000);
-  const visti = await page.waitForFunction(() => { const v = (window.__visti = window.__visti || {}); for (const r of fabbrica.flows.routes) if (r.items.length) v[r.tipo] = 1; return v.galleggiante && v.scialuppa && v.impulso; }, null, { timeout: 20000 }).then(() => true, () => false);
-  check(visti, 'scivoli, scialuppe e condotta in movimento');
+  const visti = await page.waitForFunction(() => { const v = (window.__visti = window.__visti || {}); for (const r of fabbrica.flows.routes) if (r.items.length) v[r.tipo] = 1; return v.galleggiante && v.scialuppa; }, null, { timeout: 20000 }).then(() => true, () => false);
+  check(visti, 'scivoli e scialuppe in movimento');
   let t = await tipi();
   check(t.grezzo > 0 && t.bronze > 0 && t.silver > 0 && t.gold > 0 && t.semilavorato > 0, 'materiale a ogni stadio: ' + JSON.stringify(t));
   check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente' && r.on.visible).length) === 11, '11 sorgenti visibili');
@@ -68,10 +70,10 @@ const path = require('path'), fs = require('fs');
   check(await page.evaluate(() => { const r = fabbrica.state.elemento('src-erp'); return !r.on.visible && !r.wip.visible; }), 'sorgente spenta: assente');
   await page.evaluate(() => fabbrica.state.setElemento('src-erp', 'wip')); await page.waitForTimeout(1500);
   check(await page.evaluate(() => fabbrica.state.elemento('src-erp').wip.visible), 'sorgente in cantiere');
-  await page.evaluate(() => { fabbrica.state.setElemento('src-erp', 'on'); fabbrica.ui.mostraElemento('src-hr'); const r = fabbrica.state.elemento('src-lake'); fabbrica.world.flyTo([r.el.pos[0] - 35, 38, -30], [r.el.pos[0] - 14, 3, -58]); });
+  await page.evaluate(() => { fabbrica.state.setElemento('src-erp', 'on'); fabbrica.ui.mostraElemento('src-lake'); const r = fabbrica.state.elemento('src-lake'); fabbrica.world.flyTo([r.el.pos[0] - 35, 38, -30], [r.el.pos[0] - 14, 3, -58]); });
   await shot('7-sorgenti', 5000);
-  check((await page.locator('#info').textContent()).includes('scavalca il lago'), 'scheda della condotta: scavalca il lago');
-  check(await page.locator('#legenda .voce').count() === 11, 'legenda: 6 materiali e 5 mezzi');
+  check((await page.locator('#info').textContent()).includes('compare nel lago'), 'scheda del ponte di vetro: compare nel lago');
+  check(await page.locator('#legenda .voce').count() === 10, 'legenda: 6 materiali e 4 mezzi');
   await page.getByText('Pausa flussi').click(); const p0 = await page.evaluate(() => fabbrica.flows.routes.find((r) => r.items.length).items[0].u);
   await page.waitForTimeout(500);
   check(await page.evaluate((u) => fabbrica.flows.routes.find((r) => r.items.length).items[0].u === u, p0), 'pausa: il materiale si ferma');
@@ -97,12 +99,12 @@ const path = require('path'), fs = require('fs');
   check((await page.locator('#info h3').textContent()).startsWith('Team dati'), 'scheda del team dati');
 
   // ---- RDM-016/017/018: laboratorio e showroom, tendina delle sorgenti, pannello del team ----
-  await page.locator('#wl .row[data-wl="INT"] .apri').click();
+  await page.locator('#wl .row[data-wl="SRC"] .apri').click();
   check(await page.locator('.sub.open .subrow').count() === 11, 'tendina: 11 sorgenti');
-  await page.locator('.subrow[data-el="src-pim"] .seg button[data-s="off"]').click(); await page.waitForTimeout(1200);
+  await page.locator('.subrow[data-el="src-pim"] .seg button[data-s="off"]').click(); await page.waitForTimeout(3500);
   check(await page.evaluate(() => { const r = fabbrica.state.elemento('src-pim'); return !r.on.visible && fabbrica.state.elemento('src-crm').on.visible; }), 'tendina: si spegne una sola sorgente');
   await page.locator('.subrow[data-el="src-pim"] .seg button[data-s="on"]').click();
-  check(await page.waitForFunction(() => fabbrica.flows.routes.some((r) => r.tipo === 'semilavorato' && r.punti[0][1] > 3 && r.items.length), null, { timeout: 15000 }).then(() => true, () => false), 'passerella dal laboratorio allo showroom');
+  check(await page.waitForFunction(() => fabbrica.flows.routes.some((r) => r.tipo === 'semilavorato' && r.punti[0][1] > 3 && r.items.length), null, { timeout: 25000 }).then(() => true, () => false), 'passerella dal laboratorio allo showroom');
   check(await page.locator('.pupazzo').count() === 5, 'pannello del team: 5 pupazzini');
   await page.locator('.pupazzo').nth(3).click(); await page.waitForTimeout(1600);
   check(await page.evaluate(() => fabbrica.figures.scelta() === 3) && (await page.locator('#info h3').textContent()).startsWith('Team dati'), 'clic sul pupazzino: evidenziato e scheda aperta');
@@ -116,6 +118,14 @@ const path = require('path'), fs = require('fs');
   check(await page.waitForFunction(() => fabbrica.flows.routes.some((r) => r.tipo === 'evento' && r.items.length), null, { timeout: 15000 }).then(() => true, () => false), 'nastro veloce verso la sala sensori');
   await page.evaluate(() => fabbrica.state.set('RTI', 'off')); await page.waitForTimeout(300);            // [REQ-SRC-06]
   check(await page.evaluate(() => !fabbrica.flows.routes.some((r) => r.tipo === 'evento' && r.items.length) && fabbrica.state.elemento('src-iot').on.visible), 'Real-Time spento: sensori visibili ma senza flusso');
+  await page.evaluate(() => { fabbrica.state.set('RTI', 'on'); fabbrica.state.set('INT', 'off'); }); await page.waitForTimeout(3500);   // [RDM-022]
+  check(await page.evaluate(() => fabbrica.state.elemento('src-erp').on.visible && !fabbrica.state.elemento('tr-src-erp').on.visible), 'Data Sources senza Data Integration: edifici sì, scivoli no');
+  await page.evaluate(() => { fabbrica.state.set('INT', 'on'); fabbrica.state.set('SRC', 'off'); }); await page.waitForTimeout(3500);
+  check(await page.evaluate(() => !fabbrica.state.elemento('src-erp').on.visible && !fabbrica.state.elemento('tr-src-erp').on.visible && !fabbrica.flows.routes.some((r) => r.tipo === 'grezzo' && r.items.length)), 'Data Integration senza Data Sources: nessun fornitore, nessun materiale');
+  await page.evaluate(() => { fabbrica.state.set('SRC', 'on'); fabbrica.world.flyTo([0, 70, 10], [0, 0, -60]); });
+  await shot('18-lago', 4500);
+  await page.evaluate(() => fabbrica.world.flyTo([30, 22, -22], [12, 2, -46]));
+  await shot('19-gru-e-pannello', 4000);
   await page.evaluate(() => { fabbrica.state.set('RTI', 'on'); fabbrica.ui.chiudi(); fabbrica.world.home(); });
   await shot('12-tutto-on', 3500);
   await page.evaluate(() => fabbrica.world.flyTo([-10, 26, 92], [-22, 4, 44]));

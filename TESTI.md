@@ -152,6 +152,15 @@ Recinzione, telecamere, caveau e sigilli sui pacchi: proteggono il materiale pre
 ### workloads.SEC.perTe
 I dati riservati li vede solo chi deve: le regole su chi vede cosa viaggiano insieme al dato, anche dentro i tuoi report.
 
+### workloads.SRC.nome
+Data Sources
+
+### workloads.SRC.fabbrica
+L'area dei fornitori: i sistemi dell'azienda da cui parte il materiale grezzo. Ogni tipo di software ha un edificio diverso, e si possono accendere uno alla volta.
+
+### workloads.SRC.perTe
+Sono i sistemi che usi ogni giorno: gestionale, CRM, fogli di calcolo. Esistono anche senza la fabbrica, e tu continui a lavorare lì.
+
 ### workloads.INT.nome
 Data Integration
 
@@ -275,7 +284,7 @@ Sono i sistemi che usi ogni giorno: gestionale, CRM, fogli di calcolo. Tu contin
 Pontile di pesca
 
 ### elements.pontile.fabbrica
-Il pontile sulla riva del lago: qui il team dati pesca il materiale arrivato dai fornitori e lo porta dentro la fabbrica, nel magazzino materie prime.
+Il pontile sulla riva del lago: da un pannello di comando il team dati manovra le gru, che pescano il materiale arrivato dai fornitori e lo mettono sui nastri verso il magazzino materie prime.
 
 ### elements.pontile.perTe
 È il passaggio dal "dato arrivato" al "dato conservato": da qui in poi il materiale è in fabbrica, etichettato e pronto per la lavorazione.
@@ -444,19 +453,13 @@ A orari stabiliti il materiale scivola dal fornitore nel lago dei dati; da lì i
 Scialuppa
 
 ### modalita.dataflow.testo
-Il materiale attraversa il lago su una scialuppa che lo sistema un po' già durante il viaggio, poi lo lascia al pontile.
-
-### modalita.mirroring.nome
-Condotta continua
-
-### modalita.mirroring.testo
-Una copia sempre aggiornata scorre senza sosta in una condotta che scavalca il lago ed entra direttamente nel magazzino.
+Il materiale scende su una scialuppa che lo sistema un po' già durante il viaggio, attraversa il lago e lo lascia al pontile.
 
 ### modalita.shortcut.nome
 Ponte di vetro
 
 ### modalita.shortcut.testo
-Il materiale non si sposta: resta dal fornitore e la fabbrica lo usa attraverso un ponte sopra il lago, senza copiarlo.
+Il materiale non si sposta: resta dal fornitore, e attraverso un ponte di vetro compare nel lago senza essere copiato. Da lì il team dati lo recupera come il resto.
 
 ### modalita.streaming.nome
 Nastro veloce
@@ -506,7 +509,7 @@ Una palazzina di uffici: le informazioni sulle persone dell'azienda.
 Produzione e magazzino
 
 ### categorie.mes.fabbrica
-Dei silos: materiale già stoccato in modo ordinato, che scorre in continuazione.
+Dei silos: materiale già stoccato in modo ordinato, pronto da prelevare.
 
 ### categorie.mes.perTe
 Sono i sistemi della produzione e del magazzino: giacenze, lotti, avanzamento degli ordini.
@@ -634,16 +637,16 @@ Marketing
 Team dati — trasporto
 
 ### team.trasporto.fabbrica
-Uno fa scorrere bene il materiale dai fornitori al lago, controllando scivoli e scialuppe; l'altro lo pesca dal lago e lo porta nel magazzino materie prime.
+Uno costruisce e ripara gli scivoli che portano il materiale dai fornitori al lago; l'altro, da un pannello di comando, manovra le gru che pescano il materiale dal lago e lo mettono nel magazzino materie prime.
 
 ### team.trasporto.perTe
 Sono le persone che collegano i tuoi sistemi alla fabbrica e controllano che i carichi arrivino ogni giorno.
 
 ### team.trasporto.compiti.0.nome
-Fa scorrere il materiale: scivoli e scialuppe
+Costruisce e ripara gli scivoli
 
 ### team.trasporto.compiti.1.nome
-Pesca dal lago e porta nel magazzino
+Manovra le gru dal pannello di comando
 
 ### team.rotazione.nome
 Team dati — governo, coordinamento e report

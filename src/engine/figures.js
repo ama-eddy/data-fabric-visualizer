@@ -22,11 +22,12 @@ export function createFigures(cfg, world, state, flows) {
   const quota = (x, z) => (state.stato.ARC === 'on' && x > cap.x[0] && x < cap.x[1] && z > cap.z[0] && z < cap.z[1] ? cap.pavimento : 0);
   const crea = (sesso, gruppo) => { const o = figura(T.colore, sesso, T.casco); o.traverse((m) => { m.userData.el = 'team:' + gruppo; }); o.visible = false; world.scene.add(o); world.pickables.push(o); return o; };
 
-  /* ===== Trasporto: dalla sorgente alla banchina, dalla banchina al Bronze ===== */
+  /* ===== Data Integration: uno costruisce e ripara gli scivoli, l'altro manovra le gru dal pannello ===== */
+  const scivoli = () => cfg.elements.filter((e) => e.tipo === 'trasporto' && (e.modalita === 'copy' || e.modalita === 'dataflow') && state.effettivo(state.elemento(e.id)) !== 'off').map((e) => e.pos[0]);
   const trasporto = elenco(T.trasporto).map((sesso, i) => {
-    const o = crea(sesso, 'trasporto'), comp = T.trasporto.compiti[i % T.trasporto.compiti.length], off = Math.floor(i / T.trasporto.compiti.length) * 2.2;
-    const carico = box(o, 0.7, 0.55, 0.7, mat('#9ca3af'), 0, 1.0, 0.6);
-    return { o, sesso, gruppo: 'trasporto', compito: comp.nome, carico, a: new THREE.Vector3(comp.da[0] + off, 0, comp.da[1]), b: new THREE.Vector3(comp.a[0] + off, 0, comp.a[1]), fase: i * 0.37 };
+    const o = crea(sesso, 'trasporto'), comp = T.trasporto.compiti[i % T.trasporto.compiti.length], n = Math.floor(i / T.trasporto.compiti.length);
+    const attrezzo = box(o, 0.15, 0.9, 0.15, mat('#78350f'), 0.55, 0.9, 0.25); attrezzo.rotation.x = 0.6;          // martello o leva
+    return { o, sesso, gruppo: 'trasporto', compito: comp.nome, tipo: comp.tipo, comp, n, attrezzo, pos: null, meta: 0, sosta: 0 };
   });
   /* ===== Rotazione tra le postazioni: cabina di controllo, coordinamento, showroom ===== */
   const rotazione = elenco(T.rotazione).map((sesso, i) => ({ o: crea(sesso, 'rotazione'), sesso, gruppo: 'rotazione', i, pos: null, da: null, verso: null, k: 1, post: -1, postazione: '' }));
@@ -46,10 +47,15 @@ export function createFigures(cfg, world, state, flows) {
     const INT = state.stato.INT === 'on', lavora = flows.lavora('INT');
     for (const f of trasporto) {
       f.o.visible = INT; if (!INT) continue;
-      const giro = 9, u = lavora ? ((t / giro + f.fase) % 1) : 0, andata = u < 0.5, k = andata ? u * 2 : 2 - u * 2;
-      f.o.position.lerpVectors(f.a, f.b, k); f.o.position.y = quota(f.o.position.x, f.o.position.z) + (lavora ? Math.abs(Math.sin(t * 9 + f.fase)) * 0.12 : 0);
-      f.o.rotation.y = Math.atan2(f.b.x - f.a.x, f.b.z - f.a.z) + (andata ? 0 : Math.PI);
-      f.carico.visible = lavora && andata;                            // [REQ-WL-06] fermi, in attesa, se manca un workload a monte
+      if (f.tipo === 'pannello') {                                     // fermo al pannello, muove le leve
+        const p = f.comp.pos; f.o.position.set(p[0] + f.n * 1.4, 0.85, p[1] - f.n * 1.2); f.o.rotation.y = Math.PI / 2;
+        f.attrezzo.rotation.x = lavora ? 0.6 + Math.sin(t * 3 + f.n) * 0.5 : 0.6; continue;
+      }
+      const xs = scivoli(); if (!xs.length) { f.attrezzo.rotation.x = 0.6; continue; }   // va da uno scivolo all'altro e si ferma a ripararlo
+      if (!f.pos) f.pos = new THREE.Vector3(xs[0], 0, f.comp.z);
+      const meta = new THREE.Vector3(xs[(f.meta + f.n * 3) % xs.length] + 1.6, 0, f.comp.z - f.n * 1.5), d = meta.clone().sub(f.pos);
+      if (d.length() > 0.3) { f.pos.addScaledVector(d.normalize(), Math.min(dt * 6, d.length())); f.o.rotation.y = Math.atan2(d.x, d.z); f.attrezzo.rotation.x = 0.6; f.o.position.set(f.pos.x, Math.abs(Math.sin(t * 9)) * 0.12, f.pos.z); }
+      else { f.sosta += dt; f.o.rotation.y = -Math.PI / 2; f.attrezzo.rotation.x = 0.4 + Math.abs(Math.sin(t * 7)) * 1.1; f.o.position.set(f.pos.x, 0, f.pos.z); if (f.sosta > 3.5) { f.sosta = 0; f.meta++; } }
     }
     const attive = T.rotazione.postazioni.filter((p) => p.attiva.some((w) => state.stato[w] === 'on'));
     tTurno += dt; if (tTurno > T.turno) { tTurno = 0; turno++; }

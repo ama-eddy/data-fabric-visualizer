@@ -54,7 +54,7 @@ export function createState(cfg, world, flows) {
     const cresci = () => { if (seq !== rec.seq || !next) return; next.visible = true; if (T) tween(next, 0.001, 1, T); else next.scale.y = 1; };
     if (prev && T) tween(prev, prev.scale.y, 0.001, T * 0.4, () => { prev.visible = false; cresci(); });
     else { if (prev) prev.visible = false; cresci(); }
-    rec.label.visible = st !== 'off' && !!next;
+    rec.label.visible = st !== 'off' && !!next && !rec.el.senzaEtichetta;
     rec.div.className = 'lbl' + (st === 'wip' ? ' wip' : '');
     rec.div.innerHTML = '';
     rec.div.append(rec.el.nome);
@@ -65,6 +65,11 @@ export function createState(cfg, world, flows) {
   /* ===== [REQ-SRC-08, REQ-HS-07] Stato proprio di un elemento, combinato con quello del suo workload ===== */
   function effettivo(r) {
     const w = stato[r.el.wl];
+    if (r.el.segue) {                                 /* il trasporto di una sorgente: serve il suo workload e la sorgente accesa */
+      const s = effettivo(recs.find((x) => x.el.id === r.el.segue));
+      if (w === 'off' || s === 'off') return 'off';
+      return w === 'wip' || s === 'wip' ? 'wip' : 'on';
+    }
     if (w === 'off' || r.proprio === undefined) return w;
     if (r.proprio === 'off') return 'off';
     return w === 'wip' || r.proprio === 'wip' ? 'wip' : 'on';

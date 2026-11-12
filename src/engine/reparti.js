@@ -50,15 +50,34 @@ builders.pontile = (g, el, ctx) => {
     for (const z of [-d / 2 - 1, -d / 2 - 5.5]) for (const s of [-1, 1]) cyl(g, 0.16, 0.16, 1.2, pali, x + s * 0.9, -0.2, z, 6);
   }
   for (const x of [-w / 2 + 2, -6, 6, w / 2 - 2]) for (const z of [-d / 2 + 0.3, d / 2 - 0.3]) cyl(g, 0.18, 0.18, 1, pali, x, 0, z, 6);
-  const gru = new THREE.Group(); gru.position.set(14, 0.85, -0.5); g.add(gru);          // gru per pescare
-  cyl(gru, 0.3, 0.4, 4.5, mat('#facc15'), 0, 0, 0, 10);
-  const braccio = new THREE.Group(); braccio.position.y = 4.5; gru.add(braccio);
-  box(braccio, 0.35, 0.35, 7, mat('#facc15'), 0, 0, -3.2);
-  const rete = new THREE.Mesh(new THREE.SphereGeometry(0.8, 10, 6, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), mat('#334155', { op: 0.6 })); rete.position.set(0, -2.6, -6.4); braccio.add(rete);
-  box(braccio, 0.05, 2.4, 0.05, mat('#1f2937'), 0, -1.3, -6.4);
-  ctx.animate((t) => { if (ctx.flows.lavora('INT')) { braccio.rotation.y = Math.sin(t * 0.5) * 0.6; rete.position.y = -2.6 - Math.abs(Math.sin(t * 0.9)) * 1.4; } });
+  /* gru: pescano dal lago e depongono sui nastri che entrano nel magazzino (una per corsia) */
+  const [px, pz] = el.pos, giallo = mat('#facc15', { r: 0.5 });
+  ctx.cfg.flussi.corsie.forEach((cx, k) => {
+    const gru = new THREE.Group(); gru.position.set(cx - px - 3.5, 0.85, 0); g.add(gru);
+    cyl(gru, 0.35, 0.5, 5.5, giallo, 0, 0, 0, 10); box(gru, 1.4, 1.2, 1.4, mat('#57534e'), 0, 5.2, 0);
+    const testa = new THREE.Group(); testa.position.y = 6; gru.add(testa);
+    box(testa, 0.4, 0.4, 7.5, giallo, 0, 0, -1.2); box(testa, 1, 0.8, 1.2, mat('#57534e'), 0, 0, 2.6);
+    const braccio = new THREE.Group(); braccio.position.set(0, 0, -4.6); testa.add(braccio);
+    const fune = box(braccio, 0.05, 1, 0.05, mat('#1f2937'), 0, -1, 0);
+    const pinza = new THREE.Group(); braccio.add(pinza); box(pinza, 0.9, 0.2, 0.9, mat('#334155'), 0, 0, 0);
+    const carico = box(pinza, 0.9, 0.7, 0.9, mat(['#9ca3af', '#a8a29e', '#78716c'][k]), 0, -0.75, 0);
+    const ease = (x) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2);
+    ctx.animate((t) => {
+      const on = ctx.flows.lavora('INT'), c = on ? (t * 0.16 + k * 0.33) % 1 : 0;
+      const rot = c < 0.3 ? 0 : c < 0.5 ? ease((c - 0.3) / 0.2) : c < 0.75 ? 1 : 1 - ease((c - 0.75) / 0.25);   // lago → nastro → lago
+      testa.rotation.y = Math.PI * rot + 0.35;
+      const giu = c < 0.3 ? Math.sin((c / 0.3) * Math.PI) : c >= 0.5 && c < 0.75 ? Math.sin(((c - 0.5) / 0.25) * Math.PI) * 0.6 : 0;
+      const L = 2 + giu * 3.2; fune.scale.y = L; fune.position.y = -L / 2; pinza.position.y = -L;
+      carico.visible = on && ((c > 0.15 && c < 0.62));                                                // il pezzo pescato viaggia fino al nastro
+    });
+  });
+  /* pannello di comando delle gru */
+  const pann = new THREE.Group(); pann.position.set(28.5 - px + 1.6, 0.85, -44 - pz); pann.rotation.y = -Math.PI / 2; g.add(pann);
+  box(pann, 1.8, 1.1, 0.8, mat('#334155')); const pt = box(pann, 1.8, 0.1, 0.9, mat('#0f172a'), 0, 1.1, 0.1); pt.rotation.x = -0.4;
+  const luci = ['#22c55e', '#facc15', '#ef4444', '#38bdf8'].map((c, i) => box(pann, 0.22, 0.12, 0.22, mat(c, { e: c, ei: 0.8 }).clone(), -0.6 + i * 0.4, 1.2, 0.15));
+  ctx.animate((t) => luci.forEach((l, i) => { l.material.emissiveIntensity = ctx.flows.lavora('INT') ? 0.3 + Math.abs(Math.sin(t * 3 + i * 1.3)) : 0.1; }));
   const grezzi = ['#9ca3af', '#a8a29e', '#78716c'];                                // casse di materiale pescato
-  [[-18, 1], [-16.4, 0.4], [-2, 0.8], [8, 0.5], [9.6, 1]].forEach(([x, z], i) => box(g, 1.2, 0.9, 1.2, mat(grezzi[i % 3]), x, 0.85, z));
+  [[-10, 1], [-8.4, 0.4], [9, 0.8], [11, 0.5]].forEach(([x, z], i) => box(g, 1.2, 0.9, 1.2, mat(grezzi[i % 3]), x, 0.85, z));
 };
 
 /* ===== [REQ-FLW-03] Magazzino materie prime (Bronze): a scaffale, etichettato, ancora grezzo ===== */
