@@ -41,6 +41,7 @@ try {
   flows.collega(state);
   const figures = createFigures(cfg, world, state, flows);
   const ui = createUI(cfg, world, state);
+  ui.collegaTeam(figures);
   state.init();
   const clock = new THREE.Clock();
   (function loop() {

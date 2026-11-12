@@ -95,5 +95,5 @@ export function createFlows(cfg, world) {
       }
     }
   }
-  return { addRoute, collega, update, routes, lavora: (w) => !!state && lavora(w), conta: () => routes.reduce((s, r) => s + r.items.length, 0) };
+  return { addRoute, collega, update, routes, lavora: (w) => !!state && lavora(w), alimentato: () => !!state && alimentato('bronze'), conta: () => routes.reduce((s, r) => s + r.items.length, 0) };
 }

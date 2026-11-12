@@ -31,7 +31,21 @@
   #bar { top: 14px; left: 346px; padding: 6px; display: flex; gap: 6px; flex-wrap: wrap; max-width: calc(100% - 360px); }
   #bar button { background: rgba(148,163,184,.14); border: 1px solid var(--line); color: var(--fg); font: 500 12.5px inherit; font-family: inherit; padding: 7px 11px; border-radius: 8px; cursor: pointer; }
   #bar button:hover { background: rgba(148,163,184,.28); }
-  #info { top: 62px; right: 14px; width: 348px; max-height: calc(100% - 110px); overflow-y: auto; padding: 16px 18px; display: none; }
+  #team { top: 14px; right: 14px; padding: 8px 12px 9px; }
+  #team h2 { margin: 0 0 5px; font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.1px; color: var(--muted); }
+  .pupazzi { display: flex; gap: 5px; flex-wrap: wrap; max-width: 300px; }
+  .pupazzo { background: rgba(148,163,184,.14); border: 1px solid var(--line); border-radius: 8px; padding: 3px 6px 1px; cursor: pointer; }
+  .pupazzo:hover { background: rgba(148,163,184,.3); }
+  .pupazzo.sel { background: #facc15; border-color: #facc15; }
+  .pupazzo.off { opacity: .35; }
+  .apri { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 12px; width: 14px; padding: 0; margin-left: -4px; }
+  .sub { display: none; margin: 0 0 4px 22px; border-left: 2px solid var(--line); padding-left: 4px; }
+  .sub.open { display: block; }
+  .subrow { padding: 2px 6px; }
+  .subrow .name { font-size: 12.5px; }
+  .subrow .name small { display: block; font-size: 10.5px; color: var(--muted); }
+  .subrow[data-stato="off"] .name { color: var(--muted); }
+  #info { top: 82px; right: 14px; width: 348px; max-height: calc(100% - 110px); overflow-y: auto; padding: 16px 18px; display: none; }
   #info.open { display: block; }
   #info h3 { margin: 0 26px 8px 0; font-size: 18px; }
   #info .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
@@ -61,6 +75,7 @@
 <div id="labels"></div>
 <aside id="left" class="panel"><header><h1 id="titolo"></h1><p id="sottotitolo"></p></header><h2 id="wl-h"></h2><div id="wl"></div><div id="hint"></div></aside>
 <nav id="bar" class="panel"></nav>
+<aside id="team" class="panel"></aside>
 <aside id="info" class="panel"></aside>
 <aside id="legenda" class="panel open"></aside>
 <div id="tip"></div>

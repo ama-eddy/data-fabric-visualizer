@@ -5,7 +5,7 @@
 
 | Campo | Valore |
 |---|---|
-| Versione documento | 1.3 |
+| Versione documento | 1.4 |
 | Data | 2026-11-12 |
 | Stato | Requisiti approvati — implementazione da avviare (vedi `PIANO.md`) |
 | Approva | Il responsabile del progetto (richiedente) |
@@ -657,4 +657,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.3 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…015 |
+| 1.4 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…018 |

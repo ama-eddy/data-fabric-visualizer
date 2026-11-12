@@ -65,8 +65,8 @@ export const builders = {
       const x = -w / 2 + 1 + (i + 0.5) * (w - 2) / 3;
       const r = box(g, (w - 2) / 3, 0.3, d - 1, mat('#64748b'), x, 0.3 + h * 0.75 + 0.6, 0); r.rotation.z = 0.35;
     }
-    box(g, 0.25, h * 0.45, d * 0.6, mat('#7dd3fc', { e: '#0ea5e9', ei: 0.25, r: 0.2 }), w / 2 - 0.4, 1.4, 0); // vetrata verso il capannone
-    for (const z of [-d * 0.2, d * 0.2]) { box(g, 2.4, 1, 1.4, mat('#cbd5e1'), w / 2 + 2.4, 0.3, z); cyl(g, 0.35, 0.5, 1, mat('#a3e635', { e: '#65a30d', ei: 0.4 }), w / 2 + 2.4, 1.3, z, 10); } // banchi prova
+    for (const x of [-w / 2 + 0.4, w / 2 - 0.4]) box(g, 0.25, h * 0.4, d * 0.5, mat('#7dd3fc', { e: '#0ea5e9', ei: 0.25, r: 0.2 }), x, 1.4, 0); // vetrate
+    for (const x of [-w * 0.25, w * 0.25]) { box(g, 2.4, 1, 1.4, mat('#cbd5e1'), x, 0.3, d / 2 + 1.4); cyl(g, 0.35, 0.5, 1, mat('#a3e635', { e: '#65a30d', ei: 0.4 }), x, 1.3, d / 2 + 1.4, 10); } // banchi prova
   },
 
   /* ===== Segnaposto: volume provvisorio nel colore del workload (batch successivi, vedi PIANO.md) ===== */

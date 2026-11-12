@@ -7,7 +7,7 @@ window.PROFILE = {
     { nome: 'Il gestionale', categoria: 'erp', flusso: 'on' },
     { nome: 'CRM vendite', categoria: 'crm', flusso: 'on' },
     { nome: 'Budget (Excel)', categoria: 'file', flusso: 'on' },
-    { nome: 'Presenze', categoria: 'db', flusso: 'off' },
+    { nome: 'Presenze', categoria: 'hr', flusso: 'off' },
   ],
   team: { trasporto: { m: 1, f: 1 }, rotazione: { m: 1, f: 2 } },
   contatto: { chi: 'Team dati', come: 'dati@esempio.example' },

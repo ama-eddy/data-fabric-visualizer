@@ -103,6 +103,18 @@ Come arriva il materiale
 ### ui.statoElemento
 Stato
 
+### ui.categoria
+Tipo di sistema
+
+### ui.apri
+Mostra uno per uno
+
+### ui.team
+Team dati
+
+### ui.fuoriServizio
+non in servizio
+
 ## Contatto predefinito ("A chi rivolgerti")
 
 ### contatto.chi
@@ -254,10 +266,10 @@ L'energia della fabbrica ha un costo ed è condivisa: per questo si pianifica ch
 Laboratorio prove
 
 ### elements.laboratorio.fabbrica
-Ogni modifica si prova qui prima di entrare in produzione.
+Il laboratorio prove: ogni semilavorato viene collaudato qui prima di uscire dalla fabbrica, e ogni modifica si prova qui prima di entrare in produzione.
 
 ### elements.laboratorio.perTe
-Quando chiedi una modifica, la provi insieme al team dati prima che arrivi a tutti: niente sorprese nei report.
+Quello che ricevi è già stato provato. E quando chiedi una modifica, la provi insieme al team dati prima che arrivi a tutti: niente sorprese nei report.
 
 ### elements.fornitori.nome
 Area fornitori
@@ -317,7 +329,7 @@ Il semilavorato è un dato certificato, con i calcoli già pronti: lo stesso per
 Spedizioni
 
 ### elements.spedizioni.fabbrica
-Il reparto spedizioni: da qui i semilavorati partono verso le officine delle funzioni.
+Il reparto spedizioni: da qui i semilavorati collaudati partono verso le officine delle funzioni.
 
 ### elements.spedizioni.perTe
 È da qui che i dati certificati arrivano alla tua funzione.
@@ -326,7 +338,7 @@ Il reparto spedizioni: da qui i semilavorati partono verso le officine delle fun
 Showroom
 
 ### elements.showroom.fabbrica
-Lo showroom dell'hub: i prodotti finiti ufficiali, costruiti dal team dati sui semilavorati e uguali per tutta l'azienda.
+Lo showroom dell'hub, accanto alla fabbrica: i prodotti finiti ufficiali, costruiti dal team dati sui semilavorati collaudati e uguali per tutta l'azienda.
 
 ### elements.showroom.perTe
 Sono i report ufficiali, in Power BI: li apri e leggi il numero, senza costruire nulla. È lo stesso numero che vedono tutti.
@@ -463,35 +475,80 @@ Il materiale arriva in diretta, un pezzo dopo l'altro, alla sala sensori: funzio
 
 ## Sorgenti: tipi di fornitore
 
+### categorie.erp.nome
+ERP
+
 ### categorie.erp.fabbrica
 Un grande stabilimento: il fornitore principale, con tanto materiale ben organizzato.
 
 ### categorie.erp.perTe
-È il gestionale: ordini, fatture, contabilità.
+È il gestionale: ordini, fatture, contabilità, acquisti.
+
+### categorie.crm.nome
+CRM
 
 ### categorie.crm.fabbrica
 Un negozio: qui nasce tutto ciò che riguarda il rapporto con i clienti.
 
 ### categorie.crm.perTe
-È il sistema dove si seguono clienti, contatti e trattative.
+È il sistema dove si seguono clienti, contatti, offerte e trattative.
 
-### categorie.db.fabbrica
-Dei silos: materiale già stoccato in modo ordinato, pronto da prelevare.
+### categorie.pim.nome
+PIM
 
-### categorie.db.perTe
-È un archivio strutturato di un'applicazione aziendale.
+### categorie.pim.fabbrica
+La sala cataloghi: schede ordinate di ogni prodotto, con codici, descrizioni e immagini.
 
-### categorie.file.fabbrica
-Un archivio di scatoloni: materiale sfuso, preparato a mano.
+### categorie.pim.perTe
+È il sistema che tiene le informazioni sui prodotti: codici, caratteristiche, descrizioni, listini.
 
-### categorie.file.perTe
-Sono i fogli di calcolo e i file che oggi qualcuno compila e si passa a mano.
+### categorie.hr.nome
+HR
 
-### categorie.api.fabbrica
+### categorie.hr.fabbrica
+Una palazzina di uffici: le informazioni sulle persone dell'azienda.
+
+### categorie.hr.perTe
+È il sistema del personale: organico, presenze, paghe. Sono dati delicati, protetti dalle regole su chi vede cosa.
+
+### categorie.mes.nome
+Produzione e magazzino
+
+### categorie.mes.fabbrica
+Dei silos: materiale già stoccato in modo ordinato, che scorre in continuazione.
+
+### categorie.mes.perTe
+Sono i sistemi della produzione e del magazzino: giacenze, lotti, avanzamento degli ordini.
+
+### categorie.ecommerce.nome
+E-commerce
+
+### categorie.ecommerce.fabbrica
+Un centro pacchi: ordini che arrivano dal negozio online, uno dopo l'altro.
+
+### categorie.ecommerce.perTe
+È il negozio online: ordini, carrelli, resi, comportamento dei clienti sul sito.
+
+### categorie.marketing.nome
+Marketing
+
+### categorie.marketing.fabbrica
 Uno sportello: si chiede e si riceve, un pezzo alla volta.
 
-### categorie.api.perTe
-È un servizio esterno a cui l'azienda è abbonata e da cui si ritirano i dati.
+### categorie.marketing.perTe
+Sono i servizi di marketing a cui l'azienda è abbonata: campagne, newsletter, social.
+
+### categorie.excel.nome
+Fogli di calcolo
+
+### categorie.excel.fabbrica
+Un archivio di scatoloni: materiale sfuso, preparato a mano.
+
+### categorie.excel.perTe
+Sono i fogli di calcolo che oggi qualcuno compila e si passa a mano: budget, previsioni, tabelle di appoggio.
+
+### categorie.iot.nome
+Sensori
 
 ### categorie.iot.fabbrica
 Un campo di sensori: il materiale arriva in continuazione, senza pause.
@@ -499,16 +556,22 @@ Un campo di sensori: il materiale arriva in continuazione, senza pause.
 ### categorie.iot.perTe
 Sono macchine e sensori che mandano segnali in ogni momento.
 
+### categorie.esterni.nome
+Dati esterni
+
 ### categorie.esterni.fabbrica
 Un mercato: materiale che viene da fuori, acquistato o pubblico.
 
 ### categorie.esterni.perTe
 Sono dati di mercato o dati pubblici che arricchiscono quelli dell'azienda.
 
-### categorie.storage.fabbrica
+### categorie.datalake.nome
+Data lake esistente
+
+### categorie.datalake.fabbrica
 Un deposito di container: grandi quantità di materiale già raccolto altrove.
 
-### categorie.storage.perTe
+### categorie.datalake.perTe
 È un archivio dati che l'azienda ha già: si usa così com'è, senza duplicarlo.
 
 ## Sorgenti standard: nomi
@@ -519,20 +582,26 @@ Gestionale
 ### sources.src-crm.nome
 CRM
 
+### sources.src-pim.nome
+Anagrafica prodotti
+
 ### sources.src-hr.nome
 Sistema del personale
 
-### sources.src-bud.nome
-Budget e forecast (Excel)
+### sources.src-mes.nome
+Produzione e magazzino
 
-### sources.src-wms.nome
-Magazzino e produzione
-
-### sources.src-iot.nome
-Sensori di impianto
+### sources.src-ecom.nome
+Negozio online
 
 ### sources.src-mkt.nome
 Marketing
+
+### sources.src-excel.nome
+Budget e forecast (Excel)
+
+### sources.src-iot.nome
+Sensori di impianto
 
 ### sources.src-ext.nome
 Dati di mercato
@@ -578,6 +647,12 @@ Portano il materiale dai fornitori alla banchina e dalla banchina al magazzino.
 
 ### team.trasporto.perTe
 Sono le persone che collegano i tuoi sistemi alla fabbrica e controllano che i carichi arrivino ogni giorno.
+
+### team.trasporto.compiti.0.nome
+Dai fornitori alla banchina
+
+### team.trasporto.compiti.1.nome
+Dalla banchina al magazzino
 
 ### team.rotazione.nome
 Team dati — governo, coordinamento e report

@@ -7,10 +7,10 @@ import { builders } from './builders.js';
 export function elementiSorgenti(cfg) {
   const L = cfg.layout.sorgenti, n = cfg.sources.length, passo = Math.min(L.passo, L.larghezza / Math.max(n, 1));
   return cfg.sources.map((s, i) => {
-    const cat = cfg.categorie[s.categoria] || cfg.categorie.db, modalita = s.modalita || cat.modalita;
+    const cat = cfg.categorie[s.categoria] || cfg.categorie.erp, modalita = s.modalita || cat.modalita;
     const x = (i - (n - 1) / 2) * passo;
     return { id: s.id || 'src-' + i, wl: 'INT', tipo: 'sorgente', nome: s.nome, categoria: s.categoria, forma: cat.forma, modalita,
-      pos: [x, L.z], dim: [10, 10, 7], stato: s.stato || 'on', arrivo: x * 0.47, etichetta: [0, i % 2 ? 15 : 10.5, 0],
+      pos: [x, L.z], dim: [10, 10, 7], stato: s.stato || 'on', arrivo: x * 0.4, categoriaNome: cat.nome, etichetta: [0, i % 2 ? 15 : 10.5, 0],
       fabbrica: cat.fabbrica, perTe: cat.perTe, mezzo: cfg.modalita[modalita].nome + '. ' + cfg.modalita[modalita].testo };
   });
 }
@@ -58,6 +58,22 @@ const forme = {
       const t = new THREE.Mesh(new THREE.ConeGeometry(2, 1.4, 4), mat(col[i])); t.position.set(x, 3.3, 0); t.rotation.y = Math.PI / 4; t.castShadow = true; g.add(t);
       box(g, 2, 0.9, 1.4, mat('#d6d3d1'), x, 0, 0); box(g, 0.7, 0.5, 0.7, mat(col[(i + 1) % 3]), x - 0.4, 0.9, 0); box(g, 0.6, 0.4, 0.6, mat('#facc15'), x + 0.5, 0.9, 0.2);
     });
+  },
+  uffici(g) {
+    box(g, 8, 8, 6, mat('#e0e7ff')); box(g, 8.4, 0.4, 6.4, mat('#4338ca'), 0, 8, 0);
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) box(g, 1.2, 1.2, 0.1, mat('#7dd3fc', { e: '#38bdf8', ei: 0.2 }), -2.7 + c * 1.8, 1.3 + r * 2.3, 3.03);
+    box(g, 1.6, 2, 0.12, mat('#334155'), 0, 0, 3.05);
+  },
+  catalogo(g) {
+    box(g, 9, 4.6, 5.5, mat('#f5f5f4')); const t = box(g, 9.4, 0.3, 6, mat('#0f766e'), 0, 4.6, 0); t.rotation.x = 0.06;
+    ['#ef4444', '#f59e0b', '#22c55e', '#3b82f6', '#a855f7'].forEach((c, i) => { box(g, 1.3, 1.7, 0.12, mat(c), -3.2 + i * 1.6, 1.6, 2.82); box(g, 1, 0.25, 0.13, mat('#ffffff'), -3.2 + i * 1.6, 2.6, 2.83); });
+    for (let i = 0; i < 3; i++) box(g, 2.4, 0.6, 1.6, mat('#d6d3d1'), -2.6 + i * 2.6, 0, 4);
+  },
+  pacchi(g) {
+    box(g, 9, 4, 5, mat('#fef3c7')); box(g, 9.4, 0.3, 5.4, mat('#ea580c'), 0, 4, 0);
+    box(g, 3, 2.6, 0.12, mat('#334155'), -2, 0, 2.55);
+    const c = mat('#b45309'); for (const [x, z, n] of [[1.5, 3.6, 3], [3, 3.8, 2], [2.2, 4.8, 1]]) for (let i = 0; i < n; i++) box(g, 1.1, 0.8, 1.1, c, x, i * 0.85, z);
+    const k = box(g, 1.6, 0.9, 1, mat('#1d4ed8'), -3.2, 4.3, 0); cyl(g, 0.25, 0.25, 0.2, mat('#111827'), -3.7, 4.1, 0.6, 8); cyl(g, 0.25, 0.25, 0.2, mat('#111827'), -2.7, 4.1, 0.6, 8);   // carrello sull'insegna
   },
   container(g) {
     const col = ['#dc2626', '#2563eb', '#16a34a', '#f59e0b', '#7c3aed'];

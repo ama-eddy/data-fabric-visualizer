@@ -26,10 +26,20 @@ export function createFigures(cfg, world, state, flows) {
   const trasporto = elenco(T.trasporto).map((sesso, i) => {
     const o = crea(sesso, 'trasporto'), comp = T.trasporto.compiti[i % T.trasporto.compiti.length], off = Math.floor(i / T.trasporto.compiti.length) * 2.2;
     const carico = box(o, 0.7, 0.55, 0.7, mat('#9ca3af'), 0, 1.0, 0.6);
-    return { o, carico, a: new THREE.Vector3(comp.da[0] + off, 0, comp.da[1]), b: new THREE.Vector3(comp.a[0] + off, 0, comp.a[1]), fase: i * 0.37 };
+    return { o, sesso, gruppo: 'trasporto', compito: comp.nome, carico, a: new THREE.Vector3(comp.da[0] + off, 0, comp.da[1]), b: new THREE.Vector3(comp.a[0] + off, 0, comp.a[1]), fase: i * 0.37 };
   });
   /* ===== Rotazione tra le postazioni: cabina di controllo, coordinamento, showroom ===== */
-  const rotazione = elenco(T.rotazione).map((sesso, i) => ({ o: crea(sesso, 'rotazione'), i, pos: null, da: null, verso: null, k: 1, post: -1 }));
+  const rotazione = elenco(T.rotazione).map((sesso, i) => ({ o: crea(sesso, 'rotazione'), sesso, gruppo: 'rotazione', i, pos: null, da: null, verso: null, k: 1, post: -1, postazione: '' }));
+  const tutte = [...trasporto, ...rotazione];
+
+  /* [REQ-UI-12] evidenziazione: anello a terra e freccia sopra la testa, seguono la figura */
+  const segno = new THREE.Group(); segno.visible = false; world.scene.add(segno);
+  const anello = new THREE.Mesh(new THREE.RingGeometry(1.4, 1.9, 28), new THREE.MeshBasicMaterial({ color: 0xfacc15, side: THREE.DoubleSide, transparent: true, opacity: 0.9 }));
+  anello.rotation.x = -Math.PI / 2; anello.position.y = 0.08; segno.add(anello);
+  const freccia = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.4, 12), mat('#facc15', { e: '#f59e0b', ei: 1 })); freccia.rotation.x = Math.PI; segno.add(freccia);
+  let scelta = -1;
+  const evidenzia = (i) => { scelta = scelta === i ? -1 : i; return scelta === i; };
+  const descrizione = (f) => (f.gruppo === 'trasporto' ? f.compito : f.postazione) + ' · ' + T[f.gruppo].nome;
   let turno = 0, tTurno = 0;
 
   function update(dt, t) {
@@ -52,7 +62,11 @@ export function createFigures(cfg, world, state, flows) {
       if (f.k < 1) { f.k = Math.min(1, f.k + (dt * 11) / Math.max(1, f.da.distanceTo(f.verso))); f.pos.lerpVectors(f.da, f.verso, f.k); f.o.rotation.y = Math.atan2(f.verso.x - f.da.x, f.verso.z - f.da.z); }
       else f.o.rotation.y += (Math.sin(t * 0.5 + f.i) * 0.6 - f.o.rotation.y) * Math.min(1, dt * 2);
       f.o.position.set(f.pos.x, quota(f.pos.x, f.pos.z) + (f.k < 1 ? Math.abs(Math.sin(t * 9)) * 0.12 : 0), f.pos.z);
+      f.postazione = p.nome;
     }
+    const s = tutte[scelta];
+    segno.visible = !!s && s.o.visible;
+    if (segno.visible) { segno.position.copy(s.o.position); freccia.position.y = 4.8 + Math.sin(t * 4) * 0.35; anello.scale.setScalar(1 + 0.12 * Math.sin(t * 5)); }
   }
-  return { update, conta: () => ({ trasporto: trasporto.filter((f) => f.o.visible).length, rotazione: rotazione.filter((f) => f.o.visible).length, totale: trasporto.length + rotazione.length }), rotazione, trasporto };
+  return { update, tutte, evidenzia, descrizione, scelta: () => scelta, conta: () => ({ trasporto: trasporto.filter((f) => f.o.visible).length, rotazione: rotazione.filter((f) => f.o.visible).length, totale: trasporto.length + rotazione.length }), rotazione, trasporto };
 }

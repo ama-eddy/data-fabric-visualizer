@@ -16,7 +16,8 @@ window.CONFIG = {
     lavori: 'Lavori in corso', segnaposto: 'in arrivo',
     aiuto: 'Trascina per ruotare · rotellina per lo zoom · tasto destro o WASD per spostarti · clic su un elemento per la scheda',
     chiudi: 'Chiudi', legenda: 'Legenda', materiali: 'Materiali', mezzi: 'Trasporto',
-    mezzo: 'Come arriva il materiale', statoElemento: 'Stato',
+    mezzo: 'Come arriva il materiale', statoElemento: 'Stato', categoria: 'Tipo di sistema',
+    apri: 'Mostra uno per uno', team: 'Team dati', fuoriServizio: 'non in servizio',
   },
 
   // [REQ-LIT-02] contatto mostrato se il profilo non ne indica uno
@@ -29,7 +30,7 @@ window.CONFIG = {
   layout: {
     capannone: { x: [-32, 32], z: [-40, 40], pavimento: 0.8, altezza: 14 },
     camera: { pos: [0, 122, 188], target: [0, 0, 4] },
-    sorgenti: { z: -86, passo: 13.5, larghezza: 116 },   // [REQ-SRC-07] area fornitori sul fondo
+    sorgenti: { z: -86, passo: 12.8, larghezza: 140 },   // [REQ-SRC-07] area fornitori sul fondo
     margineSinistro: 332, // larghezza occupata dal pannello: la scena viene centrata nello spazio libero
   },
 
@@ -57,29 +58,34 @@ window.CONFIG = {
       testo: 'Il materiale arriva in diretta, un pezzo dopo l\'altro, alla sala sensori: funziona solo quando il Real-Time è attivo.' },
   },
 
-  // [REQ-SRC-02] categoria della sorgente → forma dell'edificio e modalità di default
+  // [REQ-SRC-02] categoria di software della sorgente → forma dell'edificio e modalità di trasporto di default
   categorie: {
-    erp: { forma: 'stabilimento', modalita: 'copy', fabbrica: 'Un grande stabilimento: il fornitore principale, con tanto materiale ben organizzato.', perTe: 'È il gestionale: ordini, fatture, contabilità.' },
-    crm: { forma: 'negozio', modalita: 'copy', fabbrica: 'Un negozio: qui nasce tutto ciò che riguarda il rapporto con i clienti.', perTe: 'È il sistema dove si seguono clienti, contatti e trattative.' },
-    db: { forma: 'silo', modalita: 'mirroring', fabbrica: 'Dei silos: materiale già stoccato in modo ordinato, pronto da prelevare.', perTe: 'È un archivio strutturato di un\'applicazione aziendale.' },
-    file: { forma: 'archivio', modalita: 'dataflow', fabbrica: 'Un archivio di scatoloni: materiale sfuso, preparato a mano.', perTe: 'Sono i fogli di calcolo e i file che oggi qualcuno compila e si passa a mano.' },
-    api: { forma: 'sportello', modalita: 'copy', fabbrica: 'Uno sportello: si chiede e si riceve, un pezzo alla volta.', perTe: 'È un servizio esterno a cui l\'azienda è abbonata e da cui si ritirano i dati.' },
-    iot: { forma: 'sensori', modalita: 'streaming', fabbrica: 'Un campo di sensori: il materiale arriva in continuazione, senza pause.', perTe: 'Sono macchine e sensori che mandano segnali in ogni momento.' },
-    esterni: { forma: 'mercato', modalita: 'copy', fabbrica: 'Un mercato: materiale che viene da fuori, acquistato o pubblico.', perTe: 'Sono dati di mercato o dati pubblici che arricchiscono quelli dell\'azienda.' },
-    storage: { forma: 'container', modalita: 'shortcut', fabbrica: 'Un deposito di container: grandi quantità di materiale già raccolto altrove.', perTe: 'È un archivio dati che l\'azienda ha già: si usa così com\'è, senza duplicarlo.' },
+    erp: { nome: 'ERP', forma: 'stabilimento', modalita: 'copy', fabbrica: 'Un grande stabilimento: il fornitore principale, con tanto materiale ben organizzato.', perTe: 'È il gestionale: ordini, fatture, contabilità, acquisti.' },
+    crm: { nome: 'CRM', forma: 'negozio', modalita: 'copy', fabbrica: 'Un negozio: qui nasce tutto ciò che riguarda il rapporto con i clienti.', perTe: 'È il sistema dove si seguono clienti, contatti, offerte e trattative.' },
+    pim: { nome: 'PIM', forma: 'catalogo', modalita: 'copy', fabbrica: 'La sala cataloghi: schede ordinate di ogni prodotto, con codici, descrizioni e immagini.', perTe: 'È il sistema che tiene le informazioni sui prodotti: codici, caratteristiche, descrizioni, listini.' },
+    hr: { nome: 'HR', forma: 'uffici', modalita: 'mirroring', fabbrica: 'Una palazzina di uffici: le informazioni sulle persone dell\'azienda.', perTe: 'È il sistema del personale: organico, presenze, paghe. Sono dati delicati, protetti dalle regole su chi vede cosa.' },
+    mes: { nome: 'Produzione e magazzino', forma: 'silo', modalita: 'mirroring', fabbrica: 'Dei silos: materiale già stoccato in modo ordinato, che scorre in continuazione.', perTe: 'Sono i sistemi della produzione e del magazzino: giacenze, lotti, avanzamento degli ordini.' },
+    ecommerce: { nome: 'E-commerce', forma: 'pacchi', modalita: 'copy', fabbrica: 'Un centro pacchi: ordini che arrivano dal negozio online, uno dopo l\'altro.', perTe: 'È il negozio online: ordini, carrelli, resi, comportamento dei clienti sul sito.' },
+    marketing: { nome: 'Marketing', forma: 'sportello', modalita: 'copy', fabbrica: 'Uno sportello: si chiede e si riceve, un pezzo alla volta.', perTe: 'Sono i servizi di marketing a cui l\'azienda è abbonata: campagne, newsletter, social.' },
+    excel: { nome: 'Fogli di calcolo', forma: 'archivio', modalita: 'dataflow', fabbrica: 'Un archivio di scatoloni: materiale sfuso, preparato a mano.', perTe: 'Sono i fogli di calcolo che oggi qualcuno compila e si passa a mano: budget, previsioni, tabelle di appoggio.' },
+    iot: { nome: 'Sensori', forma: 'sensori', modalita: 'streaming', fabbrica: 'Un campo di sensori: il materiale arriva in continuazione, senza pause.', perTe: 'Sono macchine e sensori che mandano segnali in ogni momento.' },
+    esterni: { nome: 'Dati esterni', forma: 'mercato', modalita: 'copy', fabbrica: 'Un mercato: materiale che viene da fuori, acquistato o pubblico.', perTe: 'Sono dati di mercato o dati pubblici che arricchiscono quelli dell\'azienda.' },
+    datalake: { nome: 'Data lake esistente', forma: 'container', modalita: 'shortcut', fabbrica: 'Un deposito di container: grandi quantità di materiale già raccolto altrove.', perTe: 'È un archivio dati che l\'azienda ha già: si usa così com\'è, senza duplicarlo.' },
   },
 
-  // [REQ-SRC-01] catalogo standard delle sorgenti (sostituito da quello del profilo, se presente)
+  // [REQ-SRC-01] catalogo standard: una sorgente per categoria (sostituito da quello del profilo, se presente)
   sources: [
     { id: 'src-erp', nome: 'Gestionale', categoria: 'erp', stato: 'on' },
     { id: 'src-crm', nome: 'CRM', categoria: 'crm', stato: 'on' },
-    { id: 'src-hr', nome: 'Sistema del personale', categoria: 'db', stato: 'on' },
-    { id: 'src-bud', nome: 'Budget e forecast (Excel)', categoria: 'file', stato: 'on' },
-    { id: 'src-wms', nome: 'Magazzino e produzione', categoria: 'db', stato: 'on' },
+    { id: 'src-pim', nome: 'Anagrafica prodotti', categoria: 'pim', stato: 'on' },
+    { id: 'src-hr', nome: 'Sistema del personale', categoria: 'hr', stato: 'on' },
+    { id: 'src-mes', nome: 'Produzione e magazzino', categoria: 'mes', stato: 'on' },
+    { id: 'src-ecom', nome: 'Negozio online', categoria: 'ecommerce', stato: 'on' },
+    { id: 'src-mkt', nome: 'Marketing', categoria: 'marketing', stato: 'on' },
+    { id: 'src-excel', nome: 'Budget e forecast (Excel)', categoria: 'excel', stato: 'on' },
     { id: 'src-iot', nome: 'Sensori di impianto', categoria: 'iot', stato: 'on' },
-    { id: 'src-mkt', nome: 'Marketing', categoria: 'api', stato: 'on' },
     { id: 'src-ext', nome: 'Dati di mercato', categoria: 'esterni', stato: 'on' },
-    { id: 'src-lake', nome: 'Archivio dati esistente', categoria: 'storage', stato: 'on' },
+    { id: 'src-lake', nome: 'Archivio dati esistente', categoria: 'datalake', stato: 'on' },
   ],
 
   // [REQ-HS-02, REQ-HS-03, REQ-HS-07] spoke standard (sostituiti da quelli del profilo, se presente)
@@ -101,14 +107,14 @@ window.CONFIG = {
     trasporto: { m: 2, f: 0, wl: 'INT', nome: 'Team dati — trasporto',
       fabbrica: 'Portano il materiale dai fornitori alla banchina e dalla banchina al magazzino.',
       perTe: 'Sono le persone che collegano i tuoi sistemi alla fabbrica e controllano che i carichi arrivino ogni giorno.',
-      compiti: [{ da: [30, -76], a: [30, -42] }, { da: [25, -33.5], a: [25, -23] }] },
+      compiti: [{ nome: 'Dai fornitori alla banchina', da: [30, -76], a: [30, -42] }, { nome: 'Dalla banchina al magazzino', da: [25, -33.5], a: [25, -23] }] },
     rotazione: { m: 2, f: 1, wl: 'GOV', nome: 'Team dati — governo, coordinamento e report',
       fabbrica: 'Si alternano tra tre postazioni: la cabina di controllo (governo della fabbrica), il coordinamento degli operatori e lo showroom, dove nascono i report ufficiali.',
       perTe: 'Sono poche persone che fanno più mestieri: per questo le richieste si mettono in fila e si pianificano.',
       postazioni: [
-        { nome: 'Cabina di controllo', pos: [-44, 50], attiva: ['GOV', 'ARC'] },
+        { nome: 'Cabina di controllo', pos: [-34, 56], attiva: ['GOV', 'ARC'] },
         { nome: 'Ufficio di coordinamento', pos: [44, 40], attiva: ['ARC'] },
-        { nome: 'Showroom', pos: [-16, 35.5], attiva: ['VIS'] },
+        { nome: 'Showroom', pos: [-48, 37.5], attiva: ['VIS'] },
       ] },
   },
 
@@ -123,9 +129,10 @@ window.CONFIG = {
       { id: 'gold-confezionamento', z: [3, 12.5], materiale: 'gold', wl: 'TRF', richiede: ['INT', 'TRF'], alimentato: 'bronze' },
     ],
     uscite: [
-      { id: 'confezionamento-spedizioni', punti: [[16, 16], [16, 27]], materiale: 'semilavorato', wl: 'TRF', richiede: ['INT', 'TRF'], alimentato: 'bronze' },
-      // [REQ-FLW-07] verso lo showroom dell'hub: compare solo con la Data Visualization
-      { id: 'confezionamento-showroom', punti: [[-16, 16], [-16, 25]], materiale: 'semilavorato', wl: 'VIS', richiede: ['INT', 'TRF', 'VIS'], alimentato: 'bronze' },
+      // [REQ-FLW-07] ogni semilavorato passa prima dal laboratorio prove (collaudo), poi va alle spedizioni;
+      // verso lo showroom esce dal laboratorio con una passerella (disegnata dallo showroom, compare solo con la Data Visualization)
+      { id: 'confezionamento-laboratorio', punti: [[-16, 16], [-16, 23.5]], materiale: 'semilavorato', wl: 'TRF', richiede: ['INT', 'TRF'], alimentato: 'bronze' },
+      { id: 'laboratorio-spedizioni', punti: [[-7.5, 30], [2.5, 30]], materiale: 'semilavorato', wl: 'TRF', richiede: ['INT', 'TRF'], alimentato: 'bronze' },
     ],
   },
 
@@ -184,13 +191,13 @@ window.CONFIG = {
     { id: 'centrale', wl: 'ARC', tipo: 'centrale', nome: 'Centrale elettrica', pos: [-58, -22], dim: [18, 16, 12],
       fabbrica: 'La centrale dà energia a tutti i reparti. Se un reparto ne consuma troppa, gli altri rallentano.',
       perTe: "L'energia della fabbrica ha un costo ed è condivisa: per questo si pianifica chi consuma cosa." },
-    { id: 'laboratorio', wl: 'ARC', tipo: 'laboratorio', nome: 'Laboratorio prove', pos: [-58, 12], dim: [16, 12, 7],
-      fabbrica: 'Ogni modifica si prova qui prima di entrare in produzione.',
-      perTe: 'Quando chiedi una modifica, la provi insieme al team dati prima che arrivi a tutti: niente sorprese nei report.' },
+    { id: 'laboratorio', wl: 'ARC', tipo: 'laboratorio', nome: 'Laboratorio prove', pos: [-16, 30], dim: [16, 12, 7],
+      fabbrica: 'Il laboratorio prove: ogni semilavorato viene collaudato qui prima di uscire dalla fabbrica, e ogni modifica si prova qui prima di entrare in produzione.',
+      perTe: 'Quello che ricevi è già stato provato. E quando chiedi una modifica, la provi insieme al team dati prima che arrivi a tutti: niente sorprese nei report.' },
 
     // --- Segnaposto degli altri workload (batch 2-4) ---
     // --- Data Integration [REQ-FLW-01…03, REQ-SCN-02] ---
-    { id: 'fornitori', wl: 'INT', tipo: 'piazzale', nome: 'Area fornitori', pos: [0, -86], dim: [124, 16, 0.2], etichetta: [-58, 3, -96], cantiere: false,
+    { id: 'fornitori', wl: 'INT', tipo: 'piazzale', nome: 'Area fornitori', pos: [0, -86], dim: [146, 16, 0.2], etichetta: [-70, 3, -96], cantiere: false,
       fabbrica: "L'area dei fornitori: i sistemi dell'azienda da cui parte il materiale grezzo. Ogni tipo di fornitore ha un edificio diverso.",
       perTe: 'Sono i sistemi che usi ogni giorno: gestionale, CRM, fogli di calcolo. Tu continui a lavorare lì, il materiale parte da solo.' },
     { id: 'banchina', wl: 'INT', tipo: 'banchina', nome: 'Banchina di scarico', pos: [0, -34.5], dim: [60, 9, 5], zona: true,
@@ -211,11 +218,11 @@ window.CONFIG = {
       fabbrica: 'Il confezionamento: i componenti diventano semilavorati, con le istruzioni dentro e il marchio di qualità sopra.',
       perTe: 'Il semilavorato è un dato certificato, con i calcoli già pronti: lo stesso per tutti, pronto per costruirci i report.' },
     { id: 'spedizioni', wl: 'TRF', tipo: 'spedizioni', nome: 'Spedizioni', pos: [16, 30], dim: [28, 14, 5], zona: true,
-      fabbrica: 'Il reparto spedizioni: da qui i semilavorati partono verso le officine delle funzioni.',
+      fabbrica: 'Il reparto spedizioni: da qui i semilavorati collaudati partono verso le officine delle funzioni.',
       perTe: 'È da qui che i dati certificati arrivano alla tua funzione.' },
     // --- Data Visualization [REQ-FLW-07, REQ-SCN-07] ---
-    { id: 'showroom', wl: 'VIS', tipo: 'showroom', nome: 'Showroom', pos: [-16, 30], dim: [28, 14, 6], zona: true,
-      fabbrica: "Lo showroom dell'hub: i prodotti finiti ufficiali, costruiti dal team dati sui semilavorati e uguali per tutta l'azienda.",
+    { id: 'showroom', wl: 'VIS', tipo: 'showroom', nome: 'Showroom', pos: [-55, 28], dim: [28, 14, 6], zona: true,
+      fabbrica: "Lo showroom dell'hub, accanto alla fabbrica: i prodotti finiti ufficiali, costruiti dal team dati sui semilavorati collaudati e uguali per tutta l'azienda.",
       perTe: "Sono i report ufficiali, in Power BI: li apri e leggi il numero, senza costruire nulla. È lo stesso numero che vedono tutti." },
     // --- Ufficio di coordinamento [REQ-SCN-13] ---
     { id: 'coordinamento', wl: 'ARC', tipo: 'ufficio', nome: 'Ufficio di coordinamento', pos: [52, 38], dim: [12, 8, 5],
@@ -231,7 +238,7 @@ window.CONFIG = {
     { id: 'caveau', wl: 'SEC', tipo: 'caveau', nome: 'Caveau', pos: [42, -50], dim: [9, 8, 5],
       fabbrica: 'Il caveau: il materiale più delicato sta qui, sotto chiave.',
       perTe: 'I dati riservati (stipendi, dati personali) li vede solo chi deve: le regole su chi vede cosa valgono anche dentro i tuoi report.' },
-    { id: 'torre', wl: 'GOV', tipo: 'torre', nome: 'Torre di controllo', pos: [-50, 53], dim: [8, 8, 18],
+    { id: 'torre', wl: 'GOV', tipo: 'torre', nome: 'Torre di controllo', pos: [-40, 58], dim: [8, 8, 18],
       fabbrica: 'La torre di controllo: da qui si governa la fabbrica, si fissano le regole comuni e si mette il marchio di qualità sui prodotti controllati.',
       perTe: 'Il marchio "dato certificato" nasce qui: quando lo vedi, quel numero è lo stesso per tutta l\'azienda.' },
     { id: 'sportello', wl: 'GOV', tipo: 'sportello', nome: "Sportello dell'hub", pos: [-26, 52], dim: [12, 6, 5],

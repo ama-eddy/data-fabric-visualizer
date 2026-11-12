@@ -29,6 +29,14 @@ builders.showroom = (g, el, ctx) => {
   for (const sx of [-1, 1]) box(g, 0.15, h - 1, d - 2.4, vetro, sx * (w / 2 - 1), 0, 0).castShadow = false;
   box(g, w - 1.6, 0.3, d - 1.6, mat(col, { op: 0.55 }), 0, h, 0).castShadow = false;
   [-8, 0, 8].forEach((x, i) => schermo(g, 6.4, 4, x, 1, -d / 2 + 1.4, col, 3 + i));     // tre report ufficiali
+  /* [REQ-FLW-07, REQ-SCN-14] passerella coperta dal laboratorio prove: i semilavorati collaudati arrivano qui */
+  const [sx, sz] = el.pos, lab = ctx.cfg.elements.find((e) => e.id === 'laboratorio'), x0 = lab ? lab.pos[0] - lab.dim[0] / 2 : -24, xs = sx + w / 2;
+  const tubo = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, x0 - xs, 14, 1, true), mat('#bae6fd', { op: 0.35, side: THREE.DoubleSide, r: 0.1 }));
+  tubo.rotation.z = Math.PI / 2; tubo.position.set((x0 + xs) / 2 - sx, 4.6, 0); g.add(tubo);
+  box(g, x0 - xs, 0.25, 1.6, mat('#374151'), (x0 + xs) / 2 - sx, 3.7, 0);
+  for (const x of [xs + 1.5, (x0 + xs) / 2 - 1]) cyl(g, 0.22, 0.28, 3.7, mat('#64748b'), x - sx, 0, 0, 8);
+  ctx.flows.addRoute({ punti: [[x0, 4.4, sz], [xs - 1, 4.4, sz], [xs - 3, 1.6, sz + 1]], tipo: 'semilavorato', ogni: 2.6, vel: 5,
+    attivo: () => ctx.flows.lavora('TRF') && ctx.flows.lavora('VIS') && ctx.flows.alimentato() });
   for (const x of [-8, 0, 8]) { box(g, 1.6, 1, 1.6, mat('#f8fafc'), x, 0, 2.5); const r = box(g, 1.1, 0.8, 0.1, mat(ctx.cfg.materiali.report.colore, { e: '#b45309', ei: 0.4 }), x, 1.1, 2.5); r.rotation.x = -0.3; }
 };
 

@@ -25,9 +25,24 @@ export function createUI(cfg, world, state) {
     const dot = h('span', { className: 'dot' }); dot.style.background = wl.colore;
     const row = h('div', { className: 'row' }, dot, name, seg); row.dataset.wl = k;
     rows[k] = row; $('wl').append(row);
+    const singoli = state.recs.filter((r) => r.el.wl === k && r.proprio !== undefined);
+    if (singoli.length) {                                  /* [REQ-UI-11] tendina: accendere uno alla volta */
+      const freccia = h('button', { className: 'apri', textContent: '▸', title: ui.apri });
+      const lista = h('div', { className: 'sub' });
+      for (const r of singoli) {
+        const s2 = h('div', { className: 'seg' });
+        for (const s of ['off', 'wip', 'on']) { const b = h('button', { textContent: ui.stati[s] }); b.dataset.s = s; b.onclick = () => state.setElemento(r.el.id, s); s2.append(b); }
+        const nm = h('button', { className: 'name', title: r.el.nome }, r.el.nome.replace(/^Officina /, ''), r.el.categoriaNome && r.el.categoriaNome !== r.el.nome ? h('small', { textContent: r.el.categoriaNome }) : '');
+        nm.onclick = () => { mostraElemento(r.el.id); world.frame([r.el.pos], 12); };
+        const sr = h('div', { className: 'row subrow' }, nm, s2); sr.dataset.el = r.el.id; lista.append(sr);
+      }
+      freccia.onclick = () => { const o = lista.classList.toggle('open'); freccia.textContent = o ? '▾' : '▸'; };
+      row.insertBefore(freccia, name); $('wl').append(lista);
+    }
   }
   state.onChange((st) => {
     for (const k of cfg.ordine) { rows[k].dataset.stato = st[k]; rows[k].querySelectorAll('.seg button').forEach((b) => b.classList.toggle('sel', b.dataset.s === st[k])); }
+    document.querySelectorAll('.subrow').forEach((sr) => { const r = state.elemento(sr.dataset.el); sr.dataset.stato = state.effettivo(r); sr.querySelectorAll('.seg button').forEach((b) => b.classList.toggle('sel', b.dataset.s === r.proprio)); });
     if (aperta) aperta();
   });
 
@@ -57,6 +72,7 @@ export function createUI(cfg, world, state) {
     const b2 = h('span', { className: 'badge stato', textContent: ui.statoLungo[st] });
     box.append(x, h('h3', { textContent: titolo }), h('div', { className: 'badges' }, b1, b2));
     const sez = (t, txt) => { if (txt) box.append(h('h4', { textContent: t }), h('p', { textContent: txt })); };
+    if (d.categoriaNome) sez(ui.categoria, d.categoriaNome);
     if (rec && rec.proprio !== undefined) {           /* [REQ-UI-09] stato di una singola sorgente o di un singolo spoke, dal vivo */
       const seg = h('div', { className: 'seg' });
       for (const s of ['off', 'wip', 'on']) { const b = h('button', { textContent: ui.stati[s], className: rec.proprio === s ? 'sel' : '' }); b.dataset.s = s; b.onclick = () => state.setElemento(rec.el.id, s); seg.append(b); }
@@ -105,5 +121,20 @@ export function createUI(cfg, world, state) {
   });
   canvas.addEventListener('pointerleave', () => { $('tip').style.display = 'none'; });
 
-  return { mostraElemento, mostraWorkload, chiudi, inPausa: () => pausa };
+  /* ===== [REQ-UI-12] Pannello del team dati: un pupazzino per persona; il clic lo evidenzia in scena ===== */
+  let figure = null;
+  function collegaTeam(fig) {
+    figure = fig; const box = $('team');
+    box.append(h('h2', { textContent: ui.team }));
+    const riga = h('div', { className: 'pupazzi' }); box.append(riga);
+    fig.tutte.forEach((f, i) => {
+      const b = h('button', { className: 'pupazzo' }); b.dataset.i = i;
+      b.innerHTML = `<svg viewBox="0 0 20 30" width="18" height="27"><circle cx="10" cy="6" r="4.6" fill="#f1c9a5"/><path d="${f.sesso === 'f' ? 'M10 11 L17 27 L3 27 Z' : 'M5 11 h10 v11 h-10 Z M6 22 h3 v6 h-3 Z M11 22 h3 v6 h-3 Z'}" fill="${cfg.team.colore}"/><path d="M5.2 5.5 a4.8 4.8 0 0 1 9.6 0 Z" fill="${f.sesso === 'f' ? '#78350f' : cfg.team.casco}"/></svg>`;
+      b.onclick = () => { const on = fig.evidenzia(i); document.querySelectorAll('.pupazzo').forEach((x) => x.classList.toggle('sel', on && x === b)); if (on) { world.frame([[f.o.position.x, f.o.position.z]], 6); mostraElemento('team:' + f.gruppo); } };
+      riga.append(b);
+    });
+    setInterval(() => document.querySelectorAll('.pupazzo').forEach((b) => { const f = fig.tutte[+b.dataset.i]; b.classList.toggle('off', !f.o.visible); b.title = f.o.visible ? fig.descrizione(f) : ui.fuoriServizio; }), 500);
+  }
+
+  return { mostraElemento, mostraWorkload, chiudi, inPausa: () => pausa, collegaTeam };
 }

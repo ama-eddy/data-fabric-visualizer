@@ -16,7 +16,7 @@ const path = require('path'), fs = require('fs');
   const check = (c, m) => { if (!c) { errors.push('ATTESO: ' + m); } };
 
   await shot('1-terreno-vuoto', 600);
-  check(await page.locator('#wl .row').count() === 12, '12 workload nel pannello');
+  check(await page.locator('#wl > .row').count() === 12, '12 workload nel pannello');
   check(await page.evaluate(() => fabbrica.state.recs.every((r) => !r.on.visible && !r.wip.visible)), 'scena vuota all\'avvio');
 
   await page.locator('#wl .row[data-wl="ARC"] .seg button[data-s="on"]').click();
@@ -55,7 +55,7 @@ const path = require('path'), fs = require('fs');
   check(visti, 'camion, camion-officina e condotta in movimento');
   let t = await tipi();
   check(t.grezzo > 0 && t.bronze > 0 && t.silver > 0 && t.gold > 0 && t.semilavorato > 0, 'materiale a ogni stadio: ' + JSON.stringify(t));
-  check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente' && r.on.visible).length) === 9, '9 sorgenti visibili');
+  check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente' && r.on.visible).length) === 11, '11 sorgenti visibili');
   await page.evaluate(() => fabbrica.state.set('TRF', 'wip')); await page.waitForTimeout(400);    // [REQ-FLW-09]
   t = await tipi();
   check(t.grezzo > 0 && !t.bronze && !t.silver && !t.gold && !t.semilavorato, 'con TRF in cantiere il flusso si ferma al Bronze: ' + JSON.stringify(t));
@@ -95,6 +95,21 @@ const path = require('path'), fs = require('fs');
   await page.evaluate(() => { fabbrica.state.setTutti('on'); fabbrica.ui.mostraElemento('team:rotazione'); fabbrica.world.flyTo([-30, 30, 78], [-22, 3, 40]); });
   await shot('10-team-e-showroom', 3500);
   check((await page.locator('#info h3').textContent()).startsWith('Team dati'), 'scheda del team dati');
+
+  // ---- RDM-016/017/018: laboratorio e showroom, tendina delle sorgenti, pannello del team ----
+  await page.locator('#wl .row[data-wl="INT"] .apri').click();
+  check(await page.locator('.sub.open .subrow').count() === 11, 'tendina: 11 sorgenti');
+  await page.locator('.subrow[data-el="src-pim"] .seg button[data-s="off"]').click(); await page.waitForTimeout(1200);
+  check(await page.evaluate(() => { const r = fabbrica.state.elemento('src-pim'); return !r.on.visible && fabbrica.state.elemento('src-crm').on.visible; }), 'tendina: si spegne una sola sorgente');
+  await page.locator('.subrow[data-el="src-pim"] .seg button[data-s="on"]').click();
+  check(await page.waitForFunction(() => fabbrica.flows.routes.some((r) => r.tipo === 'semilavorato' && r.punti[0][1] > 3 && r.items.length), null, { timeout: 15000 }).then(() => true, () => false), 'passerella dal laboratorio allo showroom');
+  check(await page.locator('.pupazzo').count() === 5, 'pannello del team: 5 pupazzini');
+  await page.locator('.pupazzo').nth(3).click(); await page.waitForTimeout(1600);
+  check(await page.evaluate(() => fabbrica.figures.scelta() === 3) && (await page.locator('#info h3').textContent()).startsWith('Team dati'), 'clic sul pupazzino: evidenziato e scheda aperta');
+  await shot('16-pupazzo-evidenziato', 300);
+  await page.evaluate(() => fabbrica.world.flyTo([-36, 34, 70], [-34, 3, 28]));
+  await shot('17-laboratorio-showroom', 3000);
+  await page.locator('.pupazzo').nth(3).click();
 
   // ---- Batch 4: workload trasversali e opzionali ----
   check(await page.evaluate(() => !fabbrica.cfg.elements.some((e) => e.tipo === 'segnaposto')), 'nessun segnaposto rimasto');
