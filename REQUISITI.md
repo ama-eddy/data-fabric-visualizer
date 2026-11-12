@@ -5,7 +5,7 @@
 
 | Campo | Valore |
 |---|---|
-| Versione documento | 1.1 |
+| Versione documento | 1.2 |
 | Data | 2026-11-12 |
 | Stato | Requisiti approvati — implementazione da avviare (vedi `PIANO.md`) |
 | Approva | Il responsabile del progetto (richiedente) |
@@ -488,6 +488,7 @@ Un **percorso** mostra come un evento tipico della vita aziendale **attraversa l
 | REQ-CFG-04 | Ogni chiave del CONFIG riporta i **REQ** che la governano (campo `reqs` o commento). | Ricerca di `REQ-xx` nel file e ritrovamento della chiave. | M | Approvato |
 | REQ-CFG-05 | Il documento di profilo (`profili/<org>.md`) e il blocco `PROFILE` nell'HTML sono **allineati**: il blocco si ricava dal documento. | Ogni campo del blocco esiste nel documento di profilo. | S | Approvato |
 | REQ-CFG-06 | Si può **caricare un profilo da file JSON** tramite l'interfaccia, senza modificare l'HTML. | Il pulsante "Carica profilo" applica il JSON alla scena (D-11). | C | Approvato |
+| REQ-CFG-07 | Il **modello standard** è pubblicato come pagina web pubblica (GitHub Pages). Il **profilo reale di un'azienda non entra mai nel repository**: sta in `src/profile.local.js`, escluso dal repository, e genera `fabbrica-dati.locale.html`, da usare in locale. | La pagina pubblica mostra solo il modello standard; `git status` non propone mai i file del profilo reale. | M | Approvato |
 
 ---
 
@@ -549,7 +550,7 @@ const CONFIG = {
 | REQ-LIT-01…06 | trasversale | `CONFIG.*.forYou` / `contact` · `engine/ui` (benvenuto) | — | Approvato |
 | REQ-UI-01…10 | — | `engine/ui` · `engine/camera` · `engine/modes` | — | Approvato |
 | REQ-HS-01…07 | WL-SSR | `CONFIG.spokes` · `engine/spokeLayout` | — | Approvato |
-| REQ-CFG-01…06 | — | `CONFIG` · `PROFILE` · `engine/merge` | — | Approvato |
+| REQ-CFG-01…07 | — | `src/config.js` · `src/profile.js` · `src/main.js` · `build.mjs` · `.gitignore` | — | Approvato |
 | NFR-01…06 | — | build/packaging | — | Approvato |
 
 ### 13.1 Copertura degli obiettivi di apprendimento
@@ -604,6 +605,7 @@ const CONFIG = {
 | D-34 | Si progetta l'intero modello; **quali capitoli entrano nella presentazione** si decide dopo le prove in esplorazione libera (REQ-NAR-02). | Utente | Confermata |
 | D-35 | Il percorso New project contiene **solo le tappe del viaggio del dato**: sorgente, lavorazione, semilavorato, report. | Utente | Confermata |
 | D-36 | Team dati di default: **5 figure**, 2 al trasporto e 3 a rotazione tra cabina di controllo, ufficio di coordinamento e showroom. La "cabina di controllo" è una sola postazione per **governance e architettura insieme**, nella torre di controllo: è attiva se `WL-GOV` o `WL-ARC` è `on`. L'ufficio di coordinamento (project management di tutti gli operatori) appartiene a `WL-ARC`; composizione di default: 2 uomini al trasporto, 1 donna + 2 uomini a rotazione. | Utente (team, postazioni, composizione) · interpretazione (workload delle postazioni) | Confermata |
+| D-37 | Pubblicazione su **GitHub Pages** del solo modello standard; i profili aziendali reali restano in locale, fuori dal repository pubblico. | Utente | Confermata |
 
 ---
 
@@ -640,6 +642,7 @@ const CONFIG = {
 | RDM-011 | Profilo aziendale con nomi degli spoke, sorgenti con categoria, flussi on/off; due modalità (esplorazione libera e narrativa) | Standard · CFG, SRC, UI, NAR | D-32, D-33, OBJ-04, REQ-CFG-03, REQ-SRC-09, REQ-UI-10, REQ-LIT-02 | Approvata |
 | RDM-012 | Esito della review: stato degli spoke e contatto nel profilo, New project con le sole tappe del viaggio del dato, capitoli includibili/escludibili | Standard · CFG, HS, NAR, PER, LIT | REQ-CFG-03, REQ-HS-07, REQ-LIT-02, REQ-NAR-02, REQ-NAR-08, PER-NEW, D-32, D-34, D-35 | Approvata |
 | RDM-013 | Team dati nel profilo (numero di uomini e donne); default 2 al trasporto + 3 a rotazione tra cabina di controllo, coordinamento e showroom | Standard · SCN, CFG | REQ-SCN-11, REQ-SCN-13, REQ-CFG-03, D-28, D-32, D-36 | Approvata |
+| RDM-014 | Pubblicare la fabbrica su una GitHub Page | Standard · CFG | REQ-CFG-07, D-37 | Approvata |
 
 ---
 
@@ -647,4 +650,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.1 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…013 |
+| 1.2 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…014 |

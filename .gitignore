@@ -1,3 +1,8 @@
 node_modules/
 .DS_Store
 tests/out/
+# profili aziendali reali: mai nel repository pubblico (D-37)
+profili/*
+!profili/PROFILO-TEMPLATE.md
+src/profile.local.js
+fabbrica-dati.locale.html
