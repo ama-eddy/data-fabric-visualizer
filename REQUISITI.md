@@ -5,7 +5,7 @@
 
 | Campo | Valore |
 |---|---|
-| Versione documento | 1.2 |
+| Versione documento | 1.3 |
 | Data | 2026-11-12 |
 | Stato | Requisiti approvati — implementazione da avviare (vedi `PIANO.md`) |
 | Approva | Il responsabile del progetto (richiedente) |
@@ -482,13 +482,14 @@ Un **percorso** mostra come un evento tipico della vita aziendale **attraversa l
 
 | ID | Requisito | Criterio di accettazione | Pr. | Stato |
 |---|---|---|---|---|
-| REQ-CFG-01 | Tutti i contenuti stanno in un unico blocco **`CONFIG`** in cima all'HTML: workload, elementi, testi, colori, spoke, sorgenti e capitoli. | Il motore non contiene stringhe di contenuto. | M | Approvato |
+| REQ-CFG-01 | Tutti i contenuti stanno in un unico blocco **`CONFIG`** in cima all'HTML: workload, elementi, colori, spoke, sorgenti e capitoli; i **testi** vengono da `TESTI.md` (REQ-CFG-08). | Il motore non contiene stringhe di contenuto. | M | Approvato |
 | REQ-CFG-02 | Un blocco **`PROFILE`**, separato, **sovrascrive** il CONFIG per chiave (merge profondo). Un profilo vuoto equivale al modello standard. | Con `PROFILE = {}` si ottiene esattamente lo standard. | M | Approvato |
 | REQ-CFG-03 | Il profilo di un'azienda contiene **solo**: nome dell'azienda, **spoke** (nome + stato on/wip/off), **sorgenti** (nome noto al business + **categoria** + **flusso on/off**), **team dati** (numero di uomini e di donne, al trasporto e a rotazione) e un **contatto** ("a chi rivolgerti"). Tutto il resto (workload, capitoli, percorsi, testi) è standard. **Nessun nome tecnico.** | Il template `profili/PROFILO-TEMPLATE.md` ha esattamente questi campi. | M | Approvato |
 | REQ-CFG-04 | Ogni chiave del CONFIG riporta i **REQ** che la governano (campo `reqs` o commento). | Ricerca di `REQ-xx` nel file e ritrovamento della chiave. | M | Approvato |
 | REQ-CFG-05 | Il documento di profilo (`profili/<org>.md`) e il blocco `PROFILE` nell'HTML sono **allineati**: il blocco si ricava dal documento. | Ogni campo del blocco esiste nel documento di profilo. | S | Approvato |
 | REQ-CFG-06 | Si può **caricare un profilo da file JSON** tramite l'interfaccia, senza modificare l'HTML. | Il pulsante "Carica profilo" applica il JSON alla scena (D-11). | C | Approvato |
 | REQ-CFG-07 | Il **modello standard** è pubblicato come pagina web pubblica (GitHub Pages). Il **profilo reale di un'azienda non entra mai nel repository**: sta in `src/profile.local.js`, escluso dal repository, e genera `fabbrica-dati.locale.html`, da usare in locale. | La pagina pubblica mostra solo il modello standard; `git status` non propone mai i file del profilo reale. | M | Approvato |
+| REQ-CFG-08 | Tutti i testi visibili stanno in **`TESTI.md`**, la loro **fonte unica**: un titolo con la chiave e sotto il testo libero, modificabile anche da GitHub nel browser. La build verifica che il file sia **completo**, senza chiavi sconosciute né testi vuoti, e che rispetti il **lessico** (REQ-LIT-03); a ogni modifica su `main` un'azione di GitHub rigenera la pagina pubblicata. | Un testo cambiato in `TESTI.md` compare nella pagina; un termine vietato o una chiave sbagliata bloccano la build con l'elenco dei problemi. | M | Implementato |
 
 ---
 
@@ -549,10 +550,12 @@ const CONFIG = {
 | REQ-SCN-11…13 | tutti | `src/engine/figures.js` · `src/engine/spoke.js` (ufficio) · `CONFIG.team` | `npm test` | Implementato |
 | REQ-NAR-01…08 | — | `engine/narrator` · `CONFIG.chapters` | — | Approvato |
 | REQ-PER-01…07 | trasversale | `CONFIG.paths` · `engine/pathPlayer` | — | Approvato |
-| REQ-LIT-01…06 | trasversale | `CONFIG.*.forYou` / `contact` · `engine/ui` (benvenuto) | — | Approvato |
+| REQ-LIT-01…02 | trasversale | `TESTI.md` (`fabbrica`, `perTe`) · `src/engine/ui.js` (scheda) | `npm test` | Implementato |
+| REQ-LIT-03 | trasversale | `tools/testi.mjs` (controllo del lessico in build) | `npm run build` | Implementato |
+| REQ-LIT-04…06 | trasversale | `src/engine/ui.js` (benvenuto) · `CONFIG.paths` | — | Approvato |
 | REQ-UI-01…10 | — | `engine/ui` · `engine/camera` · `engine/modes` | — | Approvato |
 | REQ-HS-01…07 | WL-SSR | `CONFIG.spokes` · `CONFIG.spoke` · `src/engine/spoke.js` | `npm test` | Implementato |
-| REQ-CFG-01…07 | — | `src/config.js` · `src/profile.js` · `src/main.js` · `build.mjs` · `.gitignore` | — | Approvato |
+| REQ-CFG-01…08 | — | `src/config.js` · `src/profile.js` · `src/main.js` · `build.mjs` · `.gitignore` | — | Approvato |
 | NFR-01…06 | — | build/packaging | — | Approvato |
 
 ### 13.1 Copertura degli obiettivi di apprendimento
@@ -608,6 +611,7 @@ const CONFIG = {
 | D-35 | Il percorso New project contiene **solo le tappe del viaggio del dato**: sorgente, lavorazione, semilavorato, report. | Utente | Confermata |
 | D-36 | Team dati di default: **5 figure**, 2 al trasporto e 3 a rotazione tra cabina di controllo, ufficio di coordinamento e showroom. La "cabina di controllo" è una sola postazione per **governance e architettura insieme**, nella torre di controllo: è attiva se `WL-GOV` o `WL-ARC` è `on`. L'ufficio di coordinamento (project management di tutti gli operatori) appartiene a `WL-ARC`; composizione di default: 2 uomini al trasporto, 1 donna + 2 uomini a rotazione. | Utente (team, postazioni, composizione) · interpretazione (workload delle postazioni) | Confermata |
 | D-37 | Pubblicazione su **GitHub Pages** del solo modello standard; i profili aziendali reali restano in locale, fuori dal repository pubblico. | Utente | Confermata |
+| D-38 | I testi si rivedono in **`TESTI.md`** (Markdown, una chiave per titolo), fonte unica letta dalla build; la pagina pubblica si rigenera da sola con un'azione di GitHub. | Utente (file modificabile su GitHub) · proposta (formato e automazione) | Confermata |
 
 ---
 
@@ -645,6 +649,7 @@ const CONFIG = {
 | RDM-012 | Esito della review: stato degli spoke e contatto nel profilo, New project con le sole tappe del viaggio del dato, capitoli includibili/escludibili | Standard · CFG, HS, NAR, PER, LIT | REQ-CFG-03, REQ-HS-07, REQ-LIT-02, REQ-NAR-02, REQ-NAR-08, PER-NEW, D-32, D-34, D-35 | Approvata |
 | RDM-013 | Team dati nel profilo (numero di uomini e donne); default 2 al trasporto + 3 a rotazione tra cabina di controllo, coordinamento e showroom | Standard · SCN, CFG | REQ-SCN-11, REQ-SCN-13, REQ-CFG-03, D-28, D-32, D-36 | Approvata |
 | RDM-014 | Pubblicare la fabbrica su una GitHub Page | Standard · CFG | REQ-CFG-07, D-37 | Approvata |
+| RDM-015 | Rivedere etichette e contenuti testuali da un file, modificabile velocemente su GitHub | Standard · CFG, LIT | REQ-CFG-01, REQ-CFG-08, REQ-LIT-03, D-38 | Approvata |
 
 ---
 
@@ -652,4 +657,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.2 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…014 |
+| 1.3 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…015 |

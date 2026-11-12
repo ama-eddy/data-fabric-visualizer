@@ -22,8 +22,18 @@ function applicaProfilo(cfg, p) {
   return cfg;
 }
 
+/* ===== [REQ-CFG-08] I testi di TESTI.md sostituiscono quelli del CONFIG ===== */
+function applicaTesti(cfg, testi) {
+  for (const [chiave, testo] of Object.entries(testi || {})) {
+    const p = chiave.split('.'); let o = cfg;
+    for (let i = 0; i < p.length - 1 && o; i++) o = Array.isArray(o) ? (o.find((x) => x && x.id === p[i]) || o[+p[i]]) : o[p[i]];
+    if (o && typeof o === 'object') o[p[p.length - 1]] = testo;
+  }
+  return cfg;
+}
+
 try {
-  const cfg = applicaProfilo(window.CONFIG, window.PROFILE);
+  const cfg = applicaProfilo(applicaTesti(window.CONFIG, window.TESTI), window.PROFILE);
   const world = createScene(cfg, document.getElementById('scene'), document.getElementById('labels'));
   cfg.elements.push(...elementiSorgenti(cfg), ...elementiSpoke(cfg));
   const flows = createFlows(cfg, world);

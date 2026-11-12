@@ -30,7 +30,10 @@
 npm install      # una volta, all'inizio della sessione
 npm run build    # rigenera fabbrica-dati.html
 npm test         # prova automatica nel browser, schermate in tests/out/
+npm run testi    # aggiunge a TESTI.md i testi nuovi del CONFIG
 ```
+
+**Testi**: si modificano in `TESTI.md`, anche da GitHub nel browser. La build controlla completezza e lessico; un'azione di GitHub rigenera `fabbrica-dati.html` a ogni modifica su `main`.
 
 ## Stato
 

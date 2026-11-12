@@ -4,6 +4,7 @@ Metafora 3D esplorabile di una data platform hub & spoke, pensata per spiegarla 
 
 - `REQUISITI.md` — requisiti, decisioni e tracciabilità: **ogni richiesta passa da qui prima di diventare codice**
 - `PIANO.md` — piano di implementazione a batch, con lo stato di avanzamento
+- `TESTI.md` — **tutti i testi della pagina**: si modificano qui, anche da GitHub nel browser
 - `profili/` — profili aziendali (template incluso)
 
 ## Uso

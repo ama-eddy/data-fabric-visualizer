@@ -2,6 +2,6 @@
   "name": "data-fabric-visualizer",
   "private": true,
   "type": "module",
-  "scripts": { "build": "node build.mjs", "test": "node tests/smoke.cjs" },
+  "scripts": { "build": "node build.mjs", "test": "node tests/smoke.cjs", "testi": "node tools/genera-testi.mjs" },
   "devDependencies": { "esbuild": "0.21.5", "three": "0.160.0" }
 }

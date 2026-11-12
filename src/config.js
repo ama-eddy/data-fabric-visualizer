@@ -1,4 +1,5 @@
 // ===== CONFIG — modello standard [REQ-CFG-01] =====
+// I TESTI si modificano in TESTI.md [REQ-CFG-08]: quelli scritti qui sono solo il valore iniziale e vengono sostituiti in build.
 // Tutti i contenuti (testi, colori, workload, elementi) stanno qui: il motore non contiene testi.
 // Ogni chiave riporta i requisiti che la governano [REQ-CFG-04]. Testi scritti secondo il lessico (REQUISITI §1.2).
 window.CONFIG = {
