@@ -5,3 +5,9 @@ Metafora 3D esplorabile di una data platform hub & spoke, pensata per spiegarla 
 - `REQUISITI.md` — requisiti, decisioni e tracciabilità: **ogni richiesta passa da qui prima di diventare codice**
 - `PIANO.md` — piano di implementazione a batch, con lo stato di avanzamento
 - `profili/` — profili aziendali (template incluso)
+
+## Uso
+
+Aprire `fabbrica-dati.html` nel browser: è un file unico e funziona senza connessione.
+
+Per modificarlo: i sorgenti sono in `src/` (`config.js` = contenuti, `profile.js` = profilo dell'azienda, `engine/` = motore). Poi `npm install`, `npm run build`, `npm test`.

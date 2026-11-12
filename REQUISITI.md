@@ -349,7 +349,7 @@ Copre tutti gli archetipi e tutte le modalità, così da poter raccontare ogni c
 | REQ-SCN-08 | Lo stile è **originale** e "da plastico" (low-poly), senza marchi, loghi o asset di terze parti. | Nessun logo Microsoft o di altri marchi in scena. | M | Approvato |
 | REQ-SCN-09 | Lo **sportello dell'hub** (reception / Center of Excellence) è il punto in cui le funzioni entrano in contatto con la piattaforma: segnalazioni, richieste, onboarding. Appartiene a `WL-GOV`. | L'elemento è presente e cliccabile, ed è la tappa di partenza o di contatto dei percorsi. | M | Approvato |
 | REQ-SCN-10 | Il **laboratorio prove** (ambienti Dev e Test) è il luogo dove le modifiche si provano prima di andare in produzione. Appartiene a `WL-ARC`. | L'elemento è presente e cliccabile, ed è usato da Change request e New project. | M | Approvato |
-| REQ-SCN-11 | Il **team dati** è rappresentato da **figure stilizzate, una per persona reale**, con due sagome (uomo / donna) e un colore unico per l'hub. Il numero e la composizione vengono dal profilo; di default sono **5**: **2 al trasporto** (una porta il materiale dalla sorgente alla banchina, l'altra dalla banchina al Bronze) e **3 a rotazione** tra tre postazioni: **cabina di controllo** (governo della fabbrica), **ufficio di coordinamento** (project management: coordina gli operatori) e **showroom** (creazione dei report ufficiali). I reparti di lavorazione sono **automatici**: nessuna figura. | In scena ci sono esattamente le figure del profilo; quelle a rotazione si spostano periodicamente tra le tre postazioni; una figura compare solo se il workload della sua postazione è `on` (le figure a rotazione usano le postazioni disponibili). | M | Approvato |
+| REQ-SCN-11 | Il **team dati** è rappresentato da **figure stilizzate, una per persona reale**, con due sagome (uomo / donna) e un colore unico per l'hub. Il numero e la composizione vengono dal profilo; di default sono **5**: **2 al trasporto** (una porta il materiale dalla sorgente alla banchina, l'altra dalla banchina al Bronze) e **3 a rotazione** tra tre postazioni: **cabina di controllo** (governo della fabbrica: governance e architettura insieme), **ufficio di coordinamento** (project management: coordina tutti gli operatori) e **showroom** (creazione dei report ufficiali). I reparti di lavorazione sono **automatici**: nessuna figura. | In scena ci sono esattamente le figure del profilo; quelle a rotazione si spostano periodicamente tra le tre postazioni; una figura compare solo se il workload della sua postazione è `on` (le figure a rotazione usano le postazioni disponibili). | M | Approvato |
 | REQ-SCN-12 | Nelle officine degli spoke lavorano **figure delle funzioni business**, con il colore dello spoke, che usano i semilavorati e guardano i report. | Le figure compaiono con l'officina. | S | Approvato |
 | REQ-SCN-13 | L'**ufficio di coordinamento** (project management) è una postazione dell'hub da cui si coordinano gli operatori. Appartiene a `WL-ARC`. | L'elemento è presente e cliccabile; è una delle tre postazioni delle figure a rotazione. | M | Approvato |
 
@@ -533,8 +533,8 @@ const CONFIG = {
 
 | Requisito | Workload | Codice (sezione / chiave CONFIG) | Verifica | Stato |
 |---|---|---|---|---|
-| REQ-WL-01…08 | tutti | `engine/stateManager` · `CONFIG.workloads.*.state` | — | Approvato |
-| REQ-WL-10…12 | tutti | `CONFIG.workloads` · `CONFIG.elements` | — | Approvato |
+| REQ-WL-01…08 | tutti | `src/engine/state.js` · `src/engine/builders.js` (cantiere) · `CONFIG.workloads.*.stato` | `npm test` | Implementato |
+| REQ-WL-10…12 | tutti | `CONFIG.workloads` · `CONFIG.elements` · `src/engine/state.js` | `npm test` | Implementato |
 | REQ-FLW-01…03 | WL-INT | `CONFIG.elements.landing/bronze` · `CONFIG.routes.int*` | — | Approvato |
 | REQ-SRC-01…10 | WL-INT, WL-RTI | `CONFIG.sources` · `CONFIG.sourceArchetypes` · `CONFIG.ingestModes` · `engine/sourceBuilder` | — | Approvato |
 | REQ-FLW-04…06 | WL-TRF | `CONFIG.elements.silver/gold/semantic` · `CONFIG.routes.trf*` | — | Approvato |
@@ -603,7 +603,7 @@ const CONFIG = {
 | D-33 | Due modalità: **narrativa** (la presentazione: Avanti → tutti i workload in ordine) ed **esplorazione libera** (dal vivo, con stati modificabili e percorsi). | Utente | Confermata |
 | D-34 | Si progetta l'intero modello; **quali capitoli entrano nella presentazione** si decide dopo le prove in esplorazione libera (REQ-NAR-02). | Utente | Confermata |
 | D-35 | Il percorso New project contiene **solo le tappe del viaggio del dato**: sorgente, lavorazione, semilavorato, report. | Utente | Confermata |
-| D-36 | Team dati di default: **5 figure**, 2 al trasporto e 3 a rotazione tra cabina di controllo, ufficio di coordinamento e showroom. La "cabina di controllo" è la **torre di controllo** (`WL-GOV`); l'ufficio di coordinamento appartiene a `WL-ARC`; composizione di default 1 uomo + 1 donna al trasporto, 2 donne + 1 uomo a rotazione. | Utente (team e postazioni) · interpretazione (workload delle postazioni, composizione) | Confermata |
+| D-36 | Team dati di default: **5 figure**, 2 al trasporto e 3 a rotazione tra cabina di controllo, ufficio di coordinamento e showroom. La "cabina di controllo" è una sola postazione per **governance e architettura insieme**, nella torre di controllo: è attiva se `WL-GOV` o `WL-ARC` è `on`. L'ufficio di coordinamento (project management di tutti gli operatori) appartiene a `WL-ARC`; composizione di default: 2 uomini al trasporto, 1 donna + 2 uomini a rotazione. | Utente (team, postazioni, composizione) · interpretazione (workload delle postazioni) | Confermata |
 
 ---
 

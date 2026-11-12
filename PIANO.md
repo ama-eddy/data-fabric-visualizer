@@ -4,8 +4,8 @@
 
 ## Regole comuni a tutti i batch
 
-1. **Si parte dai file salvati**: `REQUISITI.md`, `PIANO.md`, `profili/`, `src/`, `build.py`. Ogni sessione riparte da lì, senza bisogno di ricordare la conversazione precedente.
-2. **Sorgenti separati, consegna in un file unico**: il codice vive in `src/` (un file per modulo); `build.py` lo unisce con three.js in `fabbrica-dati.html`, unico e offline (NFR-01).
+1. **Si parte dai file salvati**: `REQUISITI.md`, `PIANO.md`, `profili/`, `src/`, `build.mjs`. Ogni sessione riparte da lì, senza bisogno di ricordare la conversazione precedente.
+2. **Sorgenti separati, consegna in un file unico**: il codice vive in `src/` (un file per modulo); `npm run build` (`build.mjs`) lo unisce con three.js in `fabbrica-dati.html`, unico e offline (NFR-01).
 3. **Ogni blocco di codice porta il suo `[REQ-…]`** (REQ-PRC-01).
 4. **Chiusura di ogni batch**: build, prova automatica nel browser con schermate, aggiornamento della matrice di tracciabilità (§13 dei requisiti) e della tabella "Stato" qui sotto.
 5. **Se la sessione finisce prima del batch**: ci si ferma all'ultimo punto funzionante e la tabella "Stato" dice da dove riprendere.
@@ -24,11 +24,19 @@
 
 **Tra il batch 4 e il 5** c'è una pausa voluta: prove in esplorazione libera, poi scelta dei capitoli e stesura dei testi della narrazione (D-34).
 
+## Come si lavora
+
+```bash
+npm install      # una volta, all'inizio della sessione
+npm run build    # rigenera fabbrica-dati.html
+npm test         # prova automatica nel browser, schermate in tests/out/
+```
+
 ## Stato
 
 | Batch | Stato | Note / da dove riprendere |
 |---|---|---|
-| 1 | Da iniziare | |
+| 1 | **Completato** | Prova automatica superata (`npm test`). Gli altri workload hanno un **segnaposto** (volume colorato) al posto degli edifici definitivi. Restano da fare nei loro batch: REQ-UI-08 (schermi piccoli), prove su Edge e Firefox. Il pulsante "Pausa flussi" c'è ma i flussi arrivano nel batch 2. |
 | 2 | Da iniziare | |
 | 3 | Da iniziare | |
 | 4 | Da iniziare | |
