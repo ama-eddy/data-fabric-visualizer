@@ -102,19 +102,26 @@ window.CONFIG = {
 
   // [REQ-SCN-11] team dati: una figura per persona. m = uomini, f = donne. Sostituito dal profilo, se presente.
   team: {
-    colore: '#1d4ed8', casco: '#facc15', turno: 14,
-    trasporto: { m: 2, f: 0, wl: 'INT', nome: 'Team dati — trasporto', tecnico: 'Data engineer (integrazione)',
-      fabbrica: 'Uno costruisce e ripara gli scivoli che portano il materiale dai fornitori al lago; l\'altro, da un pannello di comando, manovra le gru che pescano il materiale dal lago e lo mettono nel magazzino materie prime.',
-      perTe: 'Sono le persone che collegano i tuoi sistemi alla fabbrica e controllano che i carichi arrivino ogni giorno.',
-      compiti: [{ nome: 'Costruisce e ripara gli scivoli', tipo: 'scivoli', z: -77 }, { nome: 'Manovra le gru dal pannello di comando', tipo: 'pannello', pos: [28.5, -44] }] },
-    rotazione: { m: 2, f: 1, wl: 'GOV', nome: 'Team dati — governo, coordinamento e report', tecnico: 'Data governance · project manager · BI developer',
-      fabbrica: 'Si alternano tra tre postazioni: la cabina di controllo (governo della fabbrica), il coordinamento degli operatori e lo showroom, dove nascono i report ufficiali.',
-      perTe: 'Sono poche persone che fanno più mestieri: per questo le richieste si mettono in fila e si pianificano.',
-      postazioni: [
-        { nome: 'Cabina di controllo', pos: [-34, 56], attiva: ['GOV', 'ARC'] },
-        { nome: 'Ufficio di coordinamento', pos: [44, 40], attiva: ['ARC'] },
-        { nome: 'Showroom', pos: [-48, 37.5], attiva: ['VIS'] },
-      ] },
+    colore: '#1d4ed8', casco: '#facc15',
+    // un gruppo per mestiere: compare quando il suo workload è 'on'. m = uomini, f = donne.
+    gruppi: {
+      integration: { m: 2, f: 0, wl: 'INT', breve: 'Integration', nome: 'Team dati — Data Integration', tecnico: 'Data engineer',
+        fabbrica: 'Uno costruisce e ripara gli scivoli che portano il materiale dai fornitori al lago; l\'altro, da un pannello di comando, manovra le gru che pescano il materiale dal lago e lo mettono nel magazzino materie prime.',
+        perTe: 'Sono le persone che collegano i tuoi sistemi alla fabbrica e controllano che i carichi arrivino ogni giorno.',
+        compiti: [{ nome: 'Costruisce e ripara gli scivoli', tipo: 'scivoli', z: -77 }, { nome: 'Manovra le gru dal pannello di comando', tipo: 'pannello', pos: [28.5, -44] }] },
+      architecture: { m: 1, f: 0, wl: 'ARC', breve: 'Architecture', nome: 'Team dati — Data Architecture', tecnico: 'Data architect',
+        fabbrica: 'Progetta la fabbrica: dove vanno i reparti, quanta energia serve, come si collegano tra loro. Lavora al tavolo dei progetti accanto al capannone.',
+        perTe: 'È la persona che fa in modo che ogni nuova esigenza trovi posto nella fabbrica senza doverla rifare.',
+        compiti: [{ nome: 'Al tavolo dei progetti', tipo: 'postazione', pos: [-38, 6], verso: 1.57, tavolo: true }] },
+      visualization: { m: 0, f: 1, wl: 'VIS', breve: 'Visualization', nome: 'Team dati — Data Visualization', tecnico: 'BI developer',
+        fabbrica: 'Costruisce nello showroom i report ufficiali, partendo dai semilavorati collaudati.',
+        perTe: 'È la persona che trasforma i dati certificati nei report che apri ogni giorno.',
+        compiti: [{ nome: 'Nello showroom', tipo: 'postazione', pos: [-48, 37.5], verso: 3.14 }] },
+      coordination: { m: 1, f: 0, wl: 'PMO', breve: 'Coordination', nome: 'Team dati — Project Management', tecnico: 'Project manager',
+        fabbrica: 'Coordina tutti gli operatori della fabbrica: chi fa cosa, in che ordine, entro quando.',
+        perTe: 'È la persona che mette in fila le richieste e ti dice quando arriverà ciò che hai chiesto.',
+        compiti: [{ nome: "All'ufficio di coordinamento", tipo: 'postazione', pos: [44, 40], verso: 0 }] },
+    },
   },
 
   // [REQ-FLW-02…06, REQ-FLW-09] nastri dentro il capannone: tre corsie, il materiale cambia aspetto a ogni tratto.
@@ -137,11 +144,14 @@ window.CONFIG = {
 
   // [REQ-WL-10, REQ-WL-11] catalogo dei workload — tutti 'off' nel modello standard [REQ-WL-05]
   // [D-08] ordine del pannello e della narrativa
-  ordine: ['SRC', 'ARC', 'INT', 'TRF', 'SEC', 'ACC', 'VIS', 'SSR', 'GOV', 'FIN', 'KNW', 'RTI'],
+  ordine: ['SRC', 'ARC', 'PMO', 'INT', 'TRF', 'SEC', 'ACC', 'VIS', 'SSR', 'GOV', 'FIN', 'KNW', 'RTI'],
   workloads: {
     ARC: { nome: 'Data Architecture', tecnico: 'Fabric capacity · OneLake · workspace', colore: '#64748b', deps: [], stato: 'off', gestore: 'hub',
       fabbrica: "Il terreno, le fondamenta e il capannone: lo spazio in cui tutto il resto viene costruito, con la centrale che dà energia e il lago dei dati, unico, tra i fornitori e la fabbrica.",
       perTe: "È la base comune: un solo posto per i dati di tutta l'azienda, invece di tanti archivi sparsi. Senza questa base, ogni funzione ricomincia da zero." },
+    PMO: { nome: 'Project Management', tecnico: 'Coordinamento del team dati: pianificazione e priorità', colore: '#b45309', deps: [], stato: 'off', gestore: 'hub',
+      fabbrica: "L'ufficio di coordinamento: da qui si coordinano tutti gli operatori della fabbrica, si mettono in fila le richieste e si decide cosa viene prima.",
+      perTe: 'Quando chiedi qualcosa, è qui che la richiesta trova posto nel piano di lavoro, un responsabile e una data.' },
     ACC: { nome: 'Accessi', tecnico: 'Microsoft Entra ID · ruoli di workspace · permessi sugli item', colore: '#0ea5e9', deps: ['ARC'], stato: 'off', gestore: 'entrambi',
       fabbrica: 'Cancelli, tornelli e badge: si entra solo se autorizzati, e ognuno va solo nei reparti che gli servono.',
       perTe: 'Decidi tu chi della tua funzione entra e cosa può fare. Chiedere un accesso è come chiedere un badge.' },
@@ -182,10 +192,10 @@ window.CONFIG = {
   // pos = [x, z] centro · dim = [larghezza, profondità, altezza]. Testi mancanti: si usano quelli del workload.
   elements: [
     // --- Architettura [REQ-SCN-04, REQ-SCN-10] ---
-    { id: 'capannone', wl: 'ARC', tipo: 'capannone', nome: "Capannone dell'hub", tecnico: 'Tenant · workspace dell\'hub', pos: [0, 0], dim: [64, 80, 14], etichetta: [-32, 18, 40],
+    { id: 'capannone', wl: 'ARC', priorita: 1, tipo: 'capannone', nome: "Capannone dell'hub", tecnico: 'Tenant · workspace dell\'hub', pos: [0, 0], dim: [64, 80, 14], etichetta: [-32, 18, 40],
       fabbrica: 'Fondamenta, pavimento e struttura del capannone. Dentro prenderanno posto i reparti.',
       perTe: 'È lo spazio comune, già pronto: quando la tua funzione avrà bisogno di qualcosa, non si parte dal terreno vuoto.' },
-    { id: 'lago', wl: 'ARC', tipo: 'lago', nome: 'Lago dei dati', tecnico: 'OneLake (Landing: file in un Lakehouse)', pos: [0, -60], dim: [104, 26, 0.5], etichetta: [0, 4, -4],
+    { id: 'lago', wl: 'ARC', priorita: 1, tipo: 'lago', nome: 'Lago dei dati', tecnico: 'OneLake (Landing: file in un Lakehouse)', pos: [0, -60], dim: [104, 26, 0.5], etichetta: [0, 4, -4],
       fabbrica: "Il lago dei dati: un'unica riserva tra i fornitori e la fabbrica. Il materiale di tutti i fornitori arriva qui così com'è, prima di essere pescato e portato nel magazzino.",
       perTe: "Un solo posto dove arrivano i dati di tutti i sistemi: niente copie sparse, e si può sempre tornare a vedere il dato com'era all'origine." },
     { id: 'centrale', wl: 'ARC', tipo: 'centrale', nome: 'Centrale elettrica', tecnico: 'Fabric capacity', pos: [-58, -22], dim: [18, 16, 12],
@@ -197,7 +207,7 @@ window.CONFIG = {
 
     // --- Segnaposto degli altri workload (batch 2-4) ---
     // --- Data Integration [REQ-FLW-01…03, REQ-SCN-02] ---
-    { id: 'fornitori', wl: 'SRC', tipo: 'piazzale', nome: 'Area fornitori', tecnico: 'Sistemi sorgente', pos: [0, -86], dim: [146, 16, 0.2], etichetta: [0, 0.3, 8.5], cantiere: false,   // coordinate relative all'elemento
+    { id: 'fornitori', wl: 'SRC', priorita: 1, tipo: 'piazzale', nome: 'Area fornitori', tecnico: 'Sistemi sorgente', pos: [0, -86], dim: [146, 16, 0.2], etichetta: [0, 0.3, 8.5], cantiere: false,   // coordinate relative all'elemento
       fabbrica: "L'area dei fornitori: i sistemi dell'azienda da cui parte il materiale grezzo. Ogni tipo di fornitore ha un edificio diverso.",
       perTe: 'Sono i sistemi che usi ogni giorno: gestionale, CRM, fogli di calcolo. Tu continui a lavorare lì, il materiale parte da solo.' },
     { id: 'pontile', wl: 'INT', tipo: 'pontile', nome: 'Pontile di pesca', tecnico: 'Data pipeline di caricamento nel Bronze', pos: [0, -45], dim: [48, 5, 3],
@@ -221,11 +231,11 @@ window.CONFIG = {
       fabbrica: 'Il reparto spedizioni: da qui i semilavorati collaudati partono verso le officine delle funzioni.',
       perTe: 'È da qui che i dati certificati arrivano alla tua funzione.' },
     // --- Data Visualization [REQ-FLW-07, REQ-SCN-07] ---
-    { id: 'showroom', wl: 'VIS', tipo: 'showroom', nome: 'Showroom', tecnico: 'Report e app Power BI', pos: [-55, 28], dim: [28, 14, 6], zona: true,
+    { id: 'showroom', wl: 'VIS', priorita: 1, tipo: 'showroom', nome: 'Showroom', tecnico: 'Report e app Power BI', pos: [-55, 28], dim: [28, 14, 6], zona: true,
       fabbrica: "Lo showroom dell'hub, accanto alla fabbrica: i prodotti finiti ufficiali, costruiti dal team dati sui semilavorati collaudati e uguali per tutta l'azienda.",
       perTe: "Sono i report ufficiali, in Power BI: li apri e leggi il numero, senza costruire nulla. È lo stesso numero che vedono tutti." },
     // --- Ufficio di coordinamento [REQ-SCN-13] ---
-    { id: 'coordinamento', wl: 'ARC', tipo: 'ufficio', nome: 'Ufficio di coordinamento', tecnico: 'Project management del team dati', pos: [52, 38], dim: [12, 8, 5],
+    { id: 'coordinamento', wl: 'PMO', tipo: 'ufficio', nome: 'Ufficio di coordinamento', tecnico: 'Project management del team dati', pos: [52, 38], dim: [12, 8, 5],
       fabbrica: "L'ufficio da cui si coordinano tutti gli operatori della fabbrica: chi fa cosa, in che ordine, entro quando.",
       perTe: 'Quando chiedi qualcosa, è qui che la richiesta trova posto nel piano di lavoro e un responsabile.' },
     // --- Workload trasversali [REQ-SCN-03, REQ-SCN-09] ---

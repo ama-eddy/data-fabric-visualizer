@@ -20,7 +20,7 @@ const path = require('path'), fs = require('fs');
   check(await page.evaluate(() => { const r = fabbrica.state.elemento('fornitori'), p = r.label.getWorldPosition(new (r.root.position.constructor)()); return p.y < 2 && Math.abs(p.z - (-77.5)) < 2; }), 'etichetta dell\'area fornitori a terra, davanti ai lotti');
   await page.evaluate(() => fabbrica.world.home());
   await shot('1-terreno-vuoto', 1500);
-  check(await page.locator('#wl > .row').count() === 12, '12 workload nel pannello');
+  check(await page.locator('#wl > .row').count() === 13, '13 workload nel pannello');
   check(await page.evaluate(() => fabbrica.state.stato.SRC === 'on' && fabbrica.state.recs.every((r) => (r.el.wl === 'SRC' && r.el.tipo !== 'sorgente') || (!r.on.visible && !r.wip.visible))), 'all\'avvio: solo l\'area fornitori, sorgenti spente');
   check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente').every((r) => r.proprio === 'off')), 'tutte le sorgenti spente di default');
 
@@ -94,14 +94,14 @@ const path = require('path'), fs = require('fs');
   await shot('9-spoke', 2500);
   check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'officina' && r.on.visible).length) === 5, '5 officine visibili');
   let f = await page.evaluate(() => fabbrica.figures.conta());
-  check(f.trasporto === 2 && f.rotazione === 3 && f.totale === 5, 'team dati: 2 al trasporto e 3 a rotazione: ' + JSON.stringify(f));
+  check(f.integration === 2 && f.architecture === 1 && f.visualization === 1 && f.coordination === 1 && f.totale === 5, 'team dati: 2 integration, 1 architecture, 1 visualization, 1 coordination: ' + JSON.stringify(f));
   await page.evaluate(() => fabbrica.state.set('ACC', 'off')); await page.waitForTimeout(400);       // [REQ-WL-06] SSR dipende dagli Accessi
   check(await page.evaluate(() => !fabbrica.flows.routes.some((r) => r.tipo === 'furgone' && r.items.length)), 'senza Accessi i furgoni si fermano');
-  await page.evaluate(() => { fabbrica.state.set('ACC', 'on'); fabbrica.state.set('VIS', 'off'); fabbrica.state.set('GOV', 'off'); fabbrica.state.set('ARC', 'wip'); });
+  await page.evaluate(() => { fabbrica.state.set('ACC', 'on'); fabbrica.state.set('VIS', 'off'); fabbrica.state.set('PMO', 'off'); });
   await page.waitForTimeout(300);
   f = await page.evaluate(() => fabbrica.figures.conta());
-  check(f.rotazione === 0, 'senza postazioni attive le figure a rotazione non compaiono: ' + JSON.stringify(f));
-  await page.evaluate(() => { fabbrica.state.setTutti('on'); fabbrica.ui.mostraElemento('team:rotazione'); fabbrica.world.flyTo([-30, 30, 78], [-22, 3, 40]); });
+  check(f.visualization === 0 && f.coordination === 0 && f.architecture === 1 && await page.evaluate(() => fabbrica.state.effettivo(fabbrica.state.elemento('coordinamento')) === 'off' && fabbrica.state.stato.ARC === 'on'), 'ogni gruppo segue il suo workload; il coordinamento non dipende più dall\'architettura: ' + JSON.stringify(f));
+  await page.evaluate(() => { fabbrica.state.setTutti('on'); fabbrica.ui.mostraElemento('team:visualization'); fabbrica.world.flyTo([-30, 30, 78], [-22, 3, 40]); });
   await shot('10-team-e-showroom', 3500);
   check((await page.locator('#info h3').textContent()).startsWith('Team dati'), 'scheda del team dati');
 
@@ -135,6 +135,8 @@ const path = require('path'), fs = require('fs');
   await shot('19-gru-e-pannello', 4000);
   await page.evaluate(() => { fabbrica.state.set('RTI', 'on'); fabbrica.ui.chiudi(); fabbrica.world.home(); });
   await shot('12-tutto-on', 3500);
+  const sovrapposte = await page.evaluate(() => { const r = [...document.querySelectorAll('.lbl')].filter((e) => e.offsetParent && getComputedStyle(e).opacity > 0.5 && !e.classList.contains('nascosta')).map((e) => e.getBoundingClientRect()); let n = 0; for (let i = 0; i < r.length; i++) for (let j = i + 1; j < r.length; j++) if (r[i].left < r[j].right && r[i].right > r[j].left && r[i].top < r[j].bottom && r[i].bottom > r[j].top) n++; return [n, r.length]; });
+  check(sovrapposte[0] === 0 && sovrapposte[1] >= 8, 'etichette: nessuna sovrapposizione nella vista d\'insieme (sovrapposte, visibili): ' + sovrapposte);
   await page.evaluate(() => fabbrica.world.flyTo([-10, 26, 92], [-22, 4, 44]));
   await shot('13-fronte', 3000);
   await page.evaluate(() => fabbrica.world.flyTo([18, 30, -8], [60, 4, -4]));

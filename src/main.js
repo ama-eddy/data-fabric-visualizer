@@ -18,7 +18,7 @@ function applicaProfilo(cfg, p) {
   /* [REQ-HS-02, REQ-HS-07] spoke del profilo: nome e stato on/wip/off */
   if (p.spoke && p.spoke.length) cfg.spokes = p.spoke.map((s) => ({ nome: s.nome, stato: ['on', 'wip', 'off'].includes(s.stato) ? s.stato : 'on' }));
   /* [REQ-SCN-11] team dati del profilo: uomini e donne al trasporto e a rotazione */
-  for (const k of ['trasporto', 'rotazione']) if (p.team && p.team[k]) { cfg.team[k].m = p.team[k].m || 0; cfg.team[k].f = p.team[k].f || 0; }
+  for (const k of Object.keys(cfg.team.gruppi)) if (p.team && p.team[k]) { cfg.team.gruppi[k].m = p.team[k].m || 0; cfg.team.gruppi[k].f = p.team[k].f || 0; }
   return cfg;
 }
 
@@ -51,6 +51,7 @@ try {
     state.update(dt, clock.elapsedTime);
     flows.update(dt, ui.inPausa());
     figures.update(dt, clock.elapsedTime);
+    ui.ordinaEtichette(dt);
     world.update(dt);
   })();
   window.fabbrica = { cfg, world, state, ui, flows, figures };                         // per prove e collaudo

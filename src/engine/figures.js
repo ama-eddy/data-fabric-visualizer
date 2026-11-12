@@ -18,20 +18,23 @@ export function figura(colore, sesso, casco) {
 const elenco = (d) => [...Array(d.m || 0).fill('m'), ...Array(d.f || 0).fill('f')];
 
 export function createFigures(cfg, world, state, flows) {
-  const T = cfg.team, cap = cfg.layout.capannone, figs = [];
+  const T = cfg.team, cap = cfg.layout.capannone;
   const quota = (x, z) => (state.stato.ARC === 'on' && x > cap.x[0] && x < cap.x[1] && z > cap.z[0] && z < cap.z[1] ? cap.pavimento : 0);
-  const crea = (sesso, gruppo) => { const o = figura(T.colore, sesso, T.casco); o.traverse((m) => { m.userData.el = 'team:' + gruppo; }); o.visible = false; world.scene.add(o); world.pickables.push(o); return o; };
-
-  /* ===== Data Integration: uno costruisce e ripara gli scivoli, l'altro manovra le gru dal pannello ===== */
   const scivoli = () => cfg.elements.filter((e) => e.tipo === 'trasporto' && (e.modalita === 'copy' || e.modalita === 'dataflow') && state.effettivo(state.elemento(e.id)) !== 'off').map((e) => e.pos[0]);
-  const trasporto = elenco(T.trasporto).map((sesso, i) => {
-    const o = crea(sesso, 'trasporto'), comp = T.trasporto.compiti[i % T.trasporto.compiti.length], n = Math.floor(i / T.trasporto.compiti.length);
-    const attrezzo = box(o, 0.15, 0.9, 0.15, mat('#78350f'), 0.55, 0.9, 0.25); attrezzo.rotation.x = 0.6;          // martello o leva
-    return { o, sesso, gruppo: 'trasporto', compito: comp.nome, tipo: comp.tipo, comp, n, attrezzo, pos: null, meta: 0, sosta: 0 };
+
+  /* ===== [REQ-SCN-11] Una figura per persona, divisa per gruppo: Integration, Architecture, Visualization, Coordination ===== */
+  const tutte = [];
+  for (const [gruppo, G] of Object.entries(T.gruppi)) elenco(G).forEach((sesso, i) => {
+    const o = figura(T.colore, sesso, T.casco); o.traverse((m) => { m.userData.el = 'team:' + gruppo; }); o.visible = false; world.scene.add(o); world.pickables.push(o);
+    const comp = G.compiti[i % G.compiti.length], n = Math.floor(i / G.compiti.length);
+    const attrezzo = box(o, 0.15, 0.9, 0.15, mat('#78350f'), 0.55, 0.9, 0.25); attrezzo.rotation.x = 0.6; attrezzo.visible = comp.tipo !== 'postazione';
+    if (comp.tavolo) {                                                 // tavolo dei progetti dell'architetto
+      const t = new THREE.Group(); t.position.set(comp.pos[0] - 1.8, 0, comp.pos[1]); t.visible = false; world.scene.add(t);
+      box(t, 1.6, 0.12, 2.6, mat('#e2e8f0'), 0, 1.3, 0).rotation.z = 0.25; for (const z of [-1, 1]) box(t, 0.12, 1.3, 0.12, mat('#64748b'), 0, 0, z);
+      box(t, 1.2, 0.03, 2, mat('#3b82f6'), 0.02, 1.4, 0).rotation.z = 0.25; comp.oggetto = t;
+    }
+    tutte.push({ o, sesso, gruppo, wl: G.wl, compito: comp.nome, tipo: comp.tipo, comp, n, attrezzo, pos: null, meta: 0, sosta: 0 });
   });
-  /* ===== Rotazione tra le postazioni: cabina di controllo, coordinamento, showroom ===== */
-  const rotazione = elenco(T.rotazione).map((sesso, i) => ({ o: crea(sesso, 'rotazione'), sesso, gruppo: 'rotazione', i, pos: null, da: null, verso: null, k: 1, post: -1, postazione: '' }));
-  const tutte = [...trasporto, ...rotazione];
 
   /* [REQ-UI-12] evidenziazione: anello a terra e freccia sopra la testa, seguono la figura */
   const segno = new THREE.Group(); segno.visible = false; world.scene.add(segno);
@@ -40,39 +43,31 @@ export function createFigures(cfg, world, state, flows) {
   const freccia = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.4, 12), mat('#facc15', { e: '#f59e0b', ei: 1 })); freccia.rotation.x = Math.PI; segno.add(freccia);
   let scelta = -1;
   const evidenzia = (i) => { scelta = scelta === i ? -1 : i; return scelta === i; };
-  const descrizione = (f) => (f.gruppo === 'trasporto' ? f.compito : f.postazione) + ' · ' + T[f.gruppo].nome;
-  let turno = 0, tTurno = 0;
+  const descrizione = (f) => f.compito + ' · ' + T.gruppi[f.gruppo].nome;
 
   function update(dt, t) {
-    const INT = state.stato.INT === 'on', lavora = flows.lavora('INT');
-    for (const f of trasporto) {
-      f.o.visible = INT; if (!INT) continue;
-      if (f.tipo === 'pannello') {                                     // fermo al pannello, muove le leve
+    for (const f of tutte) {
+      const on = state.stato[f.wl] === 'on', lavora = flows.lavora(f.wl);
+      f.o.visible = on; if (f.comp.oggetto) f.comp.oggetto.visible = on; if (!on) continue;
+      if (f.tipo === 'postazione') {                                   // alla propria postazione
+        const p = f.comp.pos, x = p[0] + f.n * 1.8, z = p[1] + f.n * 1.2;
+        f.o.position.set(x, quota(x, z), z); f.o.rotation.y = (f.comp.verso || 0) + Math.sin(t * 0.6 + f.n) * 0.35;
+      } else if (f.tipo === 'pannello') {                              // fermo al pannello, muove le leve
         const p = f.comp.pos; f.o.position.set(p[0] + f.n * 1.4, 0.85, p[1] - f.n * 1.2); f.o.rotation.y = Math.PI / 2;
-        f.attrezzo.rotation.x = lavora ? 0.6 + Math.sin(t * 3 + f.n) * 0.5 : 0.6; continue;
+        f.attrezzo.rotation.x = lavora ? 0.6 + Math.sin(t * 3 + f.n) * 0.5 : 0.6;
+      } else {                                                         // va da uno scivolo all'altro e si ferma a ripararlo
+        const xs = scivoli();
+        if (!f.pos) f.pos = new THREE.Vector3(xs[0] || 0, 0, f.comp.z);
+        if (!xs.length) { f.attrezzo.rotation.x = 0.6; f.o.position.set(f.pos.x, 0, f.pos.z); continue; }
+        const meta = new THREE.Vector3(xs[(f.meta + f.n * 3) % xs.length] + 1.6, 0, f.comp.z - f.n * 1.5), d = meta.clone().sub(f.pos);
+        if (d.length() > 0.3) { f.pos.addScaledVector(d.normalize(), Math.min(dt * 6, d.length())); f.o.rotation.y = Math.atan2(d.x, d.z); f.attrezzo.rotation.x = 0.6; f.o.position.set(f.pos.x, Math.abs(Math.sin(t * 9)) * 0.12, f.pos.z); }
+        else { f.sosta += dt; f.o.rotation.y = -Math.PI / 2; f.attrezzo.rotation.x = 0.4 + Math.abs(Math.sin(t * 7)) * 1.1; f.o.position.set(f.pos.x, 0, f.pos.z); if (f.sosta > 3.5) { f.sosta = 0; f.meta++; } }
       }
-      const xs = scivoli(); if (!xs.length) { f.attrezzo.rotation.x = 0.6; continue; }   // va da uno scivolo all'altro e si ferma a ripararlo
-      if (!f.pos) f.pos = new THREE.Vector3(xs[0], 0, f.comp.z);
-      const meta = new THREE.Vector3(xs[(f.meta + f.n * 3) % xs.length] + 1.6, 0, f.comp.z - f.n * 1.5), d = meta.clone().sub(f.pos);
-      if (d.length() > 0.3) { f.pos.addScaledVector(d.normalize(), Math.min(dt * 6, d.length())); f.o.rotation.y = Math.atan2(d.x, d.z); f.attrezzo.rotation.x = 0.6; f.o.position.set(f.pos.x, Math.abs(Math.sin(t * 9)) * 0.12, f.pos.z); }
-      else { f.sosta += dt; f.o.rotation.y = -Math.PI / 2; f.attrezzo.rotation.x = 0.4 + Math.abs(Math.sin(t * 7)) * 1.1; f.o.position.set(f.pos.x, 0, f.pos.z); if (f.sosta > 3.5) { f.sosta = 0; f.meta++; } }
-    }
-    const attive = T.rotazione.postazioni.filter((p) => p.attiva.some((w) => state.stato[w] === 'on'));
-    tTurno += dt; if (tTurno > T.turno) { tTurno = 0; turno++; }
-    for (const f of rotazione) {
-      f.o.visible = attive.length > 0; if (!attive.length) { f.pos = null; continue; }
-      const idx = (f.i + turno) % attive.length, p = attive[idx], quanti = Math.floor(f.i / attive.length);
-      const meta = new THREE.Vector3(p.pos[0] + quanti * 2, 0, p.pos[1] + quanti * 1.2);
-      if (!f.pos) { f.pos = meta.clone(); f.verso = meta; f.k = 1; }
-      if (!f.verso.equals(meta)) { f.da = f.pos.clone(); f.verso = meta; f.k = 0; }
-      if (f.k < 1) { f.k = Math.min(1, f.k + (dt * 11) / Math.max(1, f.da.distanceTo(f.verso))); f.pos.lerpVectors(f.da, f.verso, f.k); f.o.rotation.y = Math.atan2(f.verso.x - f.da.x, f.verso.z - f.da.z); }
-      else f.o.rotation.y += (Math.sin(t * 0.5 + f.i) * 0.6 - f.o.rotation.y) * Math.min(1, dt * 2);
-      f.o.position.set(f.pos.x, quota(f.pos.x, f.pos.z) + (f.k < 1 ? Math.abs(Math.sin(t * 9)) * 0.12 : 0), f.pos.z);
-      f.postazione = p.nome;
     }
     const s = tutte[scelta];
     segno.visible = !!s && s.o.visible;
     if (segno.visible) { segno.position.copy(s.o.position); freccia.position.y = 4.8 + Math.sin(t * 4) * 0.35; anello.scale.setScalar(1 + 0.12 * Math.sin(t * 5)); }
   }
-  return { update, tutte, evidenzia, descrizione, scelta: () => scelta, conta: () => ({ trasporto: trasporto.filter((f) => f.o.visible).length, rotazione: rotazione.filter((f) => f.o.visible).length, totale: trasporto.length + rotazione.length }), rotazione, trasporto };
+  const conta = () => { const c = { totale: tutte.length }; for (const g of Object.keys(T.gruppi)) c[g] = tutte.filter((f) => f.gruppo === g && f.o.visible).length; return c; };
+  return { update, tutte, evidenzia, descrizione, scelta: () => scelta, conta };
 }

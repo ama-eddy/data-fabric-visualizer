@@ -141,6 +141,18 @@ Il terreno, le fondamenta e il capannone: lo spazio in cui tutto il resto viene 
 ### workloads.ARC.perTe
 È la base comune: un solo posto per i dati di tutta l'azienda, invece di tanti archivi sparsi. Senza questa base, ogni funzione ricomincia da zero.
 
+### workloads.PMO.nome
+Project Management
+
+### workloads.PMO.tecnico
+Coordinamento del team dati: pianificazione e priorità
+
+### workloads.PMO.fabbrica
+L'ufficio di coordinamento: da qui si coordinano tutti gli operatori della fabbrica, si mettono in fila le richieste e si decide cosa viene prima.
+
+### workloads.PMO.perTe
+Quando chiedi qualcosa, è qui che la richiesta trova posto nel piano di lavoro, un responsabile e una data.
+
 ### workloads.ACC.nome
 Accessi
 
@@ -805,41 +817,65 @@ Marketing
 
 ## Team dati: schede e postazioni
 
-### team.trasporto.nome
-Team dati — trasporto
+### team.gruppi.integration.nome
+Team dati — Data Integration
 
-### team.trasporto.tecnico
-Data engineer (integrazione)
+### team.gruppi.integration.tecnico
+Data engineer
 
-### team.trasporto.fabbrica
+### team.gruppi.integration.fabbrica
 Uno costruisce e ripara gli scivoli che portano il materiale dai fornitori al lago; l'altro, da un pannello di comando, manovra le gru che pescano il materiale dal lago e lo mettono nel magazzino materie prime.
 
-### team.trasporto.perTe
+### team.gruppi.integration.perTe
 Sono le persone che collegano i tuoi sistemi alla fabbrica e controllano che i carichi arrivino ogni giorno.
 
-### team.trasporto.compiti.0.nome
+### team.gruppi.integration.compiti.0.nome
 Costruisce e ripara gli scivoli
 
-### team.trasporto.compiti.1.nome
+### team.gruppi.integration.compiti.1.nome
 Manovra le gru dal pannello di comando
 
-### team.rotazione.nome
-Team dati — governo, coordinamento e report
+### team.gruppi.architecture.nome
+Team dati — Data Architecture
 
-### team.rotazione.tecnico
-Data governance · project manager · BI developer
+### team.gruppi.architecture.tecnico
+Data architect
 
-### team.rotazione.fabbrica
-Si alternano tra tre postazioni: la cabina di controllo (governo della fabbrica), il coordinamento degli operatori e lo showroom, dove nascono i report ufficiali.
+### team.gruppi.architecture.fabbrica
+Progetta la fabbrica: dove vanno i reparti, quanta energia serve, come si collegano tra loro. Lavora al tavolo dei progetti accanto al capannone.
 
-### team.rotazione.perTe
-Sono poche persone che fanno più mestieri: per questo le richieste si mettono in fila e si pianificano.
+### team.gruppi.architecture.perTe
+È la persona che fa in modo che ogni nuova esigenza trovi posto nella fabbrica senza doverla rifare.
 
-### team.rotazione.postazioni.0.nome
-Cabina di controllo
+### team.gruppi.architecture.compiti.0.nome
+Al tavolo dei progetti
 
-### team.rotazione.postazioni.1.nome
-Ufficio di coordinamento
+### team.gruppi.visualization.nome
+Team dati — Data Visualization
 
-### team.rotazione.postazioni.2.nome
-Showroom
+### team.gruppi.visualization.tecnico
+BI developer
+
+### team.gruppi.visualization.fabbrica
+Costruisce nello showroom i report ufficiali, partendo dai semilavorati collaudati.
+
+### team.gruppi.visualization.perTe
+È la persona che trasforma i dati certificati nei report che apri ogni giorno.
+
+### team.gruppi.visualization.compiti.0.nome
+Nello showroom
+
+### team.gruppi.coordination.nome
+Team dati — Project Management
+
+### team.gruppi.coordination.tecnico
+Project manager
+
+### team.gruppi.coordination.fabbrica
+Coordina tutti gli operatori della fabbrica: chi fa cosa, in che ordine, entro quando.
+
+### team.gruppi.coordination.perTe
+È la persona che mette in fila le richieste e ti dice quando arriverà ciò che hai chiesto.
+
+### team.gruppi.coordination.compiti.0.nome
+All'ufficio di coordinamento

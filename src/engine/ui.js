@@ -88,12 +88,12 @@ export function createUI(cfg, world, state) {
     sez(ui.gestore, [ui.gestori[d.gestore || wl.gestore], d.gestoreTesto].filter(Boolean).join('. '));
     box.classList.add('open');
   }
-  const nomeDi = (id) => (id.startsWith('team:') ? cfg.team[id.slice(5)].nome : state.elemento(id).el.nome);
+  const nomeDi = (id) => (id.startsWith('team:') ? cfg.team.gruppi[id.slice(5)].nome : state.elemento(id).el.nome);
   function mostraElemento(id) {
-    if (id.startsWith('team:')) { const t = cfg.team[id.slice(5)]; aperta = () => scheda(t.nome, t.wl, { fabbrica: t.fabbrica, perTe: t.perTe, gestore: 'hub', tecnico: t.tecnico }); aperta(); return; }   // [REQ-SCN-11] scheda del team dati
-    const r = state.elemento(id); if (!r) return; aperta = () => scheda(r.el.nome, r.el.wl, r.el, r); aperta(); }
+    if (id.startsWith('team:')) { const t = cfg.team.gruppi[id.slice(5)]; aperta = () => scheda(t.nome, t.wl, { fabbrica: t.fabbrica, perTe: t.perTe, gestore: 'hub', tecnico: t.tecnico }); aperta(); return; }   // [REQ-SCN-11] scheda del team dati
+    const r = state.elemento(id); if (!r) return; scelto = id; aperta = () => scheda(r.el.nome, r.el.wl, r.el, r); aperta(); }
   function mostraWorkload(k) { aperta = () => scheda(cfg.workloads[k].nome, k, {}); aperta(); }
-  function chiudi() { aperta = null; $('info').classList.remove('open'); }
+  function chiudi() { scelto = null; aperta = null; $('info').classList.remove('open'); }
 
   /* ===== [REQ-UI-02, REQ-UI-05] Clic e passaggio del mouse sugli elementi ===== */
   const ray = new THREE.Raycaster(), p = new THREE.Vector2(), canvas = world.renderer.domElement;
@@ -130,14 +130,40 @@ export function createUI(cfg, world, state) {
     figure = fig; const box = $('team');
     box.append(h('h2', { textContent: ui.team }));
     const riga = h('div', { className: 'pupazzi' }); box.append(riga);
+    const gruppi = {};
     fig.tutte.forEach((f, i) => {
+      if (!gruppi[f.gruppo]) { const G = cfg.team.gruppi[f.gruppo], c = h('div', { className: 'gruppo' }, h('div', { className: 'riga' }), h('small', { textContent: G.breve })); c.style.borderColor = cfg.workloads[G.wl].colore; riga.append(c); gruppi[f.gruppo] = c.firstChild; }
       const b = h('button', { className: 'pupazzo' }); b.dataset.i = i;
       b.innerHTML = `<svg viewBox="0 0 20 30" width="18" height="27"><circle cx="10" cy="6" r="4.6" fill="#f1c9a5"/><path d="${f.sesso === 'f' ? 'M10 11 L17 27 L3 27 Z' : 'M5 11 h10 v11 h-10 Z M6 22 h3 v6 h-3 Z M11 22 h3 v6 h-3 Z'}" fill="${cfg.team.colore}"/><path d="M5.2 5.5 a4.8 4.8 0 0 1 9.6 0 Z" fill="${f.sesso === 'f' ? '#78350f' : cfg.team.casco}"/></svg>`;
       b.onclick = () => { const on = fig.evidenzia(i); document.querySelectorAll('.pupazzo').forEach((x) => x.classList.toggle('sel', on && x === b)); if (on) { world.frame([[f.o.position.x, f.o.position.z]], 6); mostraElemento('team:' + f.gruppo); } };
-      riga.append(b);
+      gruppi[f.gruppo].append(b);
     });
     setInterval(() => document.querySelectorAll('.pupazzo').forEach((b) => { const f = fig.tutte[+b.dataset.i]; b.classList.toggle('off', !f.o.visible); b.title = f.o.visible ? fig.descrizione(f) : ui.fuoriServizio; }), 500);
   }
 
-  return { mostraElemento, mostraWorkload, chiudi, inPausa: () => pausa, collegaTeam };
+  /* ===== [REQ-SCN-06, RDM-028] Etichette senza sovrapposizioni: vince la più importante, poi la più vicina; le altre si nascondono =====
+     Priorità: elemento con la scheda aperta → priorita 1 del CONFIG → reparti e edifici → sorgenti e officine. */
+  let scelto = null, tEt = 0;
+  const v = new THREE.Vector3();
+  function ordinaEtichette(dt) {
+    tEt += dt; if (tEt < 0.12) return; tEt = 0;
+    const W = innerWidth, H = innerHeight, occupati = [[0, 0, 340, H], [W - 250, 0, W, 96]], lista = [];   // pannello dei workload e del team
+    if ($('info').classList.contains('open')) { const r = $('info').getBoundingClientRect(); occupati.push([r.left, r.top, r.right, r.bottom]); }
+    for (const r of state.recs) {
+      if (!r.label.visible || r.mostrato === 'off') continue;
+      r.label.getWorldPosition(v); const d = v.distanceTo(world.camera.position); v.project(world.camera);
+      if (v.z > 1) { r.div.classList.add('nascosta'); continue; }
+      const p = r.el.id === scelto ? 0 : r.el.priorita || (r.el.tipo === 'sorgente' || r.el.tipo === 'officina' ? 3 : 2);
+      lista.push({ r, p, d, x: (v.x + 1) / 2 * W, y: (1 - v.y) / 2 * H, w: r.div.offsetWidth + 8, h: r.div.offsetHeight + 6 });
+    }
+    lista.sort((a, b) => a.p - b.p || a.d - b.d);
+    for (const e of lista) {
+      const q = [e.x - e.w / 2, e.y - e.h / 2, e.x + e.w / 2, e.y + e.h / 2];
+      const libera = !occupati.some((o) => q[0] < o[2] && q[2] > o[0] && q[1] < o[3] && q[3] > o[1]);
+      e.r.div.classList.toggle('nascosta', !libera && e.p > 0);
+      if (libera || e.p === 0) occupati.push(q);
+    }
+  }
+
+  return { mostraElemento, mostraWorkload, chiudi, inPausa: () => pausa, collegaTeam, ordinaEtichette, etichetteVisibili: () => state.recs.filter((r) => r.label.visible && !r.div.classList.contains('nascosta')).length };
 }

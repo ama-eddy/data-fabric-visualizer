@@ -84,7 +84,7 @@ builders.salacontrollo = (g, el, ctx) => {
   cyl(g, 0.1, 0.1, 4, mat('#64748b'), w / 2 - 1.5, h - 0.6, -1, 6); sfera(g, 0.3, mat('#ef4444', { e: '#dc2626', ei: 1 }), w / 2 - 1.5, h + 3.5, -1);
   const q = new THREE.Group(); q.position.set(w / 2 + 0.05, 0, 0); q.rotation.y = Math.PI / 2; g.add(q);                           // quadro delle spie, rivolto al capannone
   box(q, d - 1.4, h - 2.4, 0.2, mat('#020617'), 0, 1, 0);
-  const spie = cfg.ordine.map((k, i) => { const s = box(q, 0.8, 0.8, 0.12, mat('#1e293b', { e: '#000000', ei: 1 }).clone(), -2.4 + (i % 4) * 1.6, 3.4 - Math.floor(i / 4) * 1.15, 0.14); return { k, s }; });
+  const spie = cfg.ordine.map((k, i) => { const s = box(q, 0.8, 0.8, 0.12, mat('#1e293b', { e: '#000000', ei: 1 }).clone(), -2.6 + (i % 5) * 1.3, 3.4 - Math.floor(i / 5) * 1.15, 0.14); return { k, s }; });
   /* verde = lavora · rosso = acceso ma fermo (manca un workload a monte) · giallo = cantiere · spento = off */
   ctx.animate((t) => { const st = ctx.state().stato; for (const { k, s } of spie) { const c = st[k] === 'off' ? 0x111827 : st[k] === 'wip' ? 0xf59e0b : ctx.flows.lavora(k) ? 0x22c55e : 0xef4444; s.material.emissive.setHex(c); s.material.emissiveIntensity = st[k] === 'on' && !ctx.flows.lavora(k) ? 0.6 + 0.6 * Math.abs(Math.sin(t * 5)) : 0.9; } });
 };

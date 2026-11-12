@@ -5,7 +5,7 @@
 
 | Campo | Valore |
 |---|---|
-| Versione documento | 1.8 |
+| Versione documento | 1.9 |
 | Data | 2026-11-12 |
 | Stato | Requisiti approvati — implementazione da avviare (vedi `PIANO.md`) |
 | Approva | Il responsabile del progetto (richiedente) |
@@ -202,7 +202,7 @@ I workload hanno un proprio codice, `WL-<SIGLA>` (§5). È usato anche come chia
 | REQ-WL-05 | Nel **modello standard** tutti i workload sono `off` di default, tranne **Data Sources**, che è `on` con **tutte le sorgenti spente**: la scena parte dal terreno vuoto con la sola area fornitori. | Aprendo il file senza profilo si vedono il terreno, l'area fornitori vuota e il pannello dei workload. | M | Implementato |
 | REQ-WL-06 | Ogni workload dichiara le proprie **dipendenze** (§5.2). Accendere un workload accende **solo quello**: se una sua dipendenza non è `on`, il workload compare ma resta **fermo** (nessun materiale in arrivo, figure in attesa). Il "buco" a monte si vede e si racconta. | Con `WL-TRF` `on` e `WL-INT` `off`: i reparti di trasformazione sono visibili ma senza flusso; accendendo `WL-INT` il flusso parte. | M | Implementato |
 | REQ-WL-07 | Il passaggio di stato è **animato**: un elemento che compare "si costruisce" salendo dal terreno, uno che scompare viene smontato. | Transizione visibile, durata configurabile (default circa 1,5 s). | S | Implementato |
-| REQ-WL-08 | Tutti i workload, anche quelli `off`, sono **sempre elencati** nel pannello dei workload. | Il pannello mostra 12 workload con uno stato ciascuno, anche a scena vuota (D-06). | M | Implementato |
+| REQ-WL-08 | Tutti i workload, anche quelli `off`, sono **sempre elencati** nel pannello dei workload. | Il pannello mostra 13 workload con uno stato ciascuno, anche a scena vuota (D-06). | M | Implementato |
 
 ---
 
@@ -212,11 +212,12 @@ I workload hanno un proprio codice, `WL-<SIGLA>` (§5). È usato anche come chia
 
 La colonna "In Fabric (concetti)" è un **riferimento per gli autori**: serve a mantenere la metafora corretta e **non viene mostrata nell'HTML** (P-05).
 
-Il pannello e la narrativa li presentano in quest'ordine (D-08): Data Sources, Data Architecture, Data Integration, Data Transformation, Security, Accessi, Data Visualization, Self-service, Data Governance, Monitoraggio costi, Knowledge, Real-Time.
+Il pannello e la narrativa li presentano in quest'ordine (D-08): Data Sources, Data Architecture, Project Management, Data Integration, Data Transformation, Security, Accessi, Data Visualization, Self-service, Data Governance, Monitoraggio costi, Knowledge, Real-Time.
 
 | Codice | Workload | Nella fabbrica (metafora) | In Fabric (concetti) | Default |
 |---|---|---|---|---|
 | `WL-ARC` | **Data Architecture** (costruzione della fabbrica) | Terreno, fondamenta, capannone, reparti, **centrale elettrica**, **riserva idrica** sotto la fabbrica | Tenant, **Capacity** (centrale), **OneLake** (riserva), workspace per layer e ambiente (Dev/Test/Prod), Git integration, deployment pipelines | off |
+| `WL-PMO` | **Project Management** | L'ufficio di coordinamento: da qui si coordinano tutti gli operatori e si mettono in fila le richieste | Coordinamento del team dati: pianificazione e priorità | off |
 | `WL-SRC` | **Data Sources** | L'area fornitori: un edificio per ogni sistema dell'azienda, per categoria di software; si accendono uno alla volta | Sistemi sorgente (ERP, CRM, PIM, HR…), on-premises data gateway | **on**, con tutte le sorgenti spente |
 | `WL-ACC` | **Accessi** | Cancelli, tornelli, badge, reception | Microsoft Entra ID, gruppi, ruoli di workspace (Admin/Member/Contributor/Viewer), permessi sugli item, permesso **Build** sui modelli semantici | off |
 | `WL-SEC` | **Security** | Recinzione perimetrale, telecamere, caveau, sigilli sui pacchi | RLS/OLS/CLS, sensitivity label, OneLake security, rete privata (private link), cifratura | off |
@@ -236,6 +237,7 @@ Il pannello e la narrativa li presentano in quest'ordine (D-08): Data Sources, D
 | `WL-ARC` | — (è la base) |
 | `WL-ACC`, `WL-SEC`, `WL-GOV`, `WL-FIN` | `WL-ARC` |
 | `WL-SRC` | — |
+| `WL-PMO` | — |
 | `WL-INT` | `WL-ARC`, `WL-SRC` |
 | `WL-TRF` | `WL-INT` |
 | `WL-VIS` | `WL-TRF` |
@@ -247,7 +249,7 @@ Il pannello e la narrativa li presentano in quest'ordine (D-08): Data Sources, D
 
 | ID | Requisito | Criterio di accettazione | Pr. | Stato |
 |---|---|---|---|---|
-| REQ-WL-10 | La piattaforma gestisce **tutti e 12 i workload** del §5.1, ciascuno con codice, nome, metafora, concetti Fabric, colore, dipendenze ed elementi 3D. | Ogni riga del §5.1 corrisponde a una voce di `CONFIG.workloads`. | M | Implementato |
+| REQ-WL-10 | La piattaforma gestisce **tutti e 13 i workload** del §5.1, ciascuno con codice, nome, metafora, concetti Fabric, colore, dipendenze ed elementi 3D. | Ogni riga del §5.1 corrisponde a una voce di `CONFIG.workloads`. | M | Implementato |
 | REQ-WL-11 | Ogni workload ha un **colore identificativo**, usato per l'etichetta, il bordo della zona e il badge nel pannello. | Colori distinti e leggibili sia su sfondo chiaro sia su sfondo scuro. | S | Implementato |
 | REQ-WL-12 | Aggiungere un workload **non richiede modifiche al motore**: basta aggiungere una voce in `CONFIG.workloads` e i relativi elementi in `CONFIG.elements`. | Prova: si aggiunge un workload fittizio dal solo CONFIG e compare nel pannello e nella scena. | S | Implementato |
 
@@ -353,14 +355,14 @@ Una sorgente per categoria, così da poter raccontare ogni caso.
 | REQ-SCN-03 | I workload **trasversali** (ACC, SEC, GOV, FIN) sono elementi **che avvolgono** la fabbrica: cancelli e tornelli, recinzione e telecamere, torre di controllo, sala controllo, contatori della centrale. | Ogni workload trasversale ha almeno un elemento dedicato, cliccabile. | M | Implementato |
 | REQ-SCN-04 | `WL-ARC` comprende il **terreno edificabile**, le fondamenta, la struttura del capannone, la **centrale elettrica** (capacity) e il **lago dei dati** (OneLake), **tra l'area fornitori e il capannone**. | Con solo `WL-ARC` attivo si vedono il capannone vuoto, la centrale e il lago. | M | Implementato |
 | REQ-SCN-05 | `WL-RTI` e `WL-KNW` stanno in **edifici separati**, ai lati del capannone. | Edifici distinti dal capannone. | M | Implementato |
-| REQ-SCN-06 | Ogni elemento ha un'**etichetta** (nome dal CONFIG o dal PROFILE); le etichette si possono nascondere. | Interruttore per mostrare o nascondere le etichette. | M | Implementato |
+| REQ-SCN-06 | Ogni elemento ha un'**etichetta**; le etichette si possono nascondere e **non si sovrappongono mai**: quando lo spazio non basta resta visibile la più importante (l'elemento con la scheda aperta, poi capannone, lago, area fornitori e showroom, poi reparti ed edifici, infine sorgenti e officine) e, a parità, la più vicina. Le altre ricompaiono avvicinandosi. | Nella vista d'insieme con tutto acceso nessuna etichetta ne copre un'altra né finisce sotto i pannelli. | M | Implementato |
 | REQ-SCN-07 | Gli schermi dello showroom e degli spoke mostrano **dashboard di esempio** generate (dati fittizi). | Nessun dato reale; i grafici sono generati nel codice. | S | Implementato |
 | REQ-SCN-08 | Lo stile è **originale** e "da plastico" (low-poly), senza marchi, loghi o asset di terze parti. | Nessun logo Microsoft o di altri marchi in scena. | M | Implementato |
 | REQ-SCN-09 | Lo **sportello dell'hub** (reception / Center of Excellence) è il punto in cui le funzioni entrano in contatto con la piattaforma: segnalazioni, richieste, onboarding. Appartiene a `WL-GOV`. | L'elemento è presente e cliccabile, ed è la tappa di partenza o di contatto dei percorsi. | M | Implementato |
 | REQ-SCN-10 | Il **laboratorio prove** sta **dentro il capannone**, subito dopo il confezionamento, e compare con la **Data Transformation** (`WL-TRF`): ogni semilavorato viene collaudato qui prima di uscire, e qui si provano le modifiche prima della produzione. | L'elemento compare con `WL-TRF`; il flusso dei semilavorati lo attraversa; è usato da Change request e New project. | M | Implementato |
-| REQ-SCN-11 | Il **team dati** è rappresentato da **figure stilizzate, una per persona reale**, con due sagome (uomo / donna) e un colore unico per l'hub. Il numero e la composizione vengono dal profilo; di default sono **5**: **2 al trasporto** (una **costruisce e ripara gli scivoli**, spostandosi da un fornitore all'altro; l'altra, da un **pannello di comando**, manovra le **gru** che pescano dal lago e mettono il materiale nel Bronze) e **3 a rotazione** tra tre postazioni: **cabina di controllo** (governo della fabbrica: governance e architettura insieme), **ufficio di coordinamento** (project management: coordina tutti gli operatori) e **showroom** (creazione dei report ufficiali). I reparti di lavorazione sono **automatici**: nessuna figura. | In scena ci sono esattamente le figure del profilo; quelle a rotazione si spostano periodicamente tra le tre postazioni; una figura compare solo se il workload della sua postazione è `on` (le figure a rotazione usano le postazioni disponibili). | M | Implementato |
+| REQ-SCN-11 | Il **team dati** è rappresentato da **figure stilizzate, una per persona reale**, con due sagome (uomo / donna) e un colore unico per l'hub, **divise in quattro gruppi**, ognuno legato al suo workload: **Integration** (`WL-INT`: uno costruisce e ripara gli scivoli, l'altro manovra dal pannello le gru che pescano dal lago), **Architecture** (`WL-ARC`: al tavolo dei progetti accanto al capannone), **Visualization** (`WL-VIS`: nello showroom) e **Coordination** (`WL-PMO`: all'ufficio di coordinamento). Numero e composizione vengono dal profilo; di default sono 5: 2 + 1 + 1 + 1. | Ogni gruppo compare solo con il suo workload `on`; in scena ci sono esattamente le figure del profilo. | M | Implementato |
 | REQ-SCN-12 | Nelle officine degli spoke lavorano **figure delle funzioni business**, con il colore dello spoke, che usano i semilavorati e guardano i report. | Le figure compaiono con l'officina. | S | Implementato |
-| REQ-SCN-13 | L'**ufficio di coordinamento** (project management) è una postazione dell'hub da cui si coordinano gli operatori. Appartiene a `WL-ARC`. | L'elemento è presente e cliccabile; è una delle tre postazioni delle figure a rotazione. | M | Implementato |
+| REQ-SCN-13 | L'**ufficio di coordinamento** è la postazione del project management. Appartiene al workload **Project Management** (`WL-PMO`), indipendente dall'architettura. | L'ufficio compare con `WL-PMO`, anche a Data Architecture spenta, e non compare con la sola Data Architecture. | M | Implementato |
 | REQ-SCN-14 | Lo **showroom** è un **edificio a sé, vicino al capannone ma staccato**, collegato al laboratorio prove da una passerella coperta. | Lo showroom è fuori dal capannone; la passerella è visibile e i semilavorati la percorrono. | M | Implementato |
 
 ---
@@ -372,7 +374,7 @@ L'HTML ha **due modalità** (REQ-UI-10): **esplorazione libera**, in cui la fabb
 | ID | Requisito | Criterio di accettazione | Pr. | Stato |
 |---|---|---|---|---|
 | REQ-NAR-01 | Esiste una **modalità narrativa**, organizzata in **capitoli**, che si percorre con **Avanti / Indietro**. Ogni capitolo definisce: titolo, testo da raccontare, stato dei workload, inquadratura ed elemento evidenziato. | Pulsanti Avanti e Indietro, indicatore "capitolo n di N"; ogni Avanti porta al capitolo successivo con transizione fluida. | M | Approvato |
-| REQ-NAR-02 | I **capitoli standard** coprono tutti i workload, in ordine di costruzione: 0 Terreno vuoto · 1 Data Sources · 2 Data Architecture · 3 Data Integration · 4 Data Transformation · 5 Security · 6 Accessi · 7 Data Visualization · 8 Self-service (spoke) · 9 Data Governance · 10 Monitoraggio costi · 11 Knowledge · 12 Real-Time. Ogni capitolo si può **includere o escludere** dalla presentazione, e l'ordine si può cambiare, dal CONFIG. | Escludendo un capitolo dal CONFIG, Avanti lo salta; quali capitoli entrano nella presentazione si decide dopo le prove in esplorazione libera. | M | Approvato |
+| REQ-NAR-02 | I **capitoli standard** coprono tutti i workload, in ordine di costruzione: 0 Terreno vuoto · 1 Data Sources · 2 Data Architecture · 3 Project Management · 4 Data Integration · 5 Data Transformation · 6 Security · 7 Accessi · 8 Data Visualization · 9 Self-service (spoke) · 10 Data Governance · 11 Monitoraggio costi · 12 Knowledge · 13 Real-Time. Ogni capitolo si può **includere o escludere** dalla presentazione, e l'ordine si può cambiare, dal CONFIG. | Escludendo un capitolo dal CONFIG, Avanti lo salta; quali capitoli entrano nella presentazione si decide dopo le prove in esplorazione libera. | M | Approvato |
 | REQ-NAR-03 | Ogni capitolo **accende un workload alla volta** (con l'animazione di costruzione, REQ-WL-07); quelli accesi nei capitoli precedenti restano accesi. | Tornando indietro di un capitolo si ripristina lo stato precedente. | M | Approvato |
 | REQ-NAR-04 | Un capitolo può portare un workload a **`wip`** invece che a `on`, per raccontare "cosa stiamo costruendo". | Prova da CONFIG: un capitolo con stato `wip` mostra il cantiere. | S | Approvato |
 | REQ-NAR-05 | In narrativa si avanza anche da **tastiera** e da **telecomando da presentazione**: frecce, spazio, PagGiù = avanti; freccia sinistra, PagSu = indietro; Esc = esci. | Presentazione completa senza toccare il mouse, con un telecomando standard. | M | Approvato |
@@ -463,7 +465,7 @@ Un **percorso** mostra come un evento tipico della vita aziendale **attraversa l
 |---|---|---|---|---|
 | REQ-UI-01 | **Navigazione libera**: rotazione, zoom e spostamento col mouse; spostamento con WASD o frecce fuori dalla narrazione. | La scena si esplora da ogni angolazione. | M | Implementato |
 | REQ-UI-02 | **Clic su un elemento**: si apre un pannello con nome e, sotto il titolo, il **nome tecnico** ("In Fabric: …", es. Lago dei dati → OneLake; Confezionamento → Semantic model); poi workload e stato, *nella fabbrica* (metafora), *cosa significa per te*, *a chi rivolgerti* e *chi lo gestisce*. Ogni concetto rappresentato (workload, elemento, tipo di sistema, mezzo, spoke, team) ha il suo nome tecnico; i materiali e i mezzi lo mostrano nella legenda al passaggio del mouse. | Tutte le schede hanno la riga "In Fabric"; il nome tecnico non compare mai nel nome o nell'etichetta dell'elemento. | M | Implementato |
-| REQ-UI-03 | **Pannello workload**: elenco dei 12 workload con badge colorato e **selettore a tre stati** (off/wip/on). Cliccando il nome, la telecamera inquadra il workload. | Cambiare stato aggiorna subito la scena. | M | Implementato |
+| REQ-UI-03 | **Pannello workload**: elenco dei 13 workload con badge colorato e **selettore a tre stati** (off/wip/on). Cliccando il nome, la telecamera inquadra il workload. | Cambiare stato aggiorna subito la scena. | M | Implementato |
 | REQ-UI-04 | Comandi globali: **vista d'insieme**, **pausa dei flussi**, **etichette on/off**, **tutto off** e **tutto on**. | Tutti funzionanti. | M | Implementato |
 | REQ-UI-05 | **Passando il mouse** su un elemento compaiono un evidenziamento e un tooltip con il nome. | Il cursore diventa a "mano" sugli elementi cliccabili. | S | Implementato |
 | REQ-UI-06 | Gli spostamenti della telecamera sono **animati** (volo fluido). | Nessun salto brusco. | S | Implementato |
@@ -472,7 +474,7 @@ Un **percorso** mostra come un evento tipico della vita aziendale **attraversa l
 | REQ-UI-09 | Durante il meeting il presentatore può **cambiare dal vivo lo stato** (off/wip/on) di workload, **singoli spoke** e **singole sorgenti**, dal pannello o cliccando sull'elemento; la scena alla fine rappresenta l'as-is di business costruito insieme. | Cambio di stato in ≤ 2 clic, con effetto immediato in scena. | M | Implementato |
 | REQ-UI-10 | Due **modalità**: **esplorazione libera** (navigazione, clic sugli elementi, stati dal vivo, percorsi) e **narrativa** (tutti i workload in ordine, §8). Si passa dall'una all'altra con un pulsante; uscendo dalla narrativa, la scena resta nello stato raggiunto. | Il cambio di modalità non ricarica la scena e non perde lo stato. | M | Approvato |
 | REQ-UI-11 | Nel pannello, i workload con elementi a **stato proprio** (Data Integration → sorgenti, Self-service → spoke) si aprono **a tendina**: ogni sorgente o spoke ha il suo selettore off/cantiere/on, per **accenderli uno alla volta**. | Aprendo la tendina di Data Integration e spegnendo una sorgente, si spegne solo quella. | M | Implementato |
-| REQ-UI-12 | **In alto a destra**, il pannello **Team dati** mostra **un pupazzino per persona** (sagoma uomo/donna). Il clic su un pupazzino lo **evidenzia in scena** (anello a terra e freccia sopra la testa), inquadra la figura e apre la sua scheda; un secondo clic toglie l'evidenziazione. Le figure non in servizio sono attenuate. | Clic su un pupazzino: figura evidenziata, scheda aperta. | M | Implementato |
+| REQ-UI-12 | **In alto a destra**, il pannello **Team dati** mostra **un pupazzino per persona** (sagoma uomo/donna), **raggruppati per gruppo** (Integration, Architecture, Visualization, Coordination) con il colore del workload. Il clic su un pupazzino lo **evidenzia in scena** (anello a terra e freccia sopra la testa), inquadra la figura e apre la scheda del gruppo; un secondo clic toglie l'evidenziazione. Le figure non in servizio sono attenuate. | Clic su un pupazzino: figura evidenziata, scheda aperta. | M | Implementato |
 
 ---
 
@@ -496,7 +498,7 @@ Un **percorso** mostra come un evento tipico della vita aziendale **attraversa l
 |---|---|---|---|---|
 | REQ-CFG-01 | Tutti i contenuti stanno in un unico blocco **`CONFIG`** in cima all'HTML: workload, elementi, colori, spoke, sorgenti e capitoli; i **testi** vengono da `TESTI.md` (REQ-CFG-08). | Il motore non contiene stringhe di contenuto. | M | Implementato |
 | REQ-CFG-02 | Un blocco **`PROFILE`**, separato, **sovrascrive** il CONFIG per chiave (merge profondo). Un profilo vuoto equivale al modello standard. | Con `PROFILE = {}` si ottiene esattamente lo standard. | M | Implementato |
-| REQ-CFG-03 | Il profilo di un'azienda contiene **solo**: nome dell'azienda, **spoke** (nome + stato on/wip/off), **sorgenti** (nome noto al business + **categoria** + **flusso on/off**), **team dati** (numero di uomini e di donne, al trasporto e a rotazione) e un **contatto** ("a chi rivolgerti"). Tutto il resto (workload, capitoli, percorsi, testi) è standard. **Nessun nome tecnico.** | Il template `profili/PROFILO-TEMPLATE.md` ha esattamente questi campi. | M | Implementato |
+| REQ-CFG-03 | Il profilo di un'azienda contiene **solo**: nome dell'azienda, **spoke** (nome + stato on/wip/off), **sorgenti** (nome noto al business + **categoria** + **flusso on/off**), **team dati** (numero di uomini e di donne per gruppo: Integration, Architecture, Visualization, Coordination) e un **contatto** ("a chi rivolgerti"). Tutto il resto (workload, capitoli, percorsi, testi) è standard. **Nessun nome tecnico.** | Il template `profili/PROFILO-TEMPLATE.md` ha esattamente questi campi. | M | Implementato |
 | REQ-CFG-04 | Ogni chiave del CONFIG riporta i **REQ** che la governano (campo `reqs` o commento). | Ricerca di `REQ-xx` nel file e ritrovamento della chiave. | M | Implementato |
 | REQ-CFG-05 | Il documento di profilo (`profili/<org>.md`) e il blocco `PROFILE` nell'HTML sono **allineati**: il blocco si ricava dal documento. | Ogni campo del blocco esiste nel documento di profilo. | S | Implementato |
 | REQ-CFG-06 | Si può **caricare un profilo da file JSON** tramite l'interfaccia, senza modificare l'HTML. | Il pulsante "Carica profilo" applica il JSON alla scena (D-11). | C | Approvato |
@@ -596,7 +598,7 @@ const CONFIG = {
 | D-05 | Data Architecture, Accessi, Security, Data Governance (governo e monitoraggio insieme) e Costi sono **workload** a pieno titolo. | Utente | Confermata |
 | D-06 | Anche i workload `off` restano **elencati nel pannello**, così si possono accendere dal vivo. | Utente | Confermata |
 | D-07 | Accendere un workload accende solo quello; se manca un workload a monte, resta fermo e il buco si vede (REQ-WL-06). | Utente | Confermata |
-| D-08 | La **narrativa** è lo strumento della presentazione; ordine dei workload, nel pannello e nei capitoli: SRC → ARC → INT → TRF → SEC → ACC → VIS → SSR → GOV → FIN → KNW → RTI. | Utente | Confermata |
+| D-08 | La **narrativa** è lo strumento della presentazione; ordine dei workload, nel pannello e nei capitoli: SRC → ARC → PMO → INT → TRF → SEC → ACC → VIS → SSR → GOV → FIN → KNW → RTI. | Utente | Confermata |
 | D-09 | Gli spoke sono **officine**: personalizzano i semilavorati e aggiungono dati locali (composite model), senza una propria linea di produzione. | Utente | Confermata |
 | D-10 | **Un unico file offline**, con three.js incorporato. | Utente | Confermata |
 | D-11 | Personalizzazione tramite **profilo separato** (`profili/<org>.md` → blocco `PROFILE`); caricamento da JSON solo in futuro (REQ-CFG-06, priorità C). | Utente | Confermata |
@@ -616,7 +618,7 @@ const CONFIG = {
 | D-25 | Il pubblico primario sono le **funzioni aziendali non tecniche** (alfabetizzazione); il pubblico IT è secondario. | Utente | Confermata |
 | D-26 | **Scopo formativo, non documentazione dell'as-is** (P-05): niente dettagli tecnici nell'HTML, profilo senza nomi tecnici. | Utente | Confermata |
 | D-27 | Il viaggio del dato (LO-03) si mostra con il percorso **New project**: non serve un meccanismo dedicato. | Utente | Confermata |
-| D-28 | Il lavoro del team data (LO-01) si rende visibile con **una figura per ogni persona del team**, al trasporto o a rotazione tra le postazioni (REQ-SCN-11). | Utente | Confermata |
+| D-28 | Il lavoro del team data (LO-01) si rende visibile con **una figura per ogni persona del team**, divisa per gruppo (REQ-SCN-11). | Utente | Confermata |
 | D-29 | L'as-is di business (LO-02) **lo costruisce il presentatore dal vivo** cambiando gli stati; non serve una vista "oggi" dedicata. | Utente | Confermata |
 | D-30 | I contenuti non legati agli obiettivi restano nel modello con la loro priorità; il presentatore sceglie se raccontarli. | Utente | Confermata |
 | D-31 | Le sorgenti **non sono legate agli spoke**: stanno tutte nell'area fornitori (REQ-SRC-07). | Utente | Confermata |
@@ -624,7 +626,7 @@ const CONFIG = {
 | D-33 | Due modalità: **narrativa** (la presentazione: Avanti → tutti i workload in ordine) ed **esplorazione libera** (dal vivo, con stati modificabili e percorsi). | Utente | Confermata |
 | D-34 | Si progetta l'intero modello; **quali capitoli entrano nella presentazione** si decide dopo le prove in esplorazione libera (REQ-NAR-02). | Utente | Confermata |
 | D-35 | Il percorso New project contiene **solo le tappe del viaggio del dato**: sorgente, lavorazione, semilavorato, report. | Utente | Confermata |
-| D-36 | Team dati di default: **5 figure**, 2 al trasporto e 3 a rotazione tra cabina di controllo, ufficio di coordinamento e showroom. La "cabina di controllo" è una sola postazione per **governance e architettura insieme**, nella torre di controllo: è attiva se `WL-GOV` o `WL-ARC` è `on`. L'ufficio di coordinamento (project management di tutti gli operatori) appartiene a `WL-ARC`; composizione di default: 2 uomini al trasporto (uno fa scorrere il materiale verso il lago, uno lo pesca e lo porta nel Bronze), 1 donna + 2 uomini a rotazione. | Utente (team, postazioni, composizione) · interpretazione (workload delle postazioni) | Confermata |
+| D-36 | Team dati di default: **5 figure** in quattro gruppi: Integration 2 uomini, Architecture 1 uomo, Visualization 1 donna, Coordination 1 uomo. Ogni figura sta alla postazione del suo gruppo: non c'è rotazione tra postazioni. | Utente (gruppi) · interpretazione (composizione per gruppo, niente rotazione) | Confermata |
 | D-37 | Pubblicazione su **GitHub Pages** del solo modello standard; i profili aziendali reali restano in locale, fuori dal repository pubblico. | Utente | Confermata |
 | D-38 | I testi si rivedono in **`TESTI.md`** (Markdown, una chiave per titolo), fonte unica letta dalla build; la pagina pubblica si rigenera da sola con un'azione di GitHub. | Utente (file modificabile su GitHub) · proposta (formato e automazione) | Confermata |
 | D-39 | Lo **showroom è staccato** dal capannone; il **laboratorio prove** entra nel capannone e **ogni semilavorato passa dal collaudo** prima di andare allo showroom e agli spoke. | Utente | Confermata |
@@ -638,6 +640,8 @@ const CONFIG = {
 | D-47 | I due del team alla Data Integration: uno costruisce e ripara gli scivoli, l'altro manovra dal pannello le gru che pescano dal lago e riempiono il Bronze. | Utente | Confermata |
 | D-48 | Ogni concetto ha nella **scheda** (mai nel nome) il suo **nome tecnico**: Lago dei dati (OneLake), Semilavorati (Semantic model)… | Utente | Confermata |
 | D-49 | **Data Sources** è il primo workload; segue **Data Architecture** (nuovo nome dell'Architettura). | Utente | Confermata |
+| D-50 | **Project Management** è un workload a sé, con l'ufficio di coordinamento: non si accende più con l'architettura. | Utente (separazione) · proposta (workload dedicato, posizione nell'ordine) | Confermata |
+| D-51 | Le etichette non si sovrappongono: resta la più importante, poi la più vicina. | Utente | Confermata |
 
 ---
 
@@ -688,6 +692,8 @@ const CONFIG = {
 | RDM-025 | L'area fornitori vuota sembra sospesa: va resa leggibile anche con le sorgenti spente | Standard · SRC, SCN | REQ-SRC-07 | Approvata |
 | RDM-026 | Ogni concetto mostra nella scheda, non nel nome, il nome tecnico che richiama | Standard · UI, LIT, CFG | P-05, §1.2, REQ-UI-02, D-23, D-48 | Approvata |
 | RDM-027 | Data Sources come primo workload, poi Data Architecture | Standard · WL, NAR | §5.1, REQ-NAR-02, D-08, D-49 | Approvata |
+| RDM-028 | Sistemare le etichette affollate | Standard · SCN | REQ-SCN-06, D-51 | Approvata |
+| RDM-029 | Team diviso in Data Integration, Data Visualization, Architecture e Project Management; il coordinamento non si accende più con l'architettura | Standard · SCN, WL, UI, CFG | §5.1, §5.2, REQ-SCN-11, REQ-SCN-13, REQ-UI-12, REQ-CFG-03, D-28, D-36, D-50 | Approvata |
 
 ---
 
@@ -695,4 +701,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.8 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…027 |
+| 1.9 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…029 |

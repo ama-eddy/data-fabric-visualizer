@@ -9,6 +9,6 @@ window.PROFILE = {
     { nome: 'Budget (Excel)', categoria: 'excel', flusso: 'on' },
     { nome: 'Presenze', categoria: 'hr', flusso: 'off' },
   ],
-  team: { trasporto: { m: 1, f: 1 }, rotazione: { m: 1, f: 2 } },
+  team: { integration: { m: 1, f: 1 }, architecture: { m: 1, f: 0 }, visualization: { m: 0, f: 1 }, coordination: { m: 0, f: 1 } },
   contatto: { chi: 'Team dati', come: 'dati@esempio.example' },
 };

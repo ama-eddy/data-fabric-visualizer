@@ -9,7 +9,7 @@
 | Campo | Valore |
 |---|---|
 | Azienda | |
-| Basato su standard | REQUISITI.md v1.6 |
+| Basato su standard | REQUISITI.md v1.9 |
 
 ---
 
@@ -34,14 +34,15 @@
 
 ## 3. Team dati (REQ-SCN-11)
 
-> Una figura per ogni persona reale del team. Lasciare vuoto per usare il default (5 figure: 2 al trasporto, 3 a rotazione).
-> **Trasporto** (Data Integration): uno costruisce e ripara gli scivoli, l'altro manovra le gru che pescano dal lago e riempiono il Bronze.
-> **Rotazione**: si alternano tra cabina di controllo, ufficio di coordinamento e showroom.
+> Una figura per ogni persona reale del team, divisa per gruppo. Lasciare vuoto per usare il default (5 figure: 2 + 1 + 1 + 1).
+> Ogni gruppo compare quando il suo workload è acceso.
 
-| Gruppo | Uomini | Donne |
-|---|---|---|
-| Trasporto | | |
-| Rotazione | | |
+| Gruppo | Cosa fa | Uomini | Donne |
+|---|---|---|---|
+| Integration | Costruisce e ripara gli scivoli; manovra le gru che pescano dal lago | | |
+| Architecture | Progetta la fabbrica, al tavolo dei progetti | | |
+| Visualization | Costruisce i report ufficiali nello showroom | | |
+| Coordination | Coordina gli operatori, all'ufficio di coordinamento | | |
 
 ## 4. Contatto (REQ-LIT-02)
 
