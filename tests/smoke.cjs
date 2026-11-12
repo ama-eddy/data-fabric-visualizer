@@ -15,7 +15,10 @@ const path = require('path'), fs = require('fs');
   const shot = async (n, ms = 2200) => { await page.waitForTimeout(ms); await page.screenshot({ path: path.join(out, n + '.png') }); };
   const check = (c, m) => { if (!c) { errors.push('ATTESO: ' + m); } };
 
-  await shot('1-terreno-vuoto', 600);
+  await page.evaluate(() => fabbrica.world.flyTo([0, 40, -40], [0, 0, -86], 0.01));
+  await shot('0-area-fornitori-vuota', 1500);
+  await page.evaluate(() => fabbrica.world.home());
+  await shot('1-terreno-vuoto', 1500);
   check(await page.locator('#wl > .row').count() === 12, '12 workload nel pannello');
   check(await page.evaluate(() => fabbrica.state.stato.SRC === 'on' && fabbrica.state.recs.every((r) => (r.el.wl === 'SRC' && r.el.tipo !== 'sorgente') || (!r.on.visible && !r.wip.visible))), 'all\'avvio: solo l\'area fornitori, sorgenti spente');
   check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente').every((r) => r.proprio === 'off')), 'tutte le sorgenti spente di default');

@@ -36,6 +36,7 @@ try {
   const cfg = applicaProfilo(applicaTesti(window.CONFIG, window.TESTI), window.PROFILE);
   const world = createScene(cfg, document.getElementById('scene'), document.getElementById('labels'));
   cfg.elements.push(...elementiSorgenti(cfg), ...elementiSpoke(cfg));
+  const fi = cfg.elements.findIndex((e) => e.tipo === 'piazzale'); if (fi >= 0) cfg.elements.push(...cfg.elements.splice(fi, 1));   // i lotti dei fornitori servono le posizioni delle sorgenti
   const flows = createFlows(cfg, world);
   const state = createState(cfg, world, flows);
   flows.collega(state);

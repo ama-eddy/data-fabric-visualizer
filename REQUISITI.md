@@ -5,7 +5,7 @@
 
 | Campo | Valore |
 |---|---|
-| Versione documento | 1.6 |
+| Versione documento | 1.7 |
 | Data | 2026-11-12 |
 | Stato | Requisiti approvati — implementazione da avviare (vedi `PIANO.md`) |
 | Approva | Il responsabile del progetto (richiedente) |
@@ -319,7 +319,7 @@ Le sorgenti sono classificate per **categoria di software**, come le conoscono l
 | REQ-SRC-04 | **Tra i fornitori e la fabbrica non ci sono strade**: tutto il materiale finisce nel **lago** (scivolo, scialuppa, ponte di vetro) e da lì viene recuperato. Fa eccezione solo il nastro veloce del Real-Time. | Nessuna strada tra area fornitori e capannone; ogni mezzo termina nel lago. | M | Implementato |
 | REQ-SRC-05 | Lo **Shortcut** non muove materiale: il ponte di vetro arriva al lago, ma non viaggia nessun pezzo. Nel lago compare un'"ombra" del materiale (accesso senza copia). | Nessun pezzo in movimento sul ponte. | S | Implementato |
 | REQ-SRC-06 | Lo **Streaming** alimenta solo `WL-RTI`; se `WL-RTI` non è `on`, la sorgente è visibile ma senza flusso, e il pannello lo segnala. | Con `WL-RTI` spento il nastro luminoso è fermo. | M | Approvato |
-| REQ-SRC-07 | Le sorgenti stanno nell'**area fornitori**, sul fondo della scena, e **non sono legate a nessuno spoke**: da lì il materiale scende verso l'hub. | Nessuna sorgente è associata o affiancata a uno spoke. | M | Approvato |
+| REQ-SRC-07 | Le sorgenti stanno nell'**area fornitori**, sul fondo della scena, e **non sono legate a nessuno spoke**. L'area mostra **un lotto a terra per ogni sorgente del catalogo**, con un cartello del tipo di sistema, anche quando la sorgente è spenta. | Con Data Sources `on` e tutte le sorgenti spente si vedono i lotti con i cartelli, appoggiati a terra; accendendo una sorgente, l'edificio compare sul suo lotto. | M | Implementato |
 | REQ-SRC-08 | Ogni sorgente ha uno **stato proprio** (`off`/`wip`/`on`) che si combina con **Data Sources**: è visibile solo se Data Sources non è `off`. Nel modello standard tutte le sorgenti partono `off`. | Prova: Data Sources `on`, il gestionale in `wip` → è mostrato come cantiere, senza trasporto. | M | Implementato |
 | REQ-SRC-09 | Il pannello di una sorgente mostra solo informazioni utili al business: **che tipo di fornitore è** (spiegazione della categoria), **come arriva il materiale** (il mezzo, in parole semplici) e **se il flusso è attivo**. | Nessun termine tecnico nel pannello (verifica sul lessico §1.2). | M | Approvato |
 | REQ-SRC-10 | La narrativa (§8) può **accendere singole sorgenti** ("ora colleghiamo il gestionale"). | Un capitolo da CONFIG cambia lo stato di una sola sorgente. | C | Approvato |
@@ -680,6 +680,7 @@ const CONFIG = {
 | RDM-022 | Separare Data Sources da Data Integration; Data Sources acceso di default con tutte le sorgenti spente | Standard · WL, SRC, FLW | §5.1, §5.2, REQ-WL-05, REQ-FLW-01, REQ-SRC-08, D-45, D-46 | Approvata |
 | RDM-023 | Lago più evidente; nessuna strada tra sorgenti e fabbrica: tutto finisce nel lago e viene recuperato | Standard · SRC, SCN | REQ-SRC-04, REQ-SRC-05, §6.1.3, D-17 | Approvata |
 | RDM-024 | Togliere il mirroring; un operatore ripara gli scivoli, l'altro manovra le gru dal pannello | Standard · SRC, SCN | §6.1.2, §6.1.3, REQ-SCN-11, D-17, D-47 | Approvata |
+| RDM-025 | L'area fornitori vuota sembra sospesa: va resa leggibile anche con le sorgenti spente | Standard · SRC, SCN | REQ-SRC-07 | Approvata |
 
 ---
 
@@ -687,4 +688,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.6 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…024 |
+| 1.7 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…025 |

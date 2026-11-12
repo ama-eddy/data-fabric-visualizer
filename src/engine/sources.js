@@ -152,4 +152,23 @@ builders.sorgente = (g, el, ctx) => {
 builders.trasporto = (g, el, ctx) => infrastruttura(g, el, ctx);
 
 /* ===== [REQ-SRC-07] Piazzale dell'area fornitori ===== */
-builders.piazzale = (g, el) => { const [w, d] = el.dim; box(g, w, 0.08, d, mat('#e5e0d5', { r: 1 })).castShadow = false; };
+/* [RDM-025] un lotto a terra per ogni sorgente, con il cartello del tipo di sistema: si vede dove comparirà ogni fornitore */
+builders.piazzale = (g, el, ctx) => {
+  const [px, pz] = el.pos, dash = new THREE.LineDashedMaterial({ color: 0x64748b, dashSize: 1.2, gapSize: 0.9 });
+  for (const s of ctx.cfg.elements.filter((e) => e.tipo === 'sorgente')) {
+    const x = s.pos[0] - px, z = s.pos[1] - pz, h = 5.5;
+    box(g, 11, 0.05, 11, mat('#e7e1d3', { r: 1 }), x, 0, z).castShadow = false;
+    const bordo = new THREE.Line(new THREE.BufferGeometry().setFromPoints([[-h, -h], [h, -h], [h, h], [-h, h], [-h, -h]].map(([a, b]) => new THREE.Vector3(x + a, 0.1, z + b))), dash);
+    bordo.computeLineDistances(); g.add(bordo);
+    for (const [a, b] of [[-h, -h], [h, -h], [h, h], [-h, h]]) cyl(g, 0.12, 0.12, 1, mat('#ef4444'), x + a, 0, z + b, 6);
+    /* cartello con il nome del tipo di sistema */
+    const c = document.createElement('canvas'); c.width = 256; c.height = 96; const k = c.getContext('2d');
+    k.fillStyle = '#f8fafc'; k.fillRect(0, 0, 256, 96); k.strokeStyle = '#0d9488'; k.lineWidth = 8; k.strokeRect(4, 4, 248, 88);
+    k.fillStyle = '#0f172a'; k.textAlign = 'center'; k.textBaseline = 'middle'; let fs = 44; k.font = `600 ${fs}px sans-serif`;
+    while (k.measureText(s.categoriaNome).width > 230 && fs > 18) { fs -= 2; k.font = `600 ${fs}px sans-serif`; }
+    k.fillText(s.categoriaNome, 128, 50);
+    const tx = new THREE.CanvasTexture(c); tx.colorSpace = THREE.SRGBColorSpace;
+    const cart = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 1.35), new THREE.MeshBasicMaterial({ map: tx })); cart.position.set(x, 1.6, z + h + 0.4); g.add(cart);
+    for (const d of [-1.4, 1.4]) cyl(g, 0.07, 0.07, 1.6, mat('#475569'), x + d, 0, z + h + 0.35, 6);
+  }
+};

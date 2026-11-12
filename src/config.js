@@ -196,7 +196,7 @@ window.CONFIG = {
 
     // --- Segnaposto degli altri workload (batch 2-4) ---
     // --- Data Integration [REQ-FLW-01…03, REQ-SCN-02] ---
-    { id: 'fornitori', wl: 'SRC', tipo: 'piazzale', nome: 'Area fornitori', pos: [0, -86], dim: [146, 16, 0.2], etichetta: [-70, 3, -96], cantiere: false,
+    { id: 'fornitori', wl: 'SRC', tipo: 'piazzale', nome: 'Area fornitori', pos: [0, -86], dim: [146, 16, 0.2], etichetta: [0, 0.3, -78], cantiere: false,
       fabbrica: "L'area dei fornitori: i sistemi dell'azienda da cui parte il materiale grezzo. Ogni tipo di fornitore ha un edificio diverso.",
       perTe: 'Sono i sistemi che usi ogni giorno: gestionale, CRM, fogli di calcolo. Tu continui a lavorare lì, il materiale parte da solo.' },
     { id: 'pontile', wl: 'INT', tipo: 'pontile', nome: 'Pontile di pesca', pos: [0, -45], dim: [48, 5, 3],
