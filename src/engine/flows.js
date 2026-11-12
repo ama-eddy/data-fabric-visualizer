@@ -21,6 +21,13 @@ export function createFlows(cfg, world) {
     impulso: () => new THREE.Mesh(geo.sfera, mat('#e0f2fe', { e: '#38bdf8', ei: 1.4 })),
     evento: () => new THREE.Mesh(geo.sfera, mat('#ffedd5', { e: '#f97316', ei: 1.6 })),
     camion() { return camion(false); }, officina() { return camion(true); },
+    galleggiante() { const g = new THREE.Group(), p = pezzo.grezzo(); p.position.y = 0.1; g.add(p); g.userData.galleggia = true; return g; },
+    scialuppa() {                                                      // [RDM-019] la scialuppa del materiale pre-lavorato
+      const g = new THREE.Group(), c = cfg.modalita.dataflow.colore;
+      const scafo = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 0.9, 0.8, 4, 1), mat(c)); scafo.scale.set(1, 1, 2.4); scafo.rotation.y = Math.PI / 4; scafo.position.y = 0.2; g.add(scafo);
+      for (const z of [-1, 0.4]) { const p = pezzo.grezzo(); p.position.set(0, 0.95, z); g.add(p); }
+      box(g, 0.1, 2, 0.1, mat('#78350f'), 0, 0.6, 1.2); const v = box(g, 0.05, 1.2, 1.2, mat('#fef3c7'), 0, 1.3, 0.6); v.castShadow = false;
+      g.userData.galleggia = true; return g; },
     furgone() {                                                        // [REQ-HS-04] consegna dei semilavorati agli spoke
       const g = new THREE.Group(); box(g, 1.9, 1.5, 1.5, mat('#f8fafc'), 0, 0.5, 1.7); box(g, 1.7, 0.55, 0.1, mat('#bae6fd'), 0, 1.35, 2.47); box(g, 2, 0.3, 3.4, mat('#374151'), 0, 0.5, -0.8);
       for (const z of [-1.7, -0.3]) { const p = pezzo.semilavorato(); p.position.set(0, 1.25, z); g.add(p); }
@@ -91,7 +98,8 @@ export function createFlows(cfg, world) {
         const it = r.items[i]; it.u += (dt * r.vel) / r.len;
         if (it.u >= 1) { r.parent.remove(it.o); r.items.splice(i, 1); continue; }
         r.path.getPointAt(it.u, it.o.position);
-        if (r.tipo === 'camion' || r.tipo === 'officina' || r.tipo === 'furgone') { const tg = r.path.getTangentAt(it.u); it.o.rotation.y = Math.atan2(tg.x, tg.z); }
+        if (it.o.userData.galleggia) { it.o.position.y += Math.sin(performance.now() / 300 + i) * 0.08; it.o.rotation.z = Math.sin(performance.now() / 500 + i) * 0.08; }
+        if (r.tipo === 'camion' || r.tipo === 'officina' || r.tipo === 'furgone' || r.tipo === 'scialuppa') { const tg = r.path.getTangentAt(it.u); it.o.rotation.y = Math.atan2(tg.x, tg.z); }
       }
     }
   }

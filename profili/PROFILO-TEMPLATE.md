@@ -9,7 +9,7 @@
 | Campo | Valore |
 |---|---|
 | Azienda | |
-| Basato su standard | REQUISITI.md v1.1 |
+| Basato su standard | REQUISITI.md v1.5 |
 
 ---
 
@@ -25,7 +25,7 @@
 ## 2. Sorgenti e flussi (REQ-SRC-01…10)
 
 > Sostituiscono il catalogo standard (REQUISITI.md §6.1.5).
-> **Categoria**: `erp` · `crm` · `db` · `file` · `api` · `iot` · `esterni` · `storage` (forma dell'edificio e mezzo di trasporto: §6.1.2).
+> **Categoria** (tipo di software): `erp` · `crm` · `pim` · `hr` · `mes` (produzione e magazzino) · `ecommerce` · `marketing` · `excel` (fogli di calcolo) · `iot` (sensori) · `esterni` · `datalake` — forma dell'edificio e mezzo di trasporto: REQUISITI §6.1.2.
 > **Flusso**: `on` = il materiale arriva già oggi alla fabbrica · `off` = non ancora collegata.
 
 | Nome della sorgente | Categoria | Flusso (on/off) |
@@ -35,7 +35,7 @@
 ## 3. Team dati (REQ-SCN-11)
 
 > Una figura per ogni persona reale del team. Lasciare vuoto per usare il default (5 figure: 2 al trasporto, 3 a rotazione).
-> **Trasporto**: portano il materiale dalla sorgente alla banchina e dalla banchina al Bronze.
+> **Trasporto**: fanno scorrere il materiale dai fornitori al lago dei dati, lo pescano dal pontile e lo portano nel Bronze.
 > **Rotazione**: si alternano tra cabina di controllo, ufficio di coordinamento e showroom.
 
 | Gruppo | Uomini | Donne |

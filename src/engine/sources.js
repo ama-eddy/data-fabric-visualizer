@@ -97,15 +97,25 @@ function infrastruttura(g, el, ctx) {
     m.receiveShadow = true; g.add(m); return m;
   };
   const m = el.modalita;
-  if (m === 'copy' || m === 'dataflow') {                           // camion → banchina
-    const pts = [[sx, 0.06, sz + 6], [sx, 0.06, sz + 16], [ax, 0.06, sz + 28], [ax, 0.06, zb - 1.5]];
-    for (let i = 0; i < 3; i++) tratto(pts[i], pts[i + 1], { w: 3.2, h: 0.1 }, mat('#9ca3af', { r: 1 }));
-    ctx.flows.addRoute({ punti: pts.map(([x, , z]) => [x, 0.1, z]), tipo: m === 'copy' ? 'camion' : 'officina', attivo, ogni: 5 + Math.random() * 2, vel: 9 });
+  const lago = ctx.cfg.elements.find((e) => e.tipo === 'lago'), lz = lago.pos[1], lw = lago.dim[0] / 2 - 6, ld = lago.dim[1] / 2;
+  const xl = Math.max(-lw, Math.min(lw, sx)), arrivo = [ax * 0.9, lz + ld - 3];       // dove il materiale entra nel lago · dove arriva al pontile
+  if (m === 'copy') {                                               // [RDM-019] scivolo: il materiale scivola nel lago e galleggia fino al pontile
+    const top = [sx, 4.2, sz + 5.5], fondo = [xl, 0.5, lz - ld + 1.5];
+    const scivolo = tratto(top, fondo, { w: 1.8, h: 0.2 }, mat('#f97316')); scivolo.castShadow = true;
+    for (const s of [-1, 1]) { const b = tratto([top[0] + s * 0.9, top[1] + 0.4, top[2]], [fondo[0] + s * 0.9, fondo[1] + 0.4, fondo[2]], 0.08, mat('#fdba74')); b.castShadow = false; }
+    cyl(g, 0.25, 0.3, 4.2, mat('#64748b'), ...L(top[0], 0, top[2] + 0.4), 8);
+    ctx.flows.addRoute({ punti: [[top[0], top[1] + 0.6, top[2]], [fondo[0], 0.9, fondo[2]]], tipo: 'grezzo', attivo, ogni: 2.2 + Math.random(), vel: 9 });
+    ctx.flows.addRoute({ punti: [[fondo[0], 0.35, fondo[2] + 1], [arrivo[0], 0.35, arrivo[1]]], tipo: 'galleggiante', attivo, ogni: 2.2 + Math.random(), vel: 2.6 });
+  } else if (m === 'dataflow') {                                    // [RDM-019] scialuppa: attraversa il lago fino al pontile
+    const molo = [xl, lz - ld - 0.5];
+    tratto([sx, 0.1, sz + 5.5], [molo[0], 0.1, molo[1]], { w: 2, h: 0.1 }, mat('#a8a29e'));
+    tratto([molo[0], 0.45, molo[1] - 1], [molo[0], 0.45, molo[1] + 3], { w: 2.2, h: 0.3 }, mat('#a16207'));
+    ctx.flows.addRoute({ punti: [[molo[0], 0.25, molo[1] + 4], [(molo[0] + arrivo[0]) / 2 + 4, 0.25, lz], [arrivo[0], 0.25, arrivo[1]]], tipo: 'scialuppa', attivo, ogni: 7 + Math.random() * 2, vel: 4 });
   } else if (m === 'mirroring' || m === 'shortcut') {               // condotta / ponte: scavalcano la banchina ed entrano nel Bronze
     const h = 9, zB = -22, pts = [[sx, 3, sz + 5], [sx, h, sz + 12], [ax, h, sz + 28], [ax, h, zB - 2], [ax, 3.5, zB]];
     const material = m === 'mirroring' ? mat('#7dd3fc', { op: 0.55, r: 0.2, e: '#0ea5e9', ei: 0.15 }) : mat('#cffafe', { op: 0.38, r: 0.1, m: 0.2 });
     for (let i = 0; i < 4; i++) tratto(pts[i], pts[i + 1], m === 'mirroring' ? 0.55 : { w: 2.6, h: 0.25 }, material).castShadow = false;
-    for (const p of [pts[1], pts[2], [ax, h, zb - 3]]) cyl(g, 0.22, 0.3, p[1], mat('#64748b'), ...L(p[0], 0, p[2]), 8);
+    for (const p of [pts[1], pts[2], [ax, h, zb - 6]]) cyl(g, 0.22, 0.3, p[1], mat('#64748b'), ...L(p[0], 0, p[2]), 8);
     if (m === 'mirroring') ctx.flows.addRoute({ punti: pts, tipo: 'impulso', attivo, ogni: 0.7, vel: 14 });
     else {                                                          // [REQ-SRC-05] nessun pezzo viaggia: nel Bronze compare l'"ombra" del materiale
       const ombra = new THREE.Group(); g.add(ombra);

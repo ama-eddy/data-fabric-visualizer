@@ -31,7 +31,7 @@ builders.recinzione = (g, el, ctx) => {
     box(g, Math.abs(x1 - x0) || 0.12, 0.12, Math.abs(z1 - z0) || 0.12, mat(c), (x0 + x1) / 2, h, (z0 + z1) / 2);
   };
   const X = w / 2, Z0 = -d / 2, Z1 = el.fronte;
-  lato(-X, Z0, -32, Z0); lato(32, Z0, X, Z0);            // sul fondo resta aperto il varco dei camion
+  lato(-X, Z0, -68, Z0); lato(68, Z0, X, Z0);            // sul fondo passano scivoli, condotte e ponti: il varco è largo
   lato(-X, Z0, -X, Z1); lato(X, Z0, X, Z1);
   lato(-X, Z1, 9.5, Z1); lato(22.5, Z1, X, Z1);          // sul fronte, il varco del cancello
   for (const [x, z] of [[-X, Z0], [X, Z0], [-X, Z1], [X, Z1]]) {                                        // telecamere

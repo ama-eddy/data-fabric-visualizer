@@ -129,7 +129,7 @@ Il punto di contatto del team dati
 Architettura
 
 ### workloads.ARC.fabbrica
-Il terreno, le fondamenta e il capannone: lo spazio in cui tutto il resto viene costruito, con la centrale che dà energia e la riserva d'acqua unica sotto il pavimento.
+Il terreno, le fondamenta e il capannone: lo spazio in cui tutto il resto viene costruito, con la centrale che dà energia e il lago dei dati, unico, tra i fornitori e la fabbrica.
 
 ### workloads.ARC.perTe
 È la base comune: un solo posto per i dati di tutta l'azienda, invece di tanti archivi sparsi. Senza questa base, ogni funzione ricomincia da zero.
@@ -156,7 +156,7 @@ I dati riservati li vede solo chi deve: le regole su chi vede cosa viaggiano ins
 Data Integration
 
 ### workloads.INT.fabbrica
-I fornitori consegnano il materiale: camion e condotte lo portano alla banchina di scarico e da lì al magazzino materie prime (Bronze), dove viene conservato così com'è.
+I fornitori fanno arrivare il materiale nel lago dei dati con scivoli e scialuppe; il team dati lo pesca e lo porta nel magazzino materie prime (Bronze), dove viene conservato così com'è.
 
 ### workloads.INT.perTe
 I dati dei sistemi che usi ogni giorno arrivano qui da soli, a orari stabiliti: nessuno deve più estrarli a mano.
@@ -189,22 +189,13 @@ Le officine delle funzioni: ricevono i semilavorati e li personalizzano, aggiung
 È la tua officina: parti da dati certificati e costruisci i report che servono alla tua funzione, senza aspettare nessuno.
 
 ### workloads.GOV.nome
-Governance
+Data Governance
 
 ### workloads.GOV.fabbrica
-La torre di controllo e l'ufficio qualità: fissano le regole comuni e mettono il marchio di qualità sui prodotti controllati. Qui c'è anche lo sportello a cui rivolgersi.
+La torre di controllo e la sala controllo: fissano le regole comuni, sorvegliano che ogni reparto lavori e mettono il marchio di qualità sui prodotti controllati. Qui c'è anche lo sportello a cui rivolgersi.
 
 ### workloads.GOV.perTe
-Quando vedi il marchio "dato certificato" sai che quel numero è lo stesso per tutti. E sai a chi chiedere.
-
-### workloads.MON.nome
-Monitoraggio
-
-### workloads.MON.fabbrica
-La sala controllo con quadri e spie: mostra se ogni reparto sta lavorando e dà l'allarme se un impianto si ferma.
-
-### workloads.MON.perTe
-Se un caricamento salta, il team dati lo sa prima di te: spesso il problema è risolto prima che tu apra il report.
+Quando vedi il marchio "dato certificato" sai che quel numero è lo stesso per tutti. Se un caricamento salta, il team dati lo sa prima di te. E sai sempre a chi chiedere.
 
 ### workloads.FIN.nome
 Monitoraggio costi
@@ -244,14 +235,14 @@ Fondamenta, pavimento e struttura del capannone. Dentro prenderanno posto i repa
 ### elements.capannone.perTe
 È lo spazio comune, già pronto: quando la tua funzione avrà bisogno di qualcosa, non si parte dal terreno vuoto.
 
-### elements.riserva.nome
-Riserva d'acqua unica
+### elements.lago.nome
+Lago dei dati
 
-### elements.riserva.fabbrica
-La riserva d'acqua unica sotto tutta la fabbrica: ogni reparto e ogni officina attinge dallo stesso serbatoio.
+### elements.lago.fabbrica
+Il lago dei dati: un'unica riserva tra i fornitori e la fabbrica. Il materiale di tutti i fornitori arriva qui così com'è, prima di essere pescato e portato nel magazzino.
 
-### elements.riserva.perTe
-Un solo posto per i dati: niente copie sparse, e tutti leggono la stessa versione.
+### elements.lago.perTe
+Un solo posto dove arrivano i dati di tutti i sistemi: niente copie sparse, e si può sempre tornare a vedere il dato com'era all'origine.
 
 ### elements.centrale.nome
 Centrale elettrica
@@ -280,14 +271,14 @@ L'area dei fornitori: i sistemi dell'azienda da cui parte il materiale grezzo. O
 ### elements.fornitori.perTe
 Sono i sistemi che usi ogni giorno: gestionale, CRM, fogli di calcolo. Tu continui a lavorare lì, il materiale parte da solo.
 
-### elements.banchina.nome
-Banchina di scarico
+### elements.pontile.nome
+Pontile di pesca
 
-### elements.banchina.fabbrica
-La banchina di scarico: i camion arrivano e il materiale viene scaricato così com'è, senza aprirlo né modificarlo.
+### elements.pontile.fabbrica
+Il pontile sulla riva del lago: qui il team dati pesca il materiale arrivato dai fornitori e lo porta dentro la fabbrica, nel magazzino materie prime.
 
-### elements.banchina.perTe
-Qui arriva una copia fedele dei dati dei tuoi sistemi: nulla viene toccato nel sistema d'origine.
+### elements.pontile.perTe
+È il passaggio dal "dato arrivato" al "dato conservato": da qui in poi il materiale è in fabbrica, etichettato e pronto per la lavorazione.
 
 ### elements.bronze.nome
 Magazzino materie prime (Bronze)
@@ -444,28 +435,28 @@ Report — prodotto finito
 ## Legenda e schede: mezzi di trasporto
 
 ### modalita.copy.nome
-Camion
+Scivolo
 
 ### modalita.copy.testo
-Il materiale viene caricato su un camion a orari stabiliti e scaricato alla banchina.
+A orari stabiliti il materiale scivola dal fornitore nel lago dei dati; da lì il team dati lo pesca e lo porta nel magazzino.
 
 ### modalita.dataflow.nome
-Camion con officina a bordo
+Scialuppa
 
 ### modalita.dataflow.testo
-Il materiale viaggia su un camion che lo sistema un po' già durante il viaggio, poi lo scarica alla banchina.
+Il materiale attraversa il lago su una scialuppa che lo sistema un po' già durante il viaggio, poi lo lascia al pontile.
 
 ### modalita.mirroring.nome
 Condotta continua
 
 ### modalita.mirroring.testo
-Una copia sempre aggiornata scorre senza sosta in una condotta ed entra direttamente nel magazzino: non passa dalla banchina.
+Una copia sempre aggiornata scorre senza sosta in una condotta che scavalca il lago ed entra direttamente nel magazzino.
 
 ### modalita.shortcut.nome
 Ponte di vetro
 
 ### modalita.shortcut.testo
-Il materiale non si sposta: resta dal fornitore e la fabbrica lo usa attraverso un ponte, senza copiarlo. Non passa dalla banchina.
+Il materiale non si sposta: resta dal fornitore e la fabbrica lo usa attraverso un ponte sopra il lago, senza copiarlo.
 
 ### modalita.streaming.nome
 Nastro veloce
@@ -643,16 +634,16 @@ Marketing
 Team dati — trasporto
 
 ### team.trasporto.fabbrica
-Portano il materiale dai fornitori alla banchina e dalla banchina al magazzino.
+Uno fa scorrere bene il materiale dai fornitori al lago, controllando scivoli e scialuppe; l'altro lo pesca dal lago e lo porta nel magazzino materie prime.
 
 ### team.trasporto.perTe
 Sono le persone che collegano i tuoi sistemi alla fabbrica e controllano che i carichi arrivino ogni giorno.
 
 ### team.trasporto.compiti.0.nome
-Dai fornitori alla banchina
+Fa scorrere il materiale: scivoli e scialuppe
 
 ### team.trasporto.compiti.1.nome
-Dalla banchina al magazzino
+Pesca dal lago e porta nel magazzino
 
 ### team.rotazione.nome
 Team dati — governo, coordinamento e report

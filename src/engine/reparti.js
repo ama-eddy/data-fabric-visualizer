@@ -27,6 +27,40 @@ builders.banchina = (g, el, ctx) => {
   }
 };
 
+/* ===== [REQ-SCN-04] Lago dei dati: un'unica riserva tra i fornitori e la fabbrica ===== */
+builders.lago = (g, el, ctx) => {
+  const [w, d] = el.dim;
+  const forma = new THREE.Shape(); const r = d / 2;                                  // vasca con i lati arrotondati
+  forma.moveTo(-w / 2 + r, -d / 2); forma.lineTo(w / 2 - r, -d / 2); forma.absarc(w / 2 - r, 0, r, -Math.PI / 2, Math.PI / 2); forma.lineTo(-w / 2 + r, d / 2); forma.absarc(-w / 2 + r, 0, r, Math.PI / 2, Math.PI * 1.5);
+  const riva = new THREE.Mesh(new THREE.ShapeGeometry(forma.forma), mat('#d6c7a1', { r: 1 }));
+  riva.rotation.x = -Math.PI / 2; riva.position.y = 0.03; riva.scale.set(1.08, 1.12, 1); riva.receiveShadow = true; g.add(riva);
+  const acqua = new THREE.Mesh(new THREE.ShapeGeometry(forma), mat('#38bdf8', { e: '#0284c7', ei: 0.35, r: 0.15, m: 0.1 }).clone());
+  acqua.rotation.x = -Math.PI / 2; acqua.position.y = 0.12; acqua.receiveShadow = true; g.add(acqua);
+  const onde = [];
+  for (let i = 0; i < 26; i++) { const o = box(g, 1.6 + (i % 3), 0.04, 0.18, mat('#e0f2fe', { op: 0.7 }), ((i * 37) % (w - 14)) - (w - 14) / 2, 0.14, ((i * 13) % (d - 6)) - (d - 6) / 2); o.castShadow = false; onde.push(o); }
+  ctx.animate((t) => { acqua.material.emissiveIntensity = 0.3 + 0.08 * Math.sin(t * 1.3); onde.forEach((o, i) => { o.position.x += Math.sin(t * 0.5 + i) * 0.004; o.material.opacity = 0.4 + 0.3 * Math.sin(t * 1.7 + i); }); });
+};
+
+/* ===== Pontile di pesca: il team dati pesca il materiale dal lago e lo porta nel magazzino ===== */
+builders.pontile = (g, el, ctx) => {
+  const [w, d] = el.dim, legno = mat('#a16207'), pali = mat('#78350f');
+  box(g, w, 0.35, d, legno, 0, 0.5, 0);
+  for (let x = -w / 2 + 4; x <= w / 2 - 4; x += 10) {                               // pontili che entrano nel lago
+    box(g, 2.2, 0.3, 6, legno, x, 0.5, -d / 2 - 3);
+    for (const z of [-d / 2 - 1, -d / 2 - 5.5]) for (const s of [-1, 1]) cyl(g, 0.16, 0.16, 1.2, pali, x + s * 0.9, -0.2, z, 6);
+  }
+  for (const x of [-w / 2 + 2, -6, 6, w / 2 - 2]) for (const z of [-d / 2 + 0.3, d / 2 - 0.3]) cyl(g, 0.18, 0.18, 1, pali, x, 0, z, 6);
+  const gru = new THREE.Group(); gru.position.set(14, 0.85, -0.5); g.add(gru);          // gru per pescare
+  cyl(gru, 0.3, 0.4, 4.5, mat('#facc15'), 0, 0, 0, 10);
+  const braccio = new THREE.Group(); braccio.position.y = 4.5; gru.add(braccio);
+  box(braccio, 0.35, 0.35, 7, mat('#facc15'), 0, 0, -3.2);
+  const rete = new THREE.Mesh(new THREE.SphereGeometry(0.8, 10, 6, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), mat('#334155', { op: 0.6 })); rete.position.set(0, -2.6, -6.4); braccio.add(rete);
+  box(braccio, 0.05, 2.4, 0.05, mat('#1f2937'), 0, -1.3, -6.4);
+  ctx.animate((t) => { if (ctx.flows.lavora('INT')) { braccio.rotation.y = Math.sin(t * 0.5) * 0.6; rete.position.y = -2.6 - Math.abs(Math.sin(t * 0.9)) * 1.4; } });
+  const grezzi = ['#9ca3af', '#a8a29e', '#78716c'];                                // casse di materiale pescato
+  [[-18, 1], [-16.4, 0.4], [-2, 0.8], [8, 0.5], [9.6, 1]].forEach(([x, z], i) => box(g, 1.2, 0.9, 1.2, mat(grezzi[i % 3]), x, 0.85, z));
+};
+
 /* ===== [REQ-FLW-03] Magazzino materie prime (Bronze): a scaffale, etichettato, ancora grezzo ===== */
 builders.bronze = (g, el, ctx) => {
   const [w, d, h] = el.dim, col = ctx.cfg.materiali.bronze.colore, tra = [-27, -9, 9, 27];
