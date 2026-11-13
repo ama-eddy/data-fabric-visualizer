@@ -20,7 +20,7 @@ window.CONFIG = {
     capitolo: 'Capitolo', tappa: 'Tappa', di: 'di', chi: 'Chi', tu: 'Cosa fai tu', ricorda: 'Da ricordare', nessunaTappa: 'Questo percorso attraversa reparti non ancora accesi.',
     aiutoGuida: 'Avanti: → o spazio · Indietro: ← · Esci: Esc',
     aggiungiUomo: 'Aggiungi una persona (uomo)', aggiungiDonna: 'Aggiungi una persona (donna)', togli: 'Togli la persona selezionata, o l\'ultima', azzera: 'Azzera',
-    azzeraTitolo: 'Torna al team di partenza', ruolo: 'Ruolo', compiti: 'Di cosa si occupa', assegna: 'Assegna a', trascina: 'Trascina una persona su un workload per assegnarla',
+    azzeraTitolo: 'Torna al team di partenza', ruolo: 'Ruolo', compiti: 'Di cosa si occupa', assegna: 'Assegna a', trascina: 'Trascina una persona su un workload per assegnarla', teamVuoto: 'Aggiungi le persone con +',
     senzaCompito: 'Non ha ancora un compito: aspetta alla macchinetta del caffè.', scoperto: 'Nessuno se ne occupa', inAttesa: 'in attesa: workload spento',
     benvenutoTitolo: 'La fabbrica dei dati', esplora: 'Esplora liberamente', menu: 'Pannello',
     benvenuto1: 'I numeri che leggi nei report non nascono nei report: nascono nei sistemi che usi ogni giorno e fanno un viaggio, come in una fabbrica.',
@@ -116,9 +116,9 @@ window.CONFIG = {
   team: {
     colore: '#1d4ed8', casco: '#facc15', turno: 14, max: 12,   // turno = secondi tra un cambio di postazione e l'altro
     nome: 'Persona del team dati', perTe: 'Il team dati è fatto di poche persone, di IT e di business, e ognuna segue più cose: per questo le richieste si mettono in fila e si pianificano.',
-    // persone di partenza del modello standard: nessuna assegnata (sostituite da quelle del profilo, se presente)
-    persone: [{ sesso: 'm' }, { sesso: 'm' }, { sesso: 'f' }, { sesso: 'm' }, { sesso: 'm' }],
-    raccolta: { nome: 'Macchinetta del caffè', pos: [-5, 43.7] },   // chi non ha un compito aspetta qui
+    // [D-36] nel modello standard il team parte da zero: le persone si aggiungono con + e −. Il profilo aziendale può indicare un team di partenza.
+    persone: [],
+    raccolta: { nome: 'Macchinetta del caffè', pos: [-46.5, -10.2] },   // accanto alla centrale elettrica: chi non ha un compito aspetta qui [RDM-038]
     // una postazione per workload. pos = [x, z] · passo = spostamento per ogni persona in più · verso = dove guarda (radianti)
     postazioni: {
       SRC: { nome: 'Accanto a un fornitore', tecnico: 'Referente del sistema', cosa: 'Conosce il sistema da cui nasce il dato e spiega al team che cosa contiene.' },

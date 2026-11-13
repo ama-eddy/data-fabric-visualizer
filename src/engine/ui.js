@@ -175,6 +175,7 @@ export function createUI(cfg, world, state) {
         for (const w of f.wl) { const p = h('button', { className: 'pallino', title: cfg.workloads[w].nome + ' — ' + ui.chiudi.toLowerCase() }); p.dataset.wl = w; p.style.background = cfg.workloads[w].colore; p.onclick = () => fig.rimuovi(f.id, w); pallini.append(p); }
         riga.append(h('div', { className: 'gruppo' }, b, f.nome ? h('small', { textContent: f.nome }) : null, pallini));
       }
+      if (!fig.tutte.length) riga.append(h('small', { className: 'vuoto', textContent: ui.teamVuoto }));
       scoperti(); if (aperta) aperta();
     }
     /* [REQ-UI-13] le righe dei workload accettano le persone trascinate */

@@ -98,7 +98,10 @@ const path = require('path'), fs = require('fs');
   check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'officina' && r.on.visible).length) === 5, '5 negozi visibili');
   // ---- RDM-033: team componibile a schermo ----
   let f = await page.evaluate(() => fabbrica.figures.conta());
-  check(f.totale === 5 && f.caffe === 5, 'di partenza: 5 persone, nessuna assegnata, tutte alla macchinetta del caffè: ' + JSON.stringify(f));
+  check(f.totale === 0 && await page.locator('.pupazzo').count() === 0, 'di partenza il team è vuoto: ' + JSON.stringify(f));   // [RDM-037]
+  for (const k of [0, 0, 1, 0, 0]) await page.locator('.tasto.piu').nth(k).click();                                          // [REQ-UI-12] si compone con +
+  f = await page.evaluate(() => fabbrica.figures.conta());
+  check(f.totale === 5 && f.caffe === 5, 'aggiunte 5 persone: non assegnate, tutte alla macchinetta del caffè: ' + JSON.stringify(f));
   check(await page.locator('#wl > .row.scoperto').count() === 13, 'tutti i workload accesi sono scoperti');                // [REQ-WL-13]
   await page.locator('.pupazzo').nth(0).dragTo(page.locator('#wl > .row[data-wl="INT"]'));                                 // [REQ-UI-13]
   await page.locator('.pupazzo').nth(0).dragTo(page.locator('#wl > .row[data-wl="VIS"]'));
@@ -121,12 +124,13 @@ const path = require('path'), fs = require('fs');
   check(await page.waitForFunction((g) => fabbrica.figures.tutte[2].ora !== g, g0, { timeout: 40000 }).then(() => true, () => false), 'con due workload accesi la persona ruota tra le postazioni');
   await page.evaluate(() => { fabbrica.state.set('GOV', 'off'); fabbrica.state.set('ACC', 'off'); }); await page.waitForTimeout(200);
   check(await page.evaluate(() => fabbrica.figures.tutte[2].ora) === null, 'workload spenti: la persona torna alla macchinetta del caffè');
-  await page.evaluate(() => { fabbrica.ui.chiudi(); fabbrica.state.setTutti('on'); fabbrica.world.flyTo([-10, 22, 66], [-12, 2, 40]); });
+  await page.evaluate(() => { fabbrica.ui.chiudi(); fabbrica.state.setTutti('on'); fabbrica.world.flyTo([-40, 20, 14], [-52, 2, -14]); });
   await shot('10-team-macchinetta', 3500);
   await page.reload(); await page.waitForFunction(() => window.fabbrica); await page.getByText('Esplora liberamente').click();
   check(await page.evaluate(() => fabbrica.figures.tutte.length === 6 && fabbrica.figures.tutte[0].wl.join() === 'INT'), 'dopo una ricarica il team è quello lasciato');
   await page.getByText('Azzera').click();
-  check(await page.evaluate(() => fabbrica.figures.tutte.length === 5 && fabbrica.figures.tutte.every((x) => !x.wl.length)), 'Azzera: torna il team di partenza');
+  check(await page.evaluate(() => fabbrica.figures.tutte.length) === 0, 'Azzera: torna il team di partenza, vuoto');
+  await page.evaluate(() => ['m', 'm', 'f', 'm', 'm'].forEach((x) => fabbrica.figures.aggiungi(x)));
   await page.getByText('Tutto on').click();
   await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente').forEach((r) => fabbrica.state.setElemento(r.el.id, 'on')));
   await page.evaluate(() => { fabbrica.figures.assegna(fabbrica.figures.tutte[3].id, 'GOV'); fabbrica.figures.assegna(fabbrica.figures.tutte[4].id, 'SRC'); fabbrica.figures.assegna(fabbrica.figures.tutte[1].id, 'SSR'); });

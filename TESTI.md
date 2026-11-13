@@ -161,6 +161,9 @@ Assegna a
 ### ui.trascina
 Trascina una persona su un workload per assegnarla
 
+### ui.teamVuoto
+Aggiungi le persone con +
+
 ### ui.senzaCompito
 Non ha ancora un compito: aspetta alla macchinetta del caffè.
 

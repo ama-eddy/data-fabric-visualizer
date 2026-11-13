@@ -5,7 +5,7 @@
 
 | Campo | Valore |
 |---|---|
-| Versione documento | 1.15 |
+| Versione documento | 1.17 |
 | Data | 2026-11-12 |
 | Stato | Requisiti approvati — implementazione da avviare (vedi `PIANO.md`) |
 | Approva | Il responsabile del progetto (richiedente) |
@@ -366,7 +366,7 @@ Una sorgente per categoria, così da poter raccontare ogni caso.
 | REQ-SCN-12 | Nei negozi degli spoke lavorano **figure delle funzioni business**, con il colore dello spoke, che usano i semilavorati e guardano i report. | Le figure compaiono con il negozio. | S | Implementato |
 | REQ-SCN-13 | L'**ufficio di coordinamento** è la postazione del project management. Appartiene al workload **Project Management** (`WL-PMO`), indipendente dall'architettura. | L'ufficio compare con `WL-PMO`, anche a Data Architecture spenta, e non compare con la sola Data Architecture. | M | Implementato |
 | REQ-SCN-14 | Lo **showroom** è un **edificio a sé, vicino al capannone ma staccato**, collegato al laboratorio prove da una passerella coperta. | Lo showroom è fuori dal capannone; la passerella è visibile e i semilavorati la percorrono. | M | Implementato |
-| REQ-SCN-15 | **Ogni workload** ha una **postazione** con un gesto riconoscibile (§7.1), e c'è un **punto di raccolta, la macchinetta del caffè**, dove stanno le persone senza compito. Nella Data Integration il primo assegnato ripara gli scivoli, il secondo manovra le gru, gli altri si affiancano. | Tutte le postazioni del §7.1 esistono; le persone non assegnate sono visibili alla macchinetta del caffè. | M | Implementato |
+| REQ-SCN-15 | **Ogni workload** ha una **postazione** con un gesto riconoscibile (§7.1), e c'è un **punto di raccolta, la macchinetta del caffè, accanto alla centrale elettrica**, dove stanno le persone senza compito. Nella Data Integration il primo assegnato ripara gli scivoli, il secondo manovra le gru, gli altri si affiancano. | Tutte le postazioni del §7.1 esistono; le persone non assegnate sono visibili alla macchinetta del caffè. | M | Implementato |
 
 ### 7.1 Postazioni del team dati (REQ-SCN-15)
 
@@ -456,7 +456,7 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 | REQ-UI-09 | Durante il meeting il presentatore può **cambiare dal vivo lo stato** (off/wip/on) di workload, **singoli spoke** e **singole sorgenti**, dal pannello o cliccando sull'elemento; la scena alla fine rappresenta l'as-is di business costruito insieme. | Cambio di stato in ≤ 2 clic, con effetto immediato in scena. | M | Implementato |
 | REQ-UI-10 | Due **modalità**: **esplorazione libera** (navigazione, clic sugli elementi, stati dal vivo, percorsi) e **narrativa** (tutti i workload in ordine, §8). Si passa dall'una all'altra con un pulsante; uscendo dalla narrativa, la scena resta nello stato raggiunto. | Il cambio di modalità non ricarica la scena e non perde lo stato. | M | Implementato |
 | REQ-UI-11 | Nel pannello, i workload con elementi a **stato proprio** (Data Integration → sorgenti, Self-service → spoke) si aprono **a tendina**: ogni sorgente o spoke ha il suo selettore off/cantiere/on, per **accenderli uno alla volta**. | Aprendo la tendina di Data Integration e spegnendo una sorgente, si spegne solo quella. | M | Implementato |
-| REQ-UI-12 | **In alto a destra**, il pannello **Team dati** mostra **un pupazzino per persona** (sagoma uomo/donna; il nome compare solo se indicato nel profilo aziendale). Con **+** si aggiunge una persona (un pulsante per sagoma), con **−** si toglie quella selezionata o l'ultima aggiunta; il massimo è 12. Sotto ogni pupazzino c'è **un pallino colorato per ogni workload assegnato**. Il clic su un pupazzino lo seleziona e lo **evidenzia in scena** (anello a terra e freccia sopra la testa). | Aggiungendo o togliendo una persona dal pannello, la figura compare o scompare in scena, senza toccare alcun file. | M | Implementato |
+| REQ-UI-12 | **In alto a destra**, il pannello **Team dati** mostra **un pupazzino per persona** (sagoma uomo/donna; il nome compare solo se indicato nel profilo aziendale). **All'apertura non c'è nessuno**, a meno che il profilo aziendale non indichi un team di partenza. Con **+** si aggiunge una persona (un pulsante per sagoma), con **−** si toglie quella selezionata o l'ultima aggiunta; il massimo è 12. Sotto ogni pupazzino c'è **un pallino colorato per ogni workload assegnato**. Il clic su un pupazzino lo seleziona e lo **evidenzia in scena** (anello a terra e freccia sopra la testa). | Aggiungendo o togliendo una persona dal pannello, la figura compare o scompare in scena, senza toccare alcun file. | M | Implementato |
 | REQ-UI-13 | **Assegnazione dal vivo**: si **trascina** un pupazzino sulla riga di un workload (la riga si illumina), oppure si clicca il pupazzino e poi il workload. Una persona può avere **più workload**: ogni trascinamento ne aggiunge uno. Il clic su un pallino toglie quell'assegnazione. In presentazione, dove il pannello dei workload è nascosto, l'elenco dei workload si apre dal pupazzino. | Trascinando la stessa persona su due workload compaiono due pallini; il clic su un pallino lo toglie; tutti i 13 workload accettano persone. | M | Implementato |
 | REQ-UI-14 | Il team composto a schermo (persone e assegnazioni) viene **ricordato dal browser** di quel computer; **Azzera** lo riporta al punto di partenza, cioè al profilo aziendale se c'è, altrimenti al modello standard. | Dopo una ricarica il team è quello lasciato; dopo Azzera torna quello di partenza. | S | Implementato |
 
@@ -611,7 +611,7 @@ const CONFIG = {
 | D-33 | Due modalità: **narrativa** (la presentazione: Avanti → tutti i workload in ordine) ed **esplorazione libera** (dal vivo, con stati modificabili e percorsi). | Utente | Confermata |
 | D-34 | Si progetta l'intero modello; **quali capitoli entrano nella presentazione** si decide dopo le prove in esplorazione libera (REQ-NAR-02). | Utente | Confermata |
 | D-35 | Il percorso New project contiene **solo le tappe del viaggio del dato**: sorgente, lavorazione, semilavorato, report. | Utente | Confermata |
-| D-36 | Team dati del modello standard: **5 persone non assegnate** (4 uomini, 1 donna). Numero di persone e assegnazioni di partenza si possono indicare nel profilo aziendale; poi tutto si cambia dal vivo. | Utente | Confermata |
+| D-36 | Nel modello standard il **team dati parte da zero**: le persone si aggiungono con + e −. Solo il profilo aziendale può indicare un team di partenza (persone e assegnazioni); poi tutto si cambia dal vivo. | Utente | Confermata |
 | D-37 | Pubblicazione su **GitHub Pages** del solo modello standard; i profili aziendali reali restano in locale, fuori dal repository pubblico. | Utente | Confermata |
 | D-38 | I testi si rivedono in **`TESTI.md`** (Markdown, una chiave per titolo), fonte unica letta dalla build; la pagina pubblica si rigenera da sola con un'azione di GitHub. | Utente (file modificabile su GitHub) · proposta (formato e automazione) | Confermata |
 | D-39 | Lo **showroom è staccato** dal capannone; il **laboratorio prove** entra nel capannone e **ogni semilavorato passa dal collaudo** prima di andare allo showroom e agli spoke. | Utente | Confermata |
@@ -691,6 +691,8 @@ const CONFIG = {
 | RDM-034 | Togliere l'etichetta "Area fornitori" | Standard · SRC | REQ-SRC-07 | Approvata |
 | RDM-035 | La recinzione protegge anche gli spoke, rappresentati come negozi e non come officine | Standard · SCN, HS | REQ-SCN-03, REQ-HS-01, D-56 | Approvata |
 | RDM-036 | Nel profilo aziendale si sceglie, per ogni sorgente, il metodo di integrazione: copia (scivolo), tempo reale (nastro veloce), mirroring (scivolo di vetro) | Standard · SRC, CFG | §6.1.1, §6.1.3, REQ-SRC-03, REQ-CFG-03, D-17 | Approvata |
+| RDM-037 | Anche il team dati parte da zero e si compone con + e −, a meno che il profilo aziendale non lo indichi | Standard · UI, CFG | REQ-UI-12, D-36 | Approvata |
+| RDM-038 | Spostare la macchinetta del caffè accanto alla centrale elettrica | Standard · SCN | REQ-SCN-15 | Approvata |
 
 ---
 
@@ -698,4 +700,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.15 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…036 |
+| 1.17 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…038 |
