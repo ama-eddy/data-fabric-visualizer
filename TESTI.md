@@ -134,6 +134,42 @@ Questo percorso attraversa reparti non ancora accesi.
 ### ui.aiutoGuida
 Avanti: → o spazio · Indietro: ← · Esci: Esc
 
+### ui.aggiungiUomo
+Aggiungi una persona (uomo)
+
+### ui.aggiungiDonna
+Aggiungi una persona (donna)
+
+### ui.togli
+Togli la persona selezionata, o l'ultima
+
+### ui.azzera
+Azzera
+
+### ui.azzeraTitolo
+Torna al team di partenza
+
+### ui.ruolo
+Ruolo
+
+### ui.compiti
+Di cosa si occupa
+
+### ui.assegna
+Assegna a
+
+### ui.trascina
+Trascina una persona su un workload per assegnarla
+
+### ui.senzaCompito
+Non ha ancora un compito: aspetta alla macchinetta del caffè.
+
+### ui.scoperto
+Nessuno se ne occupa
+
+### ui.inAttesa
+in attesa: workload spento
+
 ### ui.benvenutoTitolo
 La fabbrica dei dati
 
@@ -889,68 +925,131 @@ Marketing
 
 ## Team dati: schede e postazioni
 
-### team.gruppi.integration.nome
-Team dati — Data Integration
+### team.nome
+Persona del team dati
 
-### team.gruppi.integration.tecnico
-Data engineer
+### team.perTe
+Il team dati è fatto di poche persone, di IT e di business, e ognuna segue più cose: per questo le richieste si mettono in fila e si pianificano.
 
-### team.gruppi.integration.fabbrica
-Uno costruisce e ripara gli scivoli che portano il materiale dai fornitori al lago; l'altro, da un pannello di comando, manovra le gru che pescano il materiale dal lago e lo mettono nel magazzino materie prime.
+### team.raccolta.nome
+Macchinetta del caffè
 
-### team.gruppi.integration.perTe
-Sono le persone che collegano i tuoi sistemi alla fabbrica e controllano che i carichi arrivino ogni giorno.
+### team.postazioni.SRC.nome
+Accanto a un fornitore
 
-### team.gruppi.integration.compiti.0.nome
-Costruisce e ripara gli scivoli
+### team.postazioni.SRC.tecnico
+Referente del sistema
 
-### team.gruppi.integration.compiti.1.nome
-Manovra le gru dal pannello di comando
+### team.postazioni.SRC.cosa
+Conosce il sistema da cui nasce il dato e spiega al team che cosa contiene.
 
-### team.gruppi.architecture.nome
-Team dati — Data Architecture
+### team.postazioni.ARC.nome
+Tavolo dei progetti
 
-### team.gruppi.architecture.tecnico
+### team.postazioni.ARC.tecnico
 Data architect
 
-### team.gruppi.architecture.fabbrica
-Progetta la fabbrica: dove vanno i reparti, quanta energia serve, come si collegano tra loro. Lavora al tavolo dei progetti accanto al capannone.
+### team.postazioni.ARC.cosa
+Progetta la fabbrica: dove vanno i reparti, quanta energia serve, come si collegano.
 
-### team.gruppi.architecture.perTe
-È la persona che fa in modo che ogni nuova esigenza trovi posto nella fabbrica senza doverla rifare.
+### team.postazioni.PMO.nome
+Ufficio di coordinamento
 
-### team.gruppi.architecture.compiti.0.nome
-Al tavolo dei progetti
-
-### team.gruppi.visualization.nome
-Team dati — Data Visualization
-
-### team.gruppi.visualization.tecnico
-BI developer
-
-### team.gruppi.visualization.fabbrica
-Costruisce nello showroom i report ufficiali, partendo dai semilavorati collaudati.
-
-### team.gruppi.visualization.perTe
-È la persona che trasforma i dati certificati nei report che apri ogni giorno.
-
-### team.gruppi.visualization.compiti.0.nome
-Nello showroom
-
-### team.gruppi.coordination.nome
-Team dati — Project Management
-
-### team.gruppi.coordination.tecnico
+### team.postazioni.PMO.tecnico
 Project manager
 
-### team.gruppi.coordination.fabbrica
-Coordina tutti gli operatori della fabbrica: chi fa cosa, in che ordine, entro quando.
+### team.postazioni.PMO.cosa
+Coordina gli operatori: chi fa cosa, in che ordine, entro quando.
 
-### team.gruppi.coordination.perTe
-È la persona che mette in fila le richieste e ti dice quando arriverà ciò che hai chiesto.
+### team.postazioni.INT.nome
+Scivoli e gru
 
-### team.gruppi.coordination.compiti.0.nome
-All'ufficio di coordinamento
+### team.postazioni.INT.tecnico
+Data engineer
+
+### team.postazioni.INT.cosa
+Il primo costruisce e ripara gli scivoli; il secondo manovra dal pannello le gru che pescano dal lago e riempiono il magazzino.
+
+### team.postazioni.TRF.nome
+Banchi del laboratorio prove
+
+### team.postazioni.TRF.tecnico
+Analytics engineer
+
+### team.postazioni.TRF.cosa
+Costruisce la lavorazione e collauda i semilavorati prima che escano.
+
+### team.postazioni.SEC.nome
+Caveau
+
+### team.postazioni.SEC.tecnico
+Responsabile della sicurezza dei dati
+
+### team.postazioni.SEC.cosa
+Decide come si protegge il materiale riservato e controlla chi lo ha guardato.
+
+### team.postazioni.ACC.nome
+Portineria del cancello
+
+### team.postazioni.ACC.tecnico
+Amministratore degli accessi
+
+### team.postazioni.ACC.cosa
+Consegna i badge: chi entra e che cosa può fare.
+
+### team.postazioni.VIS.nome
+Showroom
+
+### team.postazioni.VIS.tecnico
+BI developer
+
+### team.postazioni.VIS.cosa
+Costruisce i report ufficiali sui semilavorati collaudati.
+
+### team.postazioni.SSR.nome
+In un'officina
+
+### team.postazioni.SSR.tecnico
+Analista della funzione
+
+### team.postazioni.SSR.cosa
+Costruisce i report della funzione sui semilavorati, con i dati locali.
+
+### team.postazioni.GOV.nome
+Cabina della torre di controllo
+
+### team.postazioni.GOV.tecnico
+Data steward
+
+### team.postazioni.GOV.cosa
+Fissa le regole comuni, sorveglia i reparti e mette il marchio di qualità.
+
+### team.postazioni.FIN.nome
+Contatori della centrale
+
+### team.postazioni.FIN.tecnico
+Responsabile dei costi
+
+### team.postazioni.FIN.cosa
+Legge i consumi e li riporta a ogni reparto e a ogni officina.
+
+### team.postazioni.KNW.nome
+Ufficio tecnico
+
+### team.postazioni.KNW.tecnico
+Responsabile del glossario
+
+### team.postazioni.KNW.cosa
+Tiene la mappa di cosa significano le parole dell'azienda e di come sono collegate.
+
+### team.postazioni.RTI.nome
+Sala sensori
+
+### team.postazioni.RTI.tecnico
+Analista dei dati in diretta
+
+### team.postazioni.RTI.cosa
+Sorveglia i segnali in arrivo e imposta gli avvisi.
 
 ## Narrativa: i capitoli della presentazione
 

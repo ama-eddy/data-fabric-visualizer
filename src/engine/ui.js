@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 
 const $ = (id) => document.getElementById(id);
-const h = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); e.append(...kids); return e; };
+const h = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); e.append(...kids.filter((k) => k !== null && k !== undefined)); return e; };
 
 export function createUI(cfg, world, state) {
   const ui = cfg.ui;
@@ -81,6 +81,7 @@ export function createUI(cfg, world, state) {
       for (const s of ['off', 'wip', 'on']) { const b = h('button', { textContent: ui.stati[s], className: rec.proprio === s ? 'sel' : '' }); b.dataset.s = s; b.onclick = () => state.setElemento(rec.el.id, s); seg.append(b); }
       box.append(h('h4', { textContent: ui.statoElemento }), seg);
     }
+    if (figure && figure.scoperto(wlKey)) box.append(h('div', { className: 'avviso', textContent: '⚠ ' + ui.scoperto }));   /* [REQ-WL-13] */
     if (st === 'wip') sez(ui.lavori, d.notaCantiere || wl.notaCantiere);   /* [REQ-WL-03] nota del cantiere, es. quando sarà pronto */
     sez(ui.nellaFabbrica, d.fabbrica || wl.fabbrica);
     sez(ui.mezzo, d.mezzo);
@@ -89,9 +90,27 @@ export function createUI(cfg, world, state) {
     sez(ui.gestore, [ui.gestori[d.gestore || wl.gestore], d.gestoreTesto].filter(Boolean).join('. '));
     box.classList.add('open');
   }
-  const nomeDi = (id) => (id.startsWith('team:') ? cfg.team.gruppi[id.slice(5)].nome : state.elemento(id).el.nome);
+  const persona = (id) => (figure ? figure.trova(+id.slice(5)) : null);
+  const nomePersona = (f) => f.nome || cfg.team.nome + ' ' + (figure.tutte.indexOf(f) + 1);
+  const nomeDi = (id) => (id.startsWith('team:') ? (persona(id) ? nomePersona(persona(id)) : '') : state.elemento(id).el.nome);
+  /* [REQ-UI-12, REQ-UI-13] scheda di una persona: di cosa si occupa, e i workload a cui assegnarla (utile anche in presentazione) */
+  function schedaPersona(f) {
+    const box = $('info'); box.innerHTML = '';
+    const x = h('button', { className: 'x', textContent: '×', title: ui.chiudi }); x.onclick = chiudi;
+    box.append(x, h('h3', { textContent: nomePersona(f) }));
+    const ruoli = f.wl.map((w) => cfg.team.postazioni[w].tecnico).filter(Boolean);
+    if (ruoli.length) box.append(h('div', { className: 'tecnico' }, h('b', { textContent: ui.ruolo + ': ' }), ruoli.join(' · ')));
+    box.append(h('h4', { textContent: ui.compiti }));
+    if (!f.wl.length) box.append(h('p', { textContent: ui.senzaCompito }));
+    for (const w of f.wl) { const P = cfg.team.postazioni[w], spento = state.stato[w] !== 'on'; box.append(h('p', { className: 'compito' }, h('b', { textContent: cfg.workloads[w].nome + ' — ' + P.nome + (spento ? ' (' + ui.inAttesa + ')' : '') }), h('br'), P.cosa)); }
+    box.append(h('h4', { textContent: ui.assegna }));
+    const chips = h('div', { className: 'chips' });
+    for (const w of cfg.ordine) { const on = f.wl.includes(w), c = h('button', { className: 'chip2' + (on ? ' on' : ''), textContent: cfg.workloads[w].nome }); c.dataset.wl = w; c.style.borderColor = cfg.workloads[w].colore; if (on) c.style.background = cfg.workloads[w].colore; c.onclick = () => (on ? figure.rimuovi(f.id, w) : figure.assegna(f.id, w)); chips.append(c); }
+    box.append(chips, h('h4', { textContent: ui.perTe }), h('p', { textContent: cfg.team.perTe }));
+    box.classList.add('open');
+  }
   function mostraElemento(id) {
-    if (id.startsWith('team:')) { const t = cfg.team.gruppi[id.slice(5)]; aperta = () => scheda(t.nome, t.wl, { fabbrica: t.fabbrica, perTe: t.perTe, gestore: 'hub', tecnico: t.tecnico }); aperta(); return; }   // [REQ-SCN-11] scheda del team dati
+    if (id.startsWith('team:')) { const f = persona(id); if (!f) return; scelto = null; aperta = () => { const g = figure.trova(f.id); if (g) schedaPersona(g); else chiudi(); }; aperta(); return; }
     const r = state.elemento(id); if (!r) return; scelto = id; aperta = () => scheda(r.el.nome, r.el.wl, r.el, r); aperta(); }
   function mostraWorkload(k) { aperta = () => scheda(cfg.workloads[k].nome, k, {}); aperta(); }
   function chiudi() { scelto = null; aperta = null; $('info').classList.remove('open'); }
@@ -135,24 +154,43 @@ export function createUI(cfg, world, state) {
   });
   canvas.addEventListener('pointerleave', () => { $('tip').style.display = 'none'; evidenzia(null); });
 
-  /* ===== [REQ-UI-12] Pannello del team dati: un pupazzino per persona; il clic lo evidenzia in scena ===== */
+  /* ===== [REQ-UI-12…14] Pannello del team dati: + e − per aggiungere e togliere, trascinamento sui workload, pallini delle assegnazioni ===== */
   let figure = null;
+  const sagoma = (f) => `<svg viewBox="0 0 20 30" width="18" height="27"><circle cx="10" cy="6" r="4.6" fill="#f1c9a5"/><path d="${f.sesso === 'f' ? 'M10 11 L17 27 L3 27 Z' : 'M5 11 h10 v11 h-10 Z M6 22 h3 v6 h-3 Z M11 22 h3 v6 h-3 Z'}" fill="${cfg.team.colore}"/><path d="M5.2 5.5 a4.8 4.8 0 0 1 9.6 0 Z" fill="${f.sesso === 'f' ? '#78350f' : cfg.team.casco}"/></svg>`;
   function collegaTeam(fig) {
-    figure = fig; const box = $('team');
-    box.append(h('h2', { textContent: ui.team }));
-    const riga = h('div', { className: 'pupazzi' }); box.append(riga);
-    fig.tutte.forEach((f, i) => {                          // un riquadro per persona: sotto, il gruppo in cui sta lavorando ora
-      const b = h('button', { className: 'pupazzo' }); b.dataset.i = i;
-      b.innerHTML = `<svg viewBox="0 0 20 30" width="18" height="27"><circle cx="10" cy="6" r="4.6" fill="#f1c9a5"/><path d="${f.sesso === 'f' ? 'M10 11 L17 27 L3 27 Z' : 'M5 11 h10 v11 h-10 Z M6 22 h3 v6 h-3 Z M11 22 h3 v6 h-3 Z'}" fill="${cfg.team.colore}"/><path d="M5.2 5.5 a4.8 4.8 0 0 1 9.6 0 Z" fill="${f.sesso === 'f' ? '#78350f' : cfg.team.casco}"/></svg>`;
-      b.onclick = () => { const on = fig.evidenzia(i); document.querySelectorAll('.pupazzo').forEach((x) => x.classList.toggle('sel', on && x === b)); if (on) { world.frame([[f.o.position.x, f.o.position.z]], 6); mostraElemento('team:' + f.gruppo); } };
-      const c = h('div', { className: 'gruppo' }, h('div', { className: 'riga' }, b), h('small')); c.dataset.i = i; riga.append(c);
-    });
-    const aggiorna = () => document.querySelectorAll('#team .gruppo').forEach((c) => {
-      const f = fig.tutte[+c.dataset.i], G = cfg.team.gruppi[f.gruppo], b = c.querySelector('.pupazzo');
-      c.style.borderColor = cfg.workloads[G.wl].colore; c.querySelector('small').textContent = G.breve;
-      b.classList.toggle('off', !f.o.visible); b.title = f.o.visible ? fig.descrizione(f) : ui.fuoriServizio;
-    });
-    aggiorna(); setInterval(aggiorna, 500);
+    figure = fig; const box = $('team'), riga = h('div', { className: 'pupazzi' });
+    const tasto = (txt, titolo, fn, cls = '') => { const b = h('button', { className: 'tasto ' + cls, title: titolo }); b.innerHTML = txt; b.onclick = fn; return b; };
+    box.append(h('div', { className: 'testa' }, h('h2', { textContent: ui.team }),
+      tasto('+' + sagoma({ sesso: 'm' }), ui.aggiungiUomo, () => fig.aggiungi('m'), 'piu'), tasto('+' + sagoma({ sesso: 'f' }), ui.aggiungiDonna, () => fig.aggiungi('f'), 'piu'),
+      tasto('−', ui.togli, () => fig.togli(fig.scelta()), 'meno'), tasto(ui.azzera, ui.azzeraTitolo, () => fig.azzera(), 'azzera')), riga, h('div', { className: 'aiuto', textContent: ui.trascina }));
+    const seleziona = (f) => { const on = fig.evidenzia(f.id); if (on) { world.frame([[f.o.position.x, f.o.position.z]], 8); mostraElemento('team:' + f.id); } disegna(); };
+    function disegna() {
+      riga.innerHTML = '';
+      for (const f of fig.tutte) {
+        const b = h('button', { className: 'pupazzo' + (fig.scelta() === f.id ? ' sel' : ''), draggable: true, title: nomePersona(f) }); b.dataset.id = f.id; b.innerHTML = sagoma(f);
+        b.onclick = () => seleziona(f);
+        b.ondragstart = (e) => { e.dataTransfer.setData('text/plain', String(f.id)); e.dataTransfer.effectAllowed = 'copy'; document.body.classList.add('trascino'); };
+        b.ondragend = () => { document.body.classList.remove('trascino'); document.querySelectorAll('.row.sopra').forEach((r) => r.classList.remove('sopra')); };
+        const pallini = h('div', { className: 'pallini' });
+        for (const w of f.wl) { const p = h('button', { className: 'pallino', title: cfg.workloads[w].nome + ' — ' + ui.chiudi.toLowerCase() }); p.dataset.wl = w; p.style.background = cfg.workloads[w].colore; p.onclick = () => fig.rimuovi(f.id, w); pallini.append(p); }
+        riga.append(h('div', { className: 'gruppo' }, b, f.nome ? h('small', { textContent: f.nome }) : null, pallini));
+      }
+      scoperti(); if (aperta) aperta();
+    }
+    /* [REQ-UI-13] le righe dei workload accettano le persone trascinate */
+    for (const k of cfg.ordine) {
+      const r = rows[k];
+      r.ondragover = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; r.classList.add('sopra'); };
+      r.ondragleave = () => r.classList.remove('sopra');
+      r.ondrop = (e) => { e.preventDefault(); r.classList.remove('sopra'); const id = +e.dataTransfer.getData('text/plain'); if (!Number.isNaN(id)) fig.assegna(id, k); };
+    }
+    fig.onChange(disegna); state.onChange(scoperti); disegna();
+  }
+  /* [REQ-WL-13] workload acceso senza nessuno assegnato: segnalato nella riga e sulle etichette, senza fermarlo */
+  function scoperti() {
+    if (!figure) return;
+    for (const k of cfg.ordine) { const s = figure.scoperto(k); rows[k].classList.toggle('scoperto', s); rows[k].querySelector('.name').title = s ? ui.scoperto : ''; }
+    for (const r of state.recs) r.div.classList.toggle('scoperta', figure.scoperto(r.el.wl) && r.el.tipo !== 'sorgente' && r.el.tipo !== 'officina');
   }
 
   /* ===== [REQ-SCN-06, RDM-028] Etichette senza sovrapposizioni: vince la più importante, poi la più vicina; le altre si nascondono =====

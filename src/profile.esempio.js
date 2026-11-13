@@ -9,6 +9,12 @@ window.PROFILE = {
     { nome: 'Budget (Excel)', categoria: 'excel', flusso: 'on' },
     { nome: 'Presenze', categoria: 'hr', flusso: 'off' },
   ],
-  team: { integration: { m: 1, f: 1 }, architecture: { m: 1, f: 0 }, visualization: { m: 0, f: 1 }, coordination: { m: 0, f: 1 } },
+  // team di partenza: sagoma, nome (solo nella versione aziendale), workload assegnati (nessuno, uno o più)
+  team: [
+    { sagoma: 'uomo', nome: 'Luca', workload: ['Data Integration', 'Data Architecture'] },
+    { sagoma: 'donna', nome: 'Sara', workload: ['Data Visualization'] },
+    { sagoma: 'donna', nome: 'Elena', workload: ['Self-service', 'Data Sources'] },
+    { sagoma: 'uomo', nome: 'Marco', workload: [] },
+  ],
   contatto: { chi: 'Team dati', come: 'dati@esempio.example' },
 };

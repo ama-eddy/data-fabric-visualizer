@@ -12,14 +12,18 @@ import { createGuida } from './engine/guida.js';
 /* ===== [REQ-CFG-02] Il profilo dell'azienda si sovrappone al modello standard ===== */
 function applicaProfilo(cfg, p) {
   if (!p) return cfg;
-  if (p.azienda) cfg.meta.titolo += ' · ' + p.azienda;
+  if (p.azienda) { cfg.meta.titolo += ' · ' + p.azienda; cfg.meta.azienda = p.azienda; }
   if (p.contatto && p.contatto.chi) cfg.contatto = p.contatto;        // [REQ-LIT-02]
   /* [REQ-CFG-03] sorgenti del profilo: nome, categoria e flusso on/off sostituiscono il catalogo standard */
   if (p.sorgenti && p.sorgenti.length) cfg.sources = p.sorgenti.map((s, i) => ({ id: 'src-' + i, nome: s.nome, categoria: s.categoria, stato: s.flusso === 'off' ? 'off' : 'on', narrativa: s.flusso === 'off' ? 'off' : 'on' }));
   /* [REQ-HS-02, REQ-HS-07] spoke del profilo: nome e stato on/wip/off */
   if (p.spoke && p.spoke.length) cfg.spokes = p.spoke.map((s) => ({ nome: s.nome, stato: ['on', 'wip', 'off'].includes(s.stato) ? s.stato : 'on' }));
   /* [REQ-SCN-11] team dati del profilo: uomini e donne al trasporto e a rotazione */
-  for (const k of Object.keys(cfg.team.gruppi)) if (p.team && p.team[k]) { cfg.team.gruppi[k].m = p.team[k].m || 0; cfg.team.gruppi[k].f = p.team[k].f || 0; }
+  /* [REQ-CFG-03] team di partenza del profilo: sagoma, nome (solo nella versione aziendale) e workload assegnati, per codice o per nome */
+  if (Array.isArray(p.team)) {
+    const codice = (w) => Object.keys(cfg.workloads).find((k) => k === w || cfg.workloads[k].nome.toLowerCase() === String(w).trim().toLowerCase() || cfg.workloads[k].nome.toLowerCase().startsWith(String(w).trim().toLowerCase()));
+    cfg.team.persone = p.team.slice(0, cfg.team.max).map((x) => ({ sesso: /^(f|donna)/i.test(x.sagoma || x.sesso || '') ? 'f' : 'm', nome: x.nome || '', wl: (x.workload || x.wl || []).map(codice).filter(Boolean) }));
+  }
   return cfg;
 }
 

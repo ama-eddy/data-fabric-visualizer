@@ -19,7 +19,7 @@ const path = require('path'), fs = require('fs');
 
   await page.evaluate(() => fabbrica.world.flyTo([0, 40, -40], [0, 0, -86], 0.01));
   await shot('0-area-fornitori-vuota', 1500);
-  check(await page.evaluate(() => { const r = fabbrica.state.elemento('fornitori'), p = r.label.getWorldPosition(new (r.root.position.constructor)()); return p.y < 2 && Math.abs(p.z - (-77.5)) < 2; }), 'etichetta dell\'area fornitori a terra, davanti ai lotti');
+  check(await page.evaluate(() => !fabbrica.state.elemento('fornitori').label.visible), 'area fornitori senza etichetta');   // [RDM-034]
   await page.evaluate(() => fabbrica.world.home());
   await shot('1-terreno-vuoto', 1500);
   check(await page.locator('#wl > .row').count() === 13, '13 workload nel pannello');
@@ -96,20 +96,40 @@ const path = require('path'), fs = require('fs');
   check(await page.waitForFunction(() => fabbrica.flows.routes.some((r) => r.tipo === 'furgone' && r.items.length), null, { timeout: 20000 }).then(() => true, () => false), 'furgoni verso gli spoke');
   await shot('9-spoke', 2500);
   check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'officina' && r.on.visible).length) === 5, '5 officine visibili');
+  // ---- RDM-033: team componibile a schermo ----
   let f = await page.evaluate(() => fabbrica.figures.conta());
-  check(f.integration === 2 && f.architecture + f.visualization + f.coordination === 3 && f.totale === 5, 'team dati: 2 integration e 3 a rotazione tra le postazioni attive: ' + JSON.stringify(f));
-  await page.evaluate(() => fabbrica.state.set('ACC', 'off')); await page.waitForTimeout(400);       // [REQ-WL-06] SSR dipende dagli Accessi
-  check(await page.evaluate(() => !fabbrica.flows.routes.some((r) => r.tipo === 'furgone' && r.items.length)), 'senza Accessi i furgoni si fermano');
-  await page.evaluate(() => { fabbrica.state.set('ACC', 'on'); fabbrica.state.set('VIS', 'off'); fabbrica.state.set('PMO', 'off'); });
+  check(f.totale === 5 && f.caffe === 5, 'di partenza: 5 persone, nessuna assegnata, tutte alla macchinetta del caffè: ' + JSON.stringify(f));
+  check(await page.locator('#wl > .row.scoperto').count() === 13, 'tutti i workload accesi sono scoperti');                // [REQ-WL-13]
+  await page.locator('.pupazzo').nth(0).dragTo(page.locator('#wl > .row[data-wl="INT"]'));                                 // [REQ-UI-13]
+  await page.locator('.pupazzo').nth(0).dragTo(page.locator('#wl > .row[data-wl="VIS"]'));
+  await page.locator('.pupazzo').nth(1).dragTo(page.locator('#wl > .row[data-wl="INT"]'));
   await page.waitForTimeout(300);
-  f = await page.evaluate(() => fabbrica.figures.conta());
-  check(f.visualization === 0 && f.coordination === 0 && f.architecture === 3 && await page.evaluate(() => fabbrica.state.effettivo(fabbrica.state.elemento('coordinamento')) === 'off' && fabbrica.state.stato.ARC === 'on'), 'chi ruota va solo alle postazioni dei workload accesi; il coordinamento non dipende più dall\'architettura: ' + JSON.stringify(f));
-  await page.evaluate(() => fabbrica.state.setTutti('on'));
-  const g0 = await page.evaluate(() => fabbrica.figures.tutte.filter((x) => x.ruota).map((x) => x.gruppo).join());
-  check(await page.waitForFunction((g) => fabbrica.figures.tutte.filter((x) => x.ruota).map((x) => x.gruppo).join() !== g, g0, { timeout: 40000 }).then(() => true, () => false), 'rotazione: le postazioni cambiano a ogni turno');
-  await page.evaluate(() => { fabbrica.state.setTutti('on'); fabbrica.ui.mostraElemento('team:visualization'); fabbrica.world.flyTo([-30, 30, 78], [-22, 3, 40]); });
-  await shot('10-team-e-showroom', 3500);
-  check((await page.locator('#info h3').textContent()).startsWith('Team dati'), 'scheda del team dati');
+  let tm = await page.evaluate(() => ({ wl: fabbrica.figures.tutte.map((x) => x.wl.join('+')), pallini: document.querySelectorAll('.pallino').length, int: document.querySelector('#wl > .row[data-wl="INT"]').classList.contains('scoperto') }));
+  check(tm.wl[0] === 'INT+VIS' && tm.wl[1] === 'INT' && tm.pallini === 3 && !tm.int, 'trascinamento: una persona su due workload, tre pallini, Data Integration non più scoperta: ' + JSON.stringify(tm));
+  await page.locator('.pallino[data-wl="VIS"]').click(); await page.waitForTimeout(150);
+  check(await page.evaluate(() => fabbrica.figures.tutte[0].wl.join()) === 'INT', 'clic sul pallino: assegnazione tolta');
+  await page.locator('.tasto.piu').nth(1).click(); await page.locator('.tasto.piu').nth(0).click();                         // [REQ-UI-12]
+  check(await page.evaluate(() => fabbrica.figures.tutte.length === 7 && fabbrica.figures.tutte[5].sesso === 'f') && await page.locator('.pupazzo').count() === 7, 'più: due persone aggiunte');
+  await page.locator('.tasto.meno').click();
+  check(await page.evaluate(() => fabbrica.figures.tutte.length) === 6, 'meno: tolta l\'ultima');
+  await page.locator('.pupazzo').nth(2).click(); await page.waitForTimeout(300);
+  check((await page.locator('#info h3').textContent()).startsWith('Persona del team dati'), 'clic sul pupazzino: scheda della persona');
+  await page.locator('#info .chip2[data-wl="GOV"]').click(); await page.locator('#info .chip2[data-wl="ACC"]').click(); await page.waitForTimeout(200);
+  check(await page.evaluate(() => fabbrica.figures.tutte[2].wl.join()) === 'GOV,ACC' && (await page.locator('#info .tecnico').textContent()).includes('Data steward'), 'assegnazione dalla scheda, con il ruolo');
+  check(await page.evaluate(() => JSON.parse(localStorage.getItem('fabbrica-team:standard')).length) === 6, 'team salvato nel browser');   // [REQ-UI-14]
+  const g0 = await page.evaluate(() => fabbrica.figures.tutte[2].ora);
+  check(await page.waitForFunction((g) => fabbrica.figures.tutte[2].ora !== g, g0, { timeout: 40000 }).then(() => true, () => false), 'con due workload accesi la persona ruota tra le postazioni');
+  await page.evaluate(() => { fabbrica.state.set('GOV', 'off'); fabbrica.state.set('ACC', 'off'); }); await page.waitForTimeout(200);
+  check(await page.evaluate(() => fabbrica.figures.tutte[2].ora) === null, 'workload spenti: la persona torna alla macchinetta del caffè');
+  await page.evaluate(() => { fabbrica.ui.chiudi(); fabbrica.state.setTutti('on'); fabbrica.world.flyTo([-10, 22, 66], [-12, 2, 40]); });
+  await shot('10-team-macchinetta', 3500);
+  await page.reload(); await page.waitForFunction(() => window.fabbrica); await page.getByText('Esplora liberamente').click();
+  check(await page.evaluate(() => fabbrica.figures.tutte.length === 6 && fabbrica.figures.tutte[0].wl.join() === 'INT'), 'dopo una ricarica il team è quello lasciato');
+  await page.getByText('Azzera').click();
+  check(await page.evaluate(() => fabbrica.figures.tutte.length === 5 && fabbrica.figures.tutte.every((x) => !x.wl.length)), 'Azzera: torna il team di partenza');
+  await page.getByText('Tutto on').click();
+  await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente').forEach((r) => fabbrica.state.setElemento(r.el.id, 'on')));
+  await page.evaluate(() => { fabbrica.figures.assegna(fabbrica.figures.tutte[3].id, 'GOV'); fabbrica.figures.assegna(fabbrica.figures.tutte[4].id, 'SRC'); fabbrica.figures.assegna(fabbrica.figures.tutte[1].id, 'SSR'); });
 
   // ---- RDM-016/017/018: laboratorio e showroom, tendina delle sorgenti, pannello del team ----
   await page.locator('#wl .row[data-wl="SRC"] .apri').click();
@@ -120,7 +140,7 @@ const path = require('path'), fs = require('fs');
   check(await page.waitForFunction(() => fabbrica.flows.routes.some((r) => r.tipo === 'semilavorato' && r.punti[0][1] > 3 && r.items.length), null, { timeout: 25000 }).then(() => true, () => false), 'passerella dal laboratorio allo showroom');
   check(await page.locator('.pupazzo').count() === 5, 'pannello del team: 5 pupazzini');
   await page.locator('.pupazzo').nth(3).click(); await page.waitForTimeout(1600);
-  check(await page.evaluate(() => fabbrica.figures.scelta() === 3) && (await page.locator('#info h3').textContent()).startsWith('Team dati'), 'clic sul pupazzino: evidenziato e scheda aperta');
+  check(await page.evaluate(() => fabbrica.figures.scelta() === fabbrica.figures.tutte[3].id) && (await page.locator('#info h3').textContent()).startsWith('Persona del team dati'), 'clic sul pupazzino: evidenziato e scheda aperta');
   await shot('16-pupazzo-evidenziato', 300);
   await page.evaluate(() => fabbrica.world.flyTo([-36, 34, 70], [-34, 3, 28]));
   await shot('17-laboratorio-showroom', 3000);
@@ -158,11 +178,12 @@ const path = require('path'), fs = require('fs');
   check(await pe.locator('#benvenuto.open').count() === 0, 'avvio=libero salta il benvenuto');
   await pe.getByText('Tutto on').click(); await pe.waitForTimeout(2500);
   const ep = await pe.evaluate(() => { const S = fabbrica.state, st = (t) => S.recs.filter((r) => r.el.tipo === t).map((r) => r.el.nome + ':' + S.effettivo(r)); fabbrica.ui.mostraElemento('pontile');
-    return { titolo: document.getElementById('titolo').textContent, spoke: st('officina'), src: st('sorgente'), team: fabbrica.figures.conta().totale, scheda: document.getElementById('info').textContent }; });
+    return { titolo: document.getElementById('titolo').textContent, spoke: st('officina'), src: st('sorgente'), team: fabbrica.figures.tutte.map((x) => x.nome + ':' + x.wl.join('+')).join(), scheda: document.getElementById('info').textContent }; });
   check(ep.titolo.includes('Esempio S.p.A.'), 'profilo: nome azienda');
   check(ep.spoke.join() === 'Officina Amministrazione:on,Officina Vendite:on,Officina Acquisti:wip,Officina Personale:off', 'profilo: spoke e stati: ' + ep.spoke);
   check(ep.src.join() === 'Il gestionale:on,CRM vendite:on,Budget (Excel):on,Presenze:off', 'profilo: sorgenti e flussi: ' + ep.src);
-  check(ep.team === 5 && ep.scheda.includes('dati@esempio.example'), 'profilo: team e contatto');
+  check(ep.team === 'Luca:INT+ARC,Sara:VIS,Elena:SSR+SRC,Marco:' && ep.scheda.includes('dati@esempio.example'), 'profilo: team di partenza con nomi e assegnazioni, contatto: ' + ep.team);
+  check(await pe.locator('#team .gruppo small').first().textContent() === 'Luca', 'profilo: il nome compare sotto il pupazzino');
   await pe.screenshot({ path: path.join(out, '11-profilo-esempio.png') }); await pe.close();
 
   // ---- Batch 5: narrativa, percorsi, benvenuto ----

@@ -19,6 +19,9 @@ window.CONFIG = {
     presentazione: 'Presentazione', percorsi: 'Percorsi', avanti: 'Avanti', indietro: 'Indietro', esci: 'Esci', tornaQui: 'Torna qui',
     capitolo: 'Capitolo', tappa: 'Tappa', di: 'di', chi: 'Chi', tu: 'Cosa fai tu', ricorda: 'Da ricordare', nessunaTappa: 'Questo percorso attraversa reparti non ancora accesi.',
     aiutoGuida: 'Avanti: → o spazio · Indietro: ← · Esci: Esc',
+    aggiungiUomo: 'Aggiungi una persona (uomo)', aggiungiDonna: 'Aggiungi una persona (donna)', togli: 'Togli la persona selezionata, o l\'ultima', azzera: 'Azzera',
+    azzeraTitolo: 'Torna al team di partenza', ruolo: 'Ruolo', compiti: 'Di cosa si occupa', assegna: 'Assegna a', trascina: 'Trascina una persona su un workload per assegnarla',
+    senzaCompito: 'Non ha ancora un compito: aspetta alla macchinetta del caffè.', scoperto: 'Nessuno se ne occupa', inAttesa: 'in attesa: workload spento',
     benvenutoTitolo: 'La fabbrica dei dati', esplora: 'Esplora liberamente', menu: 'Pannello',
     benvenuto1: 'I numeri che leggi nei report non nascono nei report: nascono nei sistemi che usi ogni giorno e fanno un viaggio, come in una fabbrica.',
     benvenuto2: 'Qui vedi quel viaggio: i fornitori, il lago dove arriva il materiale, i reparti che lo lavorano, i semilavorati certificati e le officine delle funzioni.',
@@ -107,27 +110,28 @@ window.CONFIG = {
     tecnico: 'Workspace di dominio · composite model',  // [REQ-HS-06]
   },
 
-  // [REQ-SCN-11] team dati: una figura per persona. m = uomini, f = donne. Sostituito dal profilo, se presente.
+  // [REQ-SCN-11, REQ-SCN-15, REQ-UI-12…14] team dati: le persone si aggiungono, tolgono e assegnano a schermo.
   team: {
-    colore: '#1d4ed8', casco: '#facc15', turno: 14, corridoio: 42.3,   // corridoio = z del passaggio davanti al capannone, usato per spostarsi   // turno = secondi tra un cambio di postazione e l'altro
-    // un gruppo per mestiere. m = uomini, f = donne. ruota: true = le sue persone ruotano tra le postazioni dei workload accesi [RDM-030]
-    gruppi: {
-      integration: { m: 2, f: 0, wl: 'INT', breve: 'Integration', nome: 'Team dati — Data Integration', tecnico: 'Data engineer',
-        fabbrica: 'Uno costruisce e ripara gli scivoli che portano il materiale dai fornitori al lago; l\'altro, da un pannello di comando, manovra le gru che pescano il materiale dal lago e lo mettono nel magazzino materie prime.',
-        perTe: 'Sono le persone che collegano i tuoi sistemi alla fabbrica e controllano che i carichi arrivino ogni giorno.',
-        compiti: [{ nome: 'Costruisce e ripara gli scivoli', tipo: 'scivoli', z: -77 }, { nome: 'Manovra le gru dal pannello di comando', tipo: 'pannello', pos: [28.5, -44] }] },
-      architecture: { ruota: true, m: 1, f: 0, wl: 'ARC', breve: 'Architecture', nome: 'Team dati — Data Architecture', tecnico: 'Data architect',
-        fabbrica: 'Progetta la fabbrica: dove vanno i reparti, quanta energia serve, come si collegano tra loro. Lavora al tavolo dei progetti accanto al capannone.',
-        perTe: 'È la persona che fa in modo che ogni nuova esigenza trovi posto nella fabbrica senza doverla rifare.',
-        compiti: [{ nome: 'Al tavolo dei progetti', tipo: 'postazione', pos: [-38, 6], verso: 1.57, tavolo: true }] },
-      visualization: { ruota: true, m: 0, f: 1, wl: 'VIS', breve: 'Visualization', nome: 'Team dati — Data Visualization', tecnico: 'BI developer',
-        fabbrica: 'Costruisce nello showroom i report ufficiali, partendo dai semilavorati collaudati.',
-        perTe: 'È la persona che trasforma i dati certificati nei report che apri ogni giorno.',
-        compiti: [{ nome: 'Nello showroom', tipo: 'postazione', pos: [-48, 37.5], verso: 3.14 }] },
-      coordination: { ruota: true, m: 1, f: 0, wl: 'PMO', breve: 'Coordination', nome: 'Team dati — Project Management', tecnico: 'Project manager',
-        fabbrica: 'Coordina tutti gli operatori della fabbrica: chi fa cosa, in che ordine, entro quando.',
-        perTe: 'È la persona che mette in fila le richieste e ti dice quando arriverà ciò che hai chiesto.',
-        compiti: [{ nome: "All'ufficio di coordinamento", tipo: 'postazione', pos: [44, 40], verso: 0 }] },
+    colore: '#1d4ed8', casco: '#facc15', turno: 14, max: 12,   // turno = secondi tra un cambio di postazione e l'altro
+    nome: 'Persona del team dati', perTe: 'Il team dati è fatto di poche persone, di IT e di business, e ognuna segue più cose: per questo le richieste si mettono in fila e si pianificano.',
+    // persone di partenza del modello standard: nessuna assegnata (sostituite da quelle del profilo, se presente)
+    persone: [{ sesso: 'm' }, { sesso: 'm' }, { sesso: 'f' }, { sesso: 'm' }, { sesso: 'm' }],
+    raccolta: { nome: 'Macchinetta del caffè', pos: [-5, 43.7] },   // chi non ha un compito aspetta qui
+    // una postazione per workload. pos = [x, z] · passo = spostamento per ogni persona in più · verso = dove guarda (radianti)
+    postazioni: {
+      SRC: { nome: 'Accanto a un fornitore', tecnico: 'Referente del sistema', cosa: 'Conosce il sistema da cui nasce il dato e spiega al team che cosa contiene.' },
+      ARC: { nome: 'Tavolo dei progetti', tecnico: 'Data architect', cosa: 'Progetta la fabbrica: dove vanno i reparti, quanta energia serve, come si collegano.', pos: [-38, 6], passo: [0, 2.2], verso: 1.57, tavolo: true },
+      PMO: { nome: 'Ufficio di coordinamento', tecnico: 'Project manager', cosa: 'Coordina gli operatori: chi fa cosa, in che ordine, entro quando.', pos: [44, 40], passo: [-1.7, 0] },
+      INT: { nome: 'Scivoli e gru', tecnico: 'Data engineer', cosa: 'Il primo costruisce e ripara gli scivoli; il secondo manovra dal pannello le gru che pescano dal lago e riempiono il magazzino.', pos: [28.5, -44], passo: [1.4, 0], verso: 1.57, zScivoli: -77 },
+      TRF: { nome: 'Banchi del laboratorio prove', tecnico: 'Analytics engineer', cosa: 'Costruisce la lavorazione e collauda i semilavorati prima che escano.', pos: [-20, 38.9], passo: [2.7, 0], verso: 3.14 },
+      SEC: { nome: 'Caveau', tecnico: 'Responsabile della sicurezza dei dati', cosa: 'Decide come si protegge il materiale riservato e controlla chi lo ha guardato.', pos: [60, -33.5], passo: [-1.7, 0], verso: 3.14 },
+      ACC: { nome: 'Portineria del cancello', tecnico: 'Amministratore degli accessi', cosa: 'Consegna i badge: chi entra e che cosa può fare.', pos: [11.8, 42.4], passo: [-1.6, 0], verso: 1.57 },
+      VIS: { nome: 'Showroom', tecnico: 'BI developer', cosa: 'Costruisce i report ufficiali sui semilavorati collaudati.', pos: [-48, 37.5], passo: [-1.8, 0], verso: 3.14 },
+      SSR: { nome: 'In un\'officina', tecnico: 'Analista della funzione', cosa: 'Costruisce i report della funzione sui semilavorati, con i dati locali.' },
+      GOV: { nome: 'Cabina della torre di controllo', tecnico: 'Data steward', cosa: 'Fissa le regole comuni, sorveglia i reparti e mette il marchio di qualità.', pos: [-36.4, 58], passo: [0, 1.7], cabina: [-40, 14.7, 58] },
+      FIN: { nome: 'Contatori della centrale', tecnico: 'Responsabile dei costi', cosa: 'Legge i consumi e li riporta a ogni reparto e a ogni officina.', pos: [-64, -34.3], passo: [1.7, 0], verso: 3.14 },
+      KNW: { nome: 'Ufficio tecnico', tecnico: 'Responsabile del glossario', cosa: 'Tiene la mappa di cosa significano le parole dell\'azienda e di come sono collegate.', pos: [49.3, 14], passo: [0, 1.7], verso: 1.57 },
+      RTI: { nome: 'Sala sensori', tecnico: 'Analista dei dati in diretta', cosa: 'Sorveglia i segnali in arrivo e imposta gli avvisi.', pos: [49.3, -20], passo: [0, 1.7], verso: 1.57 },
     },
   },
 
@@ -215,7 +219,8 @@ window.CONFIG = {
 
     // --- Segnaposto degli altri workload (batch 2-4) ---
     // --- Data Integration [REQ-FLW-01…03, REQ-SCN-02] ---
-    { id: 'fornitori', wl: 'SRC', priorita: 1, tipo: 'piazzale', nome: 'Area fornitori', tecnico: 'Sistemi sorgente', pos: [0, -86], dim: [146, 16, 0.2], etichetta: [0, 0.3, 8.5], cantiere: false,   // coordinate relative all'elemento
+    { id: 'fornitori', wl: 'SRC', tipo: 'piazzale', senzaEtichetta: true,   // [RDM-034] niente etichetta: i lotti hanno già i loro cartelli
+      nome: 'Area fornitori', tecnico: 'Sistemi sorgente', pos: [0, -86], dim: [146, 16, 0.2], etichetta: [0, 0.3, 8.5], cantiere: false,   // coordinate relative all'elemento
       fabbrica: "L'area dei fornitori: i sistemi dell'azienda da cui parte il materiale grezzo. Ogni tipo di fornitore ha un edificio diverso.",
       perTe: 'Sono i sistemi che usi ogni giorno: gestionale, CRM, fogli di calcolo. Tu continui a lavorare lì, il materiale parte da solo.' },
     { id: 'pontile', wl: 'INT', tipo: 'pontile', nome: 'Pontile di pesca', tecnico: 'Data pipeline di caricamento nel Bronze', pos: [0, -45], dim: [48, 5, 3],
