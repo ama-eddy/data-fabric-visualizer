@@ -1,4 +1,4 @@
-# [REQ-CFG-08] Quando cambiano i testi o i sorgenti, rigenera fabbrica-dati.html e lo salva su main:
+# [REQ-CFG-08] Quando cambiano i testi o i sorgenti, rigenera data-platform-as-a-fabric.html e lo salva su main:
 # GitHub Pages pubblica poi la nuova versione. Se TESTI.md ha un errore (chiave sbagliata, termine
 # tecnico vietato), l'azione diventa rossa con l'elenco dei problemi e la pagina pubblica non cambia.
 name: Aggiorna la pagina
@@ -23,7 +23,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add fabbrica-dati.html
+          git add data-platform-as-a-fabric.html
           git diff --cached --quiet && echo "Pagina già aggiornata" && exit 0
-          git commit -m "Aggiorna fabbrica-dati.html"
+          git commit -m "Aggiorna data-platform-as-a-fabric.html"
           git push

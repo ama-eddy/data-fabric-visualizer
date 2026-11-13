@@ -3,20 +3,20 @@
 > Personalizza il **modello standard** descritto in `../REQUISITI.md` (REQ-CFG-02…05, D-32).
 > Contiene **solo** ciò che cambia da un'azienda all'altra: spoke, sorgenti con categoria e flusso, team dati, contatto. Tutto il resto è standard.
 > Usare i nomi con cui le persone conoscono funzioni e sistemi: **nessun nome tecnico** (D-26).
-> Il blocco `PROFILE` nell'HTML si ricava da questo documento (REQ-CFG-05).
+> Il blocco `PROFILE` nell'HTML si ricava da questo documento (REQ-CFG-05). Per usarlo senza toccare il codice: compilare una copia di `profilo-esempio.json` e caricarla dalla pagina con **Carica profilo** (REQ-CFG-06).
 > **Il profilo compilato non va caricato nel repository**, che è pubblico: resta in locale (REQ-CFG-07).
 
 | Campo | Valore |
 |---|---|
 | Azienda | |
-| Basato su standard | REQUISITI.md v1.16 |
+| Basato su standard | REQUISITI.md v1.18 |
 
 ---
 
 ## 1. Spoke (REQ-HS-02, REQ-HS-07)
 
 > Le funzioni aziendali che hanno, o avranno, un negozio. Sostituiscono i 5 spoke generici dello standard.
-> **Stato**: `on` = negozio attiva oggi · `wip` = in costruzione · `off` = non ancora prevista.
+> **Stato**: `on` = negozio attivo oggi · `wip` = in costruzione · `off` = non ancora prevista.
 
 | Nome dello spoke | Stato (on/wip/off) |
 |---|---|
@@ -36,7 +36,7 @@
 ## 3. Team dati di partenza (REQ-SCN-11, REQ-UI-12…14)
 
 > Una riga per persona: è il team con cui si apre la fabbrica. Lasciare vuoto per partire senza persone e comporre il team a schermo con + e −.
-> **Sagoma**: `uomo` o `donna`. **Nome**: facoltativo, compare sotto il pupazzino (nel modello standard i nomi non ci sono). **Workload**: nessuno, uno o più, tra tutti i 13:
+> **Sagoma**: `uomo` o `donna`. **Nome**: facoltativo, compare sotto il pupazzino (nel modello standard i nomi non ci sono). **Workload**: nessuno, uno o più, tra i 12 assegnabili (le Data Sources non richiedono persone del team):
 > Data Architecture, Project Management, Data Integration, Data Transformation, Security, Accessi, Data Visualization, Self-service, Data Governance, Monitoraggio costi, Knowledge, Real-Time.
 > Dal vivo si può cambiare tutto: aggiungere e togliere persone, spostare le assegnazioni.
 

@@ -54,6 +54,14 @@ export function createUI(cfg, world, state) {
   btn(ui.pausa, (b) => { pausa = !pausa; b.textContent = pausa ? ui.riprendi : ui.pausa; });
   btn(ui.tuttoOn, () => state.setTutti('on'));
   btn(ui.tuttoOff, () => state.setTutti('off'));
+  /* [REQ-CFG-06] profilo aziendale da file JSON: resta solo in questo browser, la pagina riparte con il profilo applicato */
+  const CHIAVE_PROFILO = 'fabbrica-profilo', haProfilo = (() => { try { return !!localStorage.getItem(CHIAVE_PROFILO); } catch (e) { return false; } })();
+  const scegli = h('input', { type: 'file', accept: '.json,application/json' }); scegli.style.display = 'none'; scegli.id = 'profilo-file'; document.body.append(scegli);
+  scegli.onchange = async () => {
+    try { const p = JSON.parse(await scegli.files[0].text()); if (!p || typeof p !== 'object' || Array.isArray(p)) throw new Error('forma'); localStorage.setItem(CHIAVE_PROFILO, JSON.stringify(p)); location.reload(); }
+    catch (e) { alert(ui.profiloErrato); scegli.value = ''; }
+  };
+  btn(haProfilo ? ui.togliProfilo : ui.caricaProfilo, () => { if (haProfilo) { localStorage.removeItem(CHIAVE_PROFILO); location.reload(); } else scegli.click(); }).id = 'profilo-btn';
 
   /* ===== [REQ-FLW-08, REQ-SRC-03] Legenda dei materiali e dei mezzi di trasporto ===== */
   const leg = $('legenda');

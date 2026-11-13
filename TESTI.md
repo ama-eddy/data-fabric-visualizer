@@ -56,6 +56,15 @@ Tutto on
 ### ui.tuttoOff
 Tutto off
 
+### ui.caricaProfilo
+Carica profilo
+
+### ui.togliProfilo
+Togli profilo
+
+### ui.profiloErrato
+Il file scelto non è un profilo valido: deve essere un file JSON con la forma del profilo di esempio.
+
 ### ui.nellaFabbrica
 Nella fabbrica
 
@@ -549,7 +558,7 @@ Cancelli e tornelli
 Microsoft Entra ID · ruoli e permessi
 
 ### elements.cancelli.fabbrica
-Il cancello, i tornelli e il lettore di badge: si entra solo se autorizzati, e ognuno raggiunge solo i reparti che gli servono.
+Il cancello della fabbrica, con i tornelli e il lettore di badge: oltre questo punto va solo il team dati, e ognuno raggiunge solo i reparti che gli servono. Da qui escono i semilavorati verso i negozi.
 
 ### elements.cancelli.perTe
 Per far entrare una persona della tua funzione si chiede un badge: decidi tu chi entra e che cosa può fare.
@@ -609,7 +618,7 @@ Sportello dell'hub
 Center of Excellence (CoE)
 
 ### elements.sportello.fabbrica
-Lo sportello dell'hub: il punto in cui le funzioni incontrano il team dati per chiedere, segnalare un problema o entrare nella fabbrica.
+Lo sportello dell'hub: il punto in cui le funzioni incontrano il team dati per chiedere, segnalare un problema o aprire il proprio negozio.
 
 ### elements.sportello.perTe
 Non devi sapere a quale reparto rivolgerti: vieni qui, e la tua richiesta arriva alla persona giusta.
@@ -1108,19 +1117,19 @@ Il materiale viene pulito, assemblato e confezionato in semilavorati: dati certi
 Security: proteggere ciò che vale
 
 ### chapters.sicurezza.testo
-Recinzione, telecamere e caveau: i dati riservati li vede solo chi deve, e si sa sempre chi ha guardato cosa.
+Due cinte, telecamere e caveau: da fuori non entra nessuno, i dati riservati li vede solo chi deve, e si sa sempre chi ha guardato cosa.
 
 ### chapters.accessi.titolo
 Accessi: chi entra e cosa può fare
 
 ### chapters.accessi.testo
-In fabbrica si entra con il badge. Ogni funzione decide chi dei suoi entra, e ognuno raggiunge solo ciò che gli serve.
+Si entra con il badge. Dall'ingresso clienti chi fa parte dell'azienda raggiunge lo showroom e il proprio negozio; oltre il cancello della fabbrica va solo il team dati. Ogni funzione decide chi dei suoi entra, e ognuno raggiunge solo ciò che gli serve.
 
 ### chapters.visualizzazione.titolo
 Data Visualization: i report ufficiali
 
 ### chapters.visualizzazione.testo
-Nello showroom nascono i report ufficiali, in Power BI, costruiti sui semilavorati collaudati: gli stessi numeri per tutta l'azienda.
+Nello showroom, aperto a tutta l'azienda, nascono i report ufficiali, in Power BI, costruiti sui semilavorati collaudati: gli stessi numeri per tutta l'azienda.
 
 ### chapters.negozi.titolo
 Self-service: i negozi delle funzioni
@@ -1132,7 +1141,7 @@ Ogni funzione riceve i semilavorati e ci costruisce i propri report, aggiungendo
 Data Governance: regole, qualità, sportello
 
 ### chapters.governance.testo
-La torre fissa le regole comuni e mette il marchio di qualità. La sala controllo sorveglia che ogni reparto lavori. Allo sportello si chiede, si segnala un problema, si entra nella fabbrica.
+La torre fissa le regole comuni e mette il marchio di qualità. La sala controllo sorveglia che ogni reparto lavori. Allo sportello si chiede, si segnala un problema, si porta una nuova esigenza.
 
 ### chapters.costi.titolo
 Monitoraggio costi: quanto consuma la fabbrica
@@ -1401,7 +1410,7 @@ Si costruisce il negozio della funzione.
 La funzione
 
 ### paths.ingresso.tappe.3.cosa
-Si distribuiscono i badge.
+Si distribuiscono i badge per l'ingresso clienti.
 
 ### paths.ingresso.tappe.3.tu
 Decidi chi dei tuoi entra e cosa può fare.

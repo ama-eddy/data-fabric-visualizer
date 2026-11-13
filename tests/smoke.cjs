@@ -1,4 +1,4 @@
-// Prova automatica del batch corrente: apre fabbrica-dati.html, controlla che non ci siano
+// Prova automatica del batch corrente: apre data-platform-as-a-fabric.html, controlla che non ci siano
 // richieste di rete [NFR-01] né errori, e salva alcune schermate in tests/out/.
 const { chromium } = require('playwright');
 const path = require('path'), fs = require('fs');
@@ -10,7 +10,7 @@ const path = require('path'), fs = require('fs');
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
   page.on('request', (r) => { if (!r.url().startsWith('file:') && !r.url().startsWith('data:') && !r.url().startsWith('blob:')) ext.push(r.url()); });
-  await page.goto('file://' + path.join(__dirname, '..', 'fabbrica-dati.html'));
+  await page.goto('file://' + path.join(__dirname, '..', 'data-platform-as-a-fabric.html'));
   await page.waitForFunction(() => window.fabbrica);
   const shot = async (n, ms = 2200) => { await page.waitForTimeout(ms); await page.screenshot({ path: path.join(out, n + '.png') }); };
   const check = (c, m) => { if (!c) { errors.push('ATTESO: ' + m); } };
@@ -247,6 +247,15 @@ const path = require('path'), fs = require('fs');
   await page.getByText('Tutto off').click();
   await page.waitForTimeout(1500);
   check(await page.evaluate(() => fabbrica.state.recs.every((r) => !r.on.visible && !r.wip.visible)), 'tutto off svuota la scena');
+
+  // ---- REQ-CFG-06: profilo caricato da file JSON ----
+  await page.setInputFiles('#profilo-file', path.join(__dirname, '..', 'profili', 'profilo-esempio.json'));
+  await page.waitForFunction(() => window.fabbrica && fabbrica.cfg.meta.azienda === 'Esempio S.p.A.', null, { timeout: 20000 }).catch(() => {});
+  check(await page.evaluate(() => fabbrica.cfg.meta.azienda === 'Esempio S.p.A.' && fabbrica.cfg.spokes.length === 4 && fabbrica.figures.tutte.length === 4) && (await page.locator('#profilo-btn').textContent()) === 'Togli profilo', 'profilo caricato da file: azienda, spoke e team applicati');
+  await page.getByText('Esplora liberamente').click();                                  // dopo la ricarica torna la schermata di benvenuto
+  await page.locator('#profilo-btn').click();
+  await page.waitForFunction(() => window.fabbrica && !fabbrica.cfg.meta.azienda && fabbrica.cfg.spokes.length === 5, null, { timeout: 20000 }).catch(() => {});
+  check(await page.evaluate(() => !fabbrica.cfg.meta.azienda && fabbrica.cfg.spokes.length === 5), 'Togli profilo: torna il modello standard');
 
   check(ext.length === 0, 'nessuna richiesta di rete: ' + ext.join(', '));
   await browser.close();

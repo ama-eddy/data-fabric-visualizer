@@ -7,9 +7,9 @@
 |---|---|
 | Versione documento | 1.18 |
 | Data | 2026-11-13 |
-| Stato | Requisiti approvati — implementazione da avviare (vedi `PIANO.md`) |
+| Stato | Requisiti approvati — implementazione completata, collaudo in corso (vedi `PIANO.md`) |
 | Approva | Il responsabile del progetto (richiedente) |
-| Artefatti governati | `fabbrica-dati.html` (implementazione), `profili/*.md` (profili aziendali), `PIANO.md` (piano di implementazione) |
+| Artefatti governati | `data-platform-as-a-fabric.html` (implementazione), `profili/*.md` (profili aziendali), `PIANO.md` (piano di implementazione) |
 
 ---
 
@@ -160,7 +160,7 @@ Aggiungere un termine a una delle due tabelle è una modifica al framework: pass
 ├───────────────────────────────────────────┤
 │ 2. PROFILO ORGANIZZAZIONE (profili/*.md)   │  spoke, sorgenti, flussi, team dati, contatto     
 ├───────────────────────────────────────────┤
-│ 3. IMPLEMENTAZIONE (fabbrica-dati.html)    │  CONFIG (standard) + PROFILE (override) + motore 3D
+│ 3. IMPLEMENTAZIONE (data-platform-as-a-fabric.html)    │  CONFIG (standard) + PROFILE (override) + motore 3D
 └───────────────────────────────────────────┘
 ```
 
@@ -435,7 +435,7 @@ Le tappe complete (cosa succede, chi, cosa fai tu) stanno in `CONFIG.paths` e si
 | `incidente` (Incident) | "Il numero nel mio report è sbagliato" | Negozio (SSR) → Sportello (GOV) → Sala controllo (GOV) → Confezionamento (TRF) → Gold (TRF) → Silver (TRF) → Bronze (INT) → Lago (INT) → Laboratorio prove (TRF) → Negozio (SSR) |
 | `richiesta` (Change request) | "Mi serve un nuovo indicatore" | Negozio (SSR) → Sportello (GOV) → Ufficio di coordinamento (PMO) → Gold (TRF) → Confezionamento (TRF) → Laboratorio prove (TRF) → Torre di controllo (GOV) → Spedizioni (TRF) → Negozio (SSR) |
 | `progetto` (New project · il viaggio del dato, LO-03) | "Vogliamo analizzare un'area nuova" | Area fornitori (SRC) → Lago (INT) → Bronze (INT) → Silver (TRF) → Gold (TRF) → Confezionamento (TRF) → Showroom (VIS) |
-| `ingresso` (Onboarding) | "Come entra la mia funzione nella fabbrica?" | Sportello (GOV) → Ufficio di coordinamento (PMO) → Negozio (SSR) → Cancelli (ACC) → Caveau (SEC) → Spedizioni (TRF) → Negozio (SSR) → Contatori (FIN) |
+| `ingresso` (Onboarding) | "Come entra la mia funzione nella fabbrica?" | Sportello (GOV) → Ufficio di coordinamento (PMO) → Negozio (SSR) → Ingresso clienti (ACC) → Caveau (SEC) → Spedizioni (TRF) → Negozio (SSR) → Contatori (FIN) |
 
 Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali allo sportello e il team dati risale la filiera per te"; Change request, "Quello che serve a tutti entra nel semilavorato; quello che serve solo a te lo costruisci nel tuo negozio"; New project, "Ogni numero che leggi ha fatto questo viaggio, con un controllo a ogni reparto: per questo ti puoi fidare"; Onboarding, "Non parti da zero: ricevi semilavorati già controllati e ci costruisci sopra quello che ti serve".
 
@@ -470,7 +470,7 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 | REQ-HS-02 | Il **modello standard** ha **5 spoke generici**: Finance, Commerciale, HR, Operations, Marketing. | Sostituiti dagli spoke del profilo, se presente. | M | Implementato |
 | REQ-HS-03 | Il numero di spoke è **variabile** (da 1 a 10) e il layout si adatta automaticamente. | Prova con 1, 3, 8 e 10 spoke senza sovrapposizioni. | S | Implementato |
 | REQ-HS-04 | Ogni spoke **riceve semilavorati** (furgoni con pacchi ciano) e li **personalizza**: report self-service su live connection ai modelli certificati. | Animazione dei furgoni verso lo spoke e schermo con dashboard personalizzata. | M | Implementato |
-| REQ-HS-05 | Ogni spoke può **aggiungere dati locali** (composite model con Excel e liste), rappresentati come un piccolo **deposito proprio** accanto alil negozio. | Deposito visibile; il pannello spiega "dati locali + semilavorato = prodotto personalizzato". | M | Implementato |
+| REQ-HS-05 | Ogni spoke può **aggiungere dati locali** (composite model con Excel e liste), rappresentati come un piccolo **deposito proprio** accanto al negozio. | Deposito visibile; il pannello spiega "dati locali + semilavorato = prodotto personalizzato". | M | Implementato |
 | REQ-HS-06 | Il pannello di uno spoke distingue le **responsabilità**: il dato core resta dell'hub, il contenuto personalizzato è dello spoke. | Sezione "chi lo gestisce" presente. | M | Implementato |
 | REQ-HS-07 | Ogni spoke ha uno **stato proprio** (off/wip/on), indicato nel profilo e modificabile dal vivo, che si combina con quello di `WL-SSR`: racconta quali funzioni sono già attive e quali in arrivo. | Prova: `WL-SSR` attivo, uno spoke in `wip` mostrato come cantiere, uno `off` assente. | M | Implementato |
 
@@ -485,8 +485,8 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 | REQ-CFG-03 | Il profilo di un'azienda contiene **solo**: nome dell'azienda, **spoke** (nome + stato on/wip/off), **sorgenti** (nome noto al business + **categoria** + **metodo di integrazione** + **flusso on/off**), **team dati di partenza** (quante persone, la sagoma di ciascuna, il **nome**, che esiste solo nella versione aziendale, e i workload assegnati) e un **contatto** ("a chi rivolgerti"). Tutto il resto (workload, capitoli, percorsi, testi) è standard. **Nessun nome tecnico.** | Il template `profili/PROFILO-TEMPLATE.md` ha esattamente questi campi. | M | Approvato |
 | REQ-CFG-04 | Ogni chiave del CONFIG riporta i **REQ** che la governano (campo `reqs` o commento). | Ricerca di `REQ-xx` nel file e ritrovamento della chiave. | M | Implementato |
 | REQ-CFG-05 | Il documento di profilo (`profili/<org>.md`) e il blocco `PROFILE` nell'HTML sono **allineati**: il blocco si ricava dal documento. | Ogni campo del blocco esiste nel documento di profilo. | S | Implementato |
-| REQ-CFG-06 | Si può **caricare un profilo da file JSON** tramite l'interfaccia, senza modificare l'HTML. | Il pulsante "Carica profilo" applica il JSON alla scena (D-11). | C | Approvato |
-| REQ-CFG-07 | Il **modello standard** è pubblicato come pagina web pubblica (GitHub Pages). Il **profilo reale di un'azienda non entra mai nel repository**: sta in `src/profile.local.js`, escluso dal repository, e genera `fabbrica-dati.locale.html`, da usare in locale. | La pagina pubblica mostra solo il modello standard; `git status` non propone mai i file del profilo reale. | M | Implementato |
+| REQ-CFG-06 | Si può **caricare un profilo da file JSON** tramite l'interfaccia, senza modificare l'HTML. | Il pulsante "Carica profilo" applica il JSON alla scena (D-11); il profilo resta solo nel browser di chi lo carica e "Togli profilo" riporta al modello standard. Forma del file: `profili/profilo-esempio.json`. | C | Implementato |
+| REQ-CFG-07 | Il **modello standard** è pubblicato come pagina web pubblica (GitHub Pages). Il **profilo reale di un'azienda non entra mai nel repository**: si carica da un file JSON tenuto in locale (REQ-CFG-06), oppure sta in `src/profile.local.js`, escluso dal repository, e genera `data-platform-as-a-fabric.locale.html`, da usare in locale. | La pagina pubblica mostra solo il modello standard; `git status` non propone mai i file del profilo reale. | M | Implementato |
 | REQ-CFG-08 | Tutti i testi visibili stanno in **`TESTI.md`**, la loro **fonte unica**: un titolo con la chiave e sotto il testo libero, modificabile anche da GitHub nel browser. La build verifica che il file sia **completo**, senza chiavi sconosciute né testi vuoti, e che rispetti il **lessico** (REQ-LIT-03); a ogni modifica su `main` un'azione di GitHub rigenera la pagina pubblicata. | Un testo cambiato in `TESTI.md` compare nella pagina; un termine vietato o una chiave sbagliata bloccano la build con l'elenco dei problemi. | M | Implementato |
 
 ---
@@ -557,7 +557,7 @@ const CONFIG = {
 | REQ-UI-08, 10 | — | `src/engine/guida.js` (pannello richiudibile, due modalità) · `src/index.html` | `npm test` | Implementato |
 | REQ-HS-01…07 | WL-SSR | `CONFIG.spokes` · `CONFIG.spoke` · `src/engine/spoke.js` | `npm test` | Implementato |
 | REQ-CFG-01…05, 07, 08 | — | `src/config.js` · `src/profile.js` · `src/main.js` · `build.mjs` · `tools/testi.mjs` · `TESTI.md` · `.gitignore` | `npm test` | Implementato |
-| REQ-CFG-06 | — | caricamento del profilo da file | — | Approvato |
+| REQ-CFG-06 | — | `src/engine/ui.js` (Carica profilo) · `src/main.js` · `profili/profilo-esempio.json` | `npm test` | Implementato |
 | NFR-01, 04, 05, 06 | — | `build.mjs` · `tests/smoke.cjs` | `npm test` | Implementato |
 | NFR-02, 03 | — | prove su Edge e Firefox, prestazioni | — | Approvato |
 
@@ -587,7 +587,7 @@ const CONFIG = {
 | D-08 | La **narrativa** è lo strumento della presentazione; ordine dei workload, nel pannello e nei capitoli: SRC → ARC → PMO → INT → TRF → SEC → ACC → VIS → SSR → GOV → FIN → KNW → RTI. | Utente | Confermata |
 | D-09 | Gli spoke sono **negozi**: personalizzano i semilavorati e aggiungono dati locali (composite model), senza una propria linea di produzione. | Utente | Confermata |
 | D-10 | **Un unico file offline**, con three.js incorporato. | Utente | Confermata |
-| D-11 | Personalizzazione tramite **profilo separato** (`profili/<org>.md` → blocco `PROFILE`); caricamento da JSON solo in futuro (REQ-CFG-06, priorità C). | Utente | Confermata |
+| D-11 | Personalizzazione tramite **profilo separato** (`profili/<org>.md` → blocco `PROFILE`); il profilo si può anche caricare da un file JSON dalla pagina (REQ-CFG-06). | Utente | Confermata |
 | D-12 | Solo italiano; testi nel CONFIG per un eventuale multilingua futuro. | Utente | Confermata |
 | D-13 | 5 spoke **generici** nello standard; quelli reali vanno nel profilo. | Utente | Confermata |
 | D-14 | Livello **concettuale** nello standard; il profilo personalizza solo con elementi riconoscibili dal business, **senza mappatura tecnica** (vedi D-26). | Utente | Confermata |
@@ -604,7 +604,7 @@ const CONFIG = {
 | D-25 | Il pubblico primario sono le **funzioni aziendali non tecniche** (alfabetizzazione); il pubblico IT è secondario. | Utente | Confermata |
 | D-26 | **Scopo formativo, non documentazione dell'as-is** (P-05): niente dettagli tecnici nell'HTML, profilo senza nomi tecnici. | Utente | Confermata |
 | D-27 | Il viaggio del dato (LO-03) si mostra con il percorso **New project**: non serve un meccanismo dedicato. | Utente | Confermata |
-| D-28 | Il lavoro del team data (LO-01) si rende visibile con **una figura per ogni persona del team**, divisa per gruppo (REQ-SCN-11). | Utente | Confermata |
+| D-28 | Il lavoro del team data (LO-01) si rende visibile con **una figura per ogni persona del team** (REQ-SCN-11). | Utente | Confermata |
 | D-29 | L'as-is di business (LO-02) **lo costruisce il presentatore dal vivo** cambiando gli stati; non serve una vista "oggi" dedicata. | Utente | Confermata |
 | D-30 | I contenuti non legati agli obiettivi restano nel modello con la loro priorità; il presentatore sceglie se raccontarli. | Utente | Confermata |
 | D-31 | Le sorgenti **non sono legate agli spoke**: stanno tutte nell'area fornitori (REQ-SRC-07). | Utente | Confermata |
@@ -634,7 +634,7 @@ const CONFIG = {
 | D-55 | I non assegnati stanno alla **macchinetta del caffè**; sono assegnabili **tutti i workload tranne Data Sources**, che non richiede persone del team dati; il Self-service lo è, perché il team dati è misto tra IT e business; un workload acceso senza persone è segnalato come **scoperto** ma non si ferma; il team si **ricorda nel browser**, con Azzera; il **nome** delle persone non c'è nel modello standard e si indica solo nel profilo aziendale. | Utente | Confermata |
 | D-56 | Gli spoke sono rappresentati come **negozi**, non come officine, e la **recinzione li protegge**: il perimetro racchiude fabbrica e negozi, con il cancello tra le due parti. | Utente (negozi, recinzione) · proposta (divisorio interno con il cancello) | Confermata |
 | D-57 | I confini sono **due**: chi fa parte dell'azienda entra dall'**ingresso clienti** con il badge e raggiunge showroom e negozi; nella fabbrica entra solo il team dati. Lo **showroom sta nella zona clienti** e i **clienti si vedono camminare** dall'ingresso allo showroom e ai negozi. | Utente | Confermata |
-| D-58 | Il progetto si chiama **Data Platform as a Fabric**: è il titolo dell'applicazione e dei documenti. I nomi dei file restano quelli esistenti, perché l'indirizzo pubblico non cambi. | Utente (nome) · proposta (nomi dei file) | Confermata |
+| D-58 | Il progetto si chiama **Data Platform as a Fabric**: è il titolo dell'applicazione e dei documenti, e dà il nome ai file (`data-platform-as-a-fabric.html`). L'indirizzo principale della pagina pubblica non cambia. | Utente | Confermata |
 
 ---
 
@@ -698,7 +698,8 @@ const CONFIG = {
 | RDM-038 | Spostare la macchinetta del caffè accanto alla centrale elettrica | Standard · SCN | REQ-SCN-15 | Approvata |
 | RDM-039 | Negozi e showroom devono essere raggiungibili da chi li usa: due cinte con ingresso clienti, showroom nella zona clienti, clienti in movimento | Standard · SCN, HS | REQ-SCN-03, REQ-SCN-14, REQ-SCN-16, REQ-HS-01, D-39, D-57 | Approvata |
 | RDM-040 | Le Data Sources non hanno bisogno di persone del team dati che se ne occupino | Standard · UI, WL, SCN | REQ-UI-13, REQ-WL-13, §7.1, D-55 | Approvata |
-| RDM-041 | Rinominare il progetto in "Data Platform as a Fabric" | Standard · UI, documenti | Titolo dei documenti e dell'applicazione, D-58 | Approvata |
+| RDM-041 | Rinominare il progetto in "Data Platform as a Fabric", file compresi | Standard · UI, documenti | Titolo dei documenti e dell'applicazione, D-58 | Approvata |
+| RDM-042 | Realizzare il caricamento del profilo da file JSON, già previsto, per usare il profilo aziendale senza rigenerare la pagina | Standard · CFG, UI | REQ-CFG-06, REQ-CFG-07, D-11 | Approvata |
 
 ---
 
@@ -706,4 +707,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.18 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…041 |
+| 1.18 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…042 |

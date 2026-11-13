@@ -1,11 +1,11 @@
 # Data Platform as a Fabric — Piano di implementazione
 
-> Realizza `REQUISITI.md` v1.1 in **6 batch**. Ogni batch è pensato per stare in **una sessione di lavoro** e si chiude con un file `fabbrica-dati.html` **funzionante e provabile**.
+> Realizza `REQUISITI.md` a **batch**. Ogni batch è pensato per stare in **una sessione di lavoro** e si chiude con un file `data-platform-as-a-fabric.html` **funzionante e provabile**.
 
 ## Regole comuni a tutti i batch
 
 1. **Si parte dai file salvati**: `REQUISITI.md`, `PIANO.md`, `profili/`, `src/`, `build.mjs`. Ogni sessione riparte da lì, senza bisogno di ricordare la conversazione precedente.
-2. **Sorgenti separati, consegna in un file unico**: il codice vive in `src/` (un file per modulo); `npm run build` (`build.mjs`) lo unisce con three.js in `fabbrica-dati.html`, unico e offline (NFR-01).
+2. **Sorgenti separati, consegna in un file unico**: il codice vive in `src/` (un file per modulo); `npm run build` (`build.mjs`) lo unisce con three.js in `data-platform-as-a-fabric.html`, unico e offline (NFR-01).
 3. **Ogni blocco di codice porta il suo `[REQ-…]`** (REQ-PRC-01).
 4. **Chiusura di ogni batch**: build, prova automatica nel browser con schermate, aggiornamento della matrice di tracciabilità (§13 dei requisiti) e della tabella "Stato" qui sotto.
 5. **Se la sessione finisce prima del batch**: ci si ferma all'ultimo punto funzionante e la tabella "Stato" dice da dove riprendere.
@@ -28,12 +28,12 @@
 
 ```bash
 npm install      # una volta, all'inizio della sessione
-npm run build    # rigenera fabbrica-dati.html
+npm run build    # rigenera data-platform-as-a-fabric.html
 npm test         # prova automatica nel browser, schermate in tests/out/
 npm run testi    # aggiunge a TESTI.md i testi nuovi del CONFIG
 ```
 
-**Testi**: si modificano in `TESTI.md`, anche da GitHub nel browser. La build controlla completezza e lessico; un'azione di GitHub rigenera `fabbrica-dati.html` a ogni modifica su `main`.
+**Testi**: si modificano in `TESTI.md`, anche da GitHub nel browser. La build controlla completezza e lessico; un'azione di GitHub rigenera `data-platform-as-a-fabric.html` a ogni modifica su `main`.
 
 ## Stato
 
@@ -47,3 +47,4 @@ npm run testi    # aggiunge a TESTI.md i testi nuovi del CONFIG
 | 5 | **Completato** | Prova automatica superata: narrativa (14 capitoli, tastiera e telecomando), 4 percorsi sul nuovo layout, benvenuto, cambio di modalità. Testi di capitoli e tappe **provvisori**: da rivedere in `TESTI.md`. La scelta dei capitoli si fa con `incluso: false` in `CONFIG.chapters`. |
 | 6 | **In corso** | Fatti: schermi piccoli (pannello richiudibile), contatore fps (`?fps` nell'indirizzo), stati dei requisiti allineati. Restano: prova su Edge e Firefox (da fare a mano), misura delle prestazioni sul PC del meeting con `?fps`, profilo reale dell'azienda, video di riserva, caricamento del profilo da file (priorità bassa). |
 | 7 | **Completato** | Team componibile a schermo (RDM-033), prova automatica superata. Insieme: etichetta dell'area fornitori tolta (RDM-034), spoke come negozi dentro la recinzione (RDM-035), metodo di integrazione per sorgente nel profilo con lo scivolo di vetro per il mirroring (RDM-036). |
+| 8 | **Completato** | Zona clienti (RDM-039): due cinte, ingresso clienti, showroom oltre la cinta interna, clienti in cammino. Insieme: team che parte da zero (RDM-037), macchinetta del caffè accanto alla centrale (RDM-038), Data Sources senza persone del team (RDM-040), nuovo nome del progetto e dei file (RDM-041). Prova automatica superata. |
