@@ -9,7 +9,7 @@
 | Campo | Valore |
 |---|---|
 | Azienda | |
-| Basato su standard | REQUISITI.md v1.10 |
+| Basato su standard | REQUISITI.md v1.13 |
 
 ---
 
@@ -32,17 +32,16 @@
 |---|---|---|
 | | | |
 
-## 3. Team dati (REQ-SCN-11)
+## 3. Team dati di partenza (REQ-SCN-11, REQ-UI-12…14)
 
-> Una figura per ogni persona reale del team, divisa per gruppo. Lasciare vuoto per usare il default (5 figure: 2 + 1 + 1 + 1).
-> Le persone di Integration restano ai loro compiti; le altre ruotano a turno tra le postazioni dei workload accesi (Architecture, Visualization, Coordination).
+> Una riga per persona: è il team con cui si apre la fabbrica. Lasciare vuoto per partire con 5 persone non assegnate.
+> **Sagoma**: `uomo` o `donna`. **Nome**: facoltativo. **Workload**: nessuno, uno o più, tra
+> Data Architecture, Project Management, Data Integration, Data Transformation, Security, Accessi, Data Visualization, Data Governance, Monitoraggio costi, Knowledge, Real-Time.
+> Dal vivo si può cambiare tutto: aggiungere e togliere persone, spostare le assegnazioni.
 
-| Gruppo | Cosa fa | Uomini | Donne |
-|---|---|---|---|
-| Integration | Costruisce e ripara gli scivoli; manovra le gru che pescano dal lago | | |
-| Architecture | Progetta la fabbrica, al tavolo dei progetti | | |
-| Visualization | Costruisce i report ufficiali nello showroom | | |
-| Coordination | Coordina gli operatori, all'ufficio di coordinamento | | |
+| Sagoma | Nome (facoltativo) | Workload assegnati |
+|---|---|---|
+| | | |
 
 ## 4. Contatto (REQ-LIT-02)
 
