@@ -81,6 +81,7 @@ export function createUI(cfg, world, state) {
       for (const s of ['off', 'wip', 'on']) { const b = h('button', { textContent: ui.stati[s], className: rec.proprio === s ? 'sel' : '' }); b.dataset.s = s; b.onclick = () => state.setElemento(rec.el.id, s); seg.append(b); }
       box.append(h('h4', { textContent: ui.statoElemento }), seg);
     }
+    if (st === 'wip') sez(ui.lavori, d.notaCantiere || wl.notaCantiere);   /* [REQ-WL-03] nota del cantiere, es. quando sarà pronto */
     sez(ui.nellaFabbrica, d.fabbrica || wl.fabbrica);
     sez(ui.mezzo, d.mezzo);
     sez(ui.perTe, d.perTe || wl.perTe);
@@ -107,6 +108,15 @@ export function createUI(cfg, world, state) {
     }
     return null;
   }
+  /* [REQ-UI-05] l'elemento sotto il mouse viene incorniciato */
+  const cornice = new THREE.BoxHelper(new THREE.Object3D(), 0xfacc15); cornice.visible = false; cornice.material.depthTest = false; world.scene.add(cornice);
+  let sotto = null;
+  function evidenzia(id) {
+    if (id === sotto) return; sotto = id;
+    const r = id && !id.startsWith('team:') ? state.elemento(id) : null, g = r && (r.on.visible ? r.on : r.wip.visible ? r.wip : null);
+    cornice.visible = !!g && r.el.tipo !== 'recinzione' && r.el.tipo !== 'trasporto';
+    if (cornice.visible) cornice.setFromObject(g);
+  }
   let down = null;
   canvas.addEventListener('pointerdown', (e) => { down = [e.clientX, e.clientY]; $('tip').style.display = 'none'; });
   canvas.addEventListener('wheel', () => { $('tip').style.display = 'none'; }, { passive: true });
@@ -119,10 +129,11 @@ export function createUI(cfg, world, state) {
     if (e.buttons || performance.now() - last < 60) return; last = performance.now();
     const id = pick(e), tip = $('tip');
     canvas.style.cursor = id ? 'pointer' : '';
+    evidenzia(id);
     if (id) { tip.textContent = nomeDi(id); tip.style.display = 'block'; tip.style.left = e.clientX + 14 + 'px'; tip.style.top = e.clientY + 14 + 'px'; }
     else tip.style.display = 'none';
   });
-  canvas.addEventListener('pointerleave', () => { $('tip').style.display = 'none'; });
+  canvas.addEventListener('pointerleave', () => { $('tip').style.display = 'none'; evidenzia(null); });
 
   /* ===== [REQ-UI-12] Pannello del team dati: un pupazzino per persona; il clic lo evidenzia in scena ===== */
   let figure = null;

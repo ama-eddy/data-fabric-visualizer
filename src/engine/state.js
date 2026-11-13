@@ -41,7 +41,7 @@ export function createState(cfg, world, flows) {
 
   function tween(obj, from, to, dur, done) { obj.scale.y = from; tweens.push({ obj, from, to, t: 0, dur, done }); }
 
-  /* ===== [REQ-WL-02/03/04/07] off = assente · wip = cantiere · on = completo; passaggio animato ===== */
+  /* ===== [REQ-WL-02, REQ-WL-03, REQ-WL-04, REQ-WL-07] off = assente · wip = cantiere · on = completo e operativo; passaggio animato ===== */
   function mostra(rec, st, immediato) {
     if (rec.mostrato === st) return;
     const prev = rec.mostrato === 'off' ? null : rec[rec.mostrato];

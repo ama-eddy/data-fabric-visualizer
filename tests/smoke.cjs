@@ -49,6 +49,7 @@ const path = require('path'), fs = require('fs');
   const pt = await page.evaluate(() => { const v = fabbrica.state.elemento('centrale').root.position.clone(); v.y = 4; v.x -= 3; v.project(fabbrica.world.camera); return [(v.x + 1) / 2 * innerWidth, (1 - v.y) / 2 * innerHeight]; });
   await page.mouse.move(pt[0], pt[1]); await page.waitForTimeout(150); await page.mouse.move(pt[0] + 1, pt[1]); await page.waitForTimeout(150);
   check(await page.locator('#tip').evaluate((e) => e.style.display === 'block' && e.textContent === 'Centrale elettrica'), 'tooltip sulla centrale');
+  check(await page.evaluate(() => fabbrica.world.scene.children.some((o) => o.type === 'BoxHelper' && o.visible)), 'elemento sotto il mouse incorniciato');   // [REQ-UI-05]
   await page.mouse.click(pt[0], pt[1]);
   check(await page.locator('#info h3').textContent() === 'Centrale elettrica', 'clic sulla centrale apre la sua scheda');
   const x0 = await page.evaluate(() => fabbrica.world.controls.target.x);
@@ -207,6 +208,9 @@ const path = require('path'), fs = require('fs');
   check(await page.locator('#apri-menu').isVisible(), 'schermo piccolo: pulsante del pannello visibile');
   await page.setViewportSize({ width: 1440, height: 860 });
 
+  await page.evaluate(() => { fabbrica.cfg.workloads.KNW.notaCantiere = 'Pronto in primavera'; fabbrica.state.set('KNW', 'wip'); fabbrica.ui.mostraWorkload('KNW'); });   // [REQ-WL-03]
+  check((await page.locator('#info').textContent()).includes('Pronto in primavera'), 'nota del cantiere nella scheda');
+  await page.evaluate(() => fabbrica.ui.chiudi());
   await page.getByText('Tutto off').click();
   await page.waitForTimeout(1500);
   check(await page.evaluate(() => fabbrica.state.recs.every((r) => !r.on.visible && !r.wip.visible)), 'tutto off svuota la scena');

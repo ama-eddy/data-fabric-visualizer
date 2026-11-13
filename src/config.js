@@ -153,6 +153,7 @@ window.CONFIG = {
   // [D-08] ordine del pannello e della narrativa
   ordine: ['SRC', 'ARC', 'PMO', 'INT', 'TRF', 'SEC', 'ACC', 'VIS', 'SSR', 'GOV', 'FIN', 'KNW', 'RTI'],
   workloads: {
+    // notaCantiere (facoltativa, su workload o elemento): compare nella scheda quando è in cantiere [REQ-WL-03]
     ARC: { nome: 'Data Architecture', tecnico: 'Fabric capacity · OneLake · workspace', colore: '#64748b', deps: [], stato: 'off', gestore: 'hub',
       fabbrica: "Il terreno, le fondamenta e il capannone: lo spazio in cui tutto il resto viene costruito, con la centrale che dà energia e il lago dei dati, unico, tra i fornitori e la fabbrica.",
       perTe: "È la base comune: un solo posto per i dati di tutta l'azienda, invece di tanti archivi sparsi. Senza questa base, ogni funzione ricomincia da zero." },

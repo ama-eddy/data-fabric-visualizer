@@ -5,7 +5,7 @@
 
 | Campo | Valore |
 |---|---|
-| Versione documento | 1.11 |
+| Versione documento | 1.12 |
 | Data | 2026-11-12 |
 | Stato | Requisiti approvati — implementazione da avviare (vedi `PIANO.md`) |
 | Approva | Il responsabile del progetto (richiedente) |
@@ -197,7 +197,7 @@ I workload hanno un proprio codice, `WL-<SIGLA>` (§5). È usato anche come chia
 |---|---|---|---|---|
 | REQ-WL-01 | Ogni workload ha uno stato tra `off`, `wip` e `on`. | Lo stato è leggibile e modificabile da CONFIG e dall'interfaccia. | M | Implementato |
 | REQ-WL-02 | Con stato **`off`**, gli elementi 3D del workload **non compaiono** nella scena. | Nessun edificio, impianto o flusso del workload è visibile. | M | Implementato |
-| REQ-WL-03 | Con stato **`wip`**, il workload compare **come cantiere**: impalcature, gru, recinzione, cartello "Lavori in corso", nessun flusso. | Si riconosce a colpo d'occhio che il workload è in costruzione; cliccandolo, il pannello mostra lo stato `WIP` e una nota opzionale (es. data prevista). | M | Implementato |
+| REQ-WL-03 | Con stato **`wip`**, il workload compare **come cantiere**: impalcature, gru, recinzione, cartello "Lavori in corso", nessun flusso. | Si riconosce a colpo d'occhio che il workload è in costruzione; la scheda mostra lo stato "In costruzione" e, se indicata nel CONFIG (`notaCantiere`), una nota (es. quando sarà pronto). | M | Implementato |
 | REQ-WL-04 | Con stato **`on`**, il workload compare **completo e operativo**: edifici rifiniti e flussi animati. | Gli elementi sono visibili e i flussi del workload sono in movimento. | M | Implementato |
 | REQ-WL-05 | Nel **modello standard** tutti i workload sono `off` di default, tranne **Data Sources**, che è `on` con **tutte le sorgenti spente**: la scena parte dal terreno vuoto con la sola area fornitori. | Aprendo il file senza profilo si vedono il terreno, l'area fornitori vuota e il pannello dei workload. | M | Implementato |
 | REQ-WL-06 | Ogni workload dichiara le proprie **dipendenze** (§5.2). Accendere un workload accende **solo quello**: se una sua dipendenza non è `on`, il workload compare ma resta **fermo** (nessun materiale in arrivo, figure in attesa). Il "buco" a monte si vede e si racconta. | Con `WL-TRF` `on` e `WL-INT` `off`: i reparti di trasformazione sono visibili ma senza flusso; accendendo `WL-INT` il flusso parte. | M | Implementato |
@@ -251,7 +251,7 @@ Il pannello e la narrativa li presentano in quest'ordine (D-08): Data Sources, D
 |---|---|---|---|---|
 | REQ-WL-10 | La piattaforma gestisce **tutti e 13 i workload** del §5.1, ciascuno con codice, nome, metafora, concetti Fabric, colore, dipendenze ed elementi 3D. | Ogni riga del §5.1 corrisponde a una voce di `CONFIG.workloads`. | M | Implementato |
 | REQ-WL-11 | Ogni workload ha un **colore identificativo**, usato per l'etichetta, il bordo della zona e il badge nel pannello. | Colori distinti e leggibili sia su sfondo chiaro sia su sfondo scuro. | S | Implementato |
-| REQ-WL-12 | Aggiungere un workload **non richiede modifiche al motore**: basta aggiungere una voce in `CONFIG.workloads` e i relativi elementi in `CONFIG.elements`. | Prova: si aggiunge un workload fittizio dal solo CONFIG e compare nel pannello e nella scena. | S | Implementato |
+| REQ-WL-12 | Aggiungere un workload **non richiede modifiche al motore**: basta una voce in `CONFIG.workloads`, i suoi elementi in `CONFIG.elements` e i suoi testi in `TESTI.md` (`npm run testi`). Un elemento senza costruttore 3D proprio compare come volume provvisorio. | Un workload aggiunto dal CONFIG compare nel pannello e nella scena. | S | Implementato |
 
 ---
 
@@ -426,7 +426,7 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 | REQ-UI-02 | **Clic su un elemento**: si apre un pannello con nome e, sotto il titolo, il **nome tecnico** ("In Fabric: …", es. Lago dei dati → OneLake; Confezionamento → Semantic model); poi workload e stato, *nella fabbrica* (metafora), *cosa significa per te*, *a chi rivolgerti* e *chi lo gestisce*. Ogni concetto rappresentato (workload, elemento, tipo di sistema, mezzo, spoke, team) ha il suo nome tecnico; i materiali e i mezzi lo mostrano nella legenda al passaggio del mouse. | Tutte le schede hanno la riga "In Fabric"; il nome tecnico non compare mai nel nome o nell'etichetta dell'elemento. | M | Implementato |
 | REQ-UI-03 | **Pannello workload**: elenco dei 13 workload con badge colorato e **selettore a tre stati** (off/wip/on). Cliccando il nome, la telecamera inquadra il workload. | Cambiare stato aggiorna subito la scena. | M | Implementato |
 | REQ-UI-04 | Comandi globali: **vista d'insieme**, **pausa dei flussi**, **etichette on/off**, **tutto off** e **tutto on**. | Tutti funzionanti. | M | Implementato |
-| REQ-UI-05 | **Passando il mouse** su un elemento compaiono un evidenziamento e un tooltip con il nome. | Il cursore diventa a "mano" sugli elementi cliccabili. | S | Implementato |
+| REQ-UI-05 | **Passando il mouse** su un elemento compaiono una **cornice** attorno all'elemento e un tooltip con il nome. | Il cursore diventa a "mano" sugli elementi cliccabili; la cornice segue l'elemento sotto il mouse. | S | Implementato |
 | REQ-UI-06 | Gli spostamenti della telecamera sono **animati** (volo fluido). | Nessun salto brusco. | S | Implementato |
 | REQ-UI-07 | L'interfaccia è in **italiano**, con testi provenienti dal CONFIG. | Nessun testo fisso nel motore. | M | Implementato |
 | REQ-UI-08 | Il layout si adatta a **schermi da 1280 px in su**; sotto quella soglia i pannelli si possono ridurre. | Usabile su un portatile e su un proiettore. | S | Implementato |
@@ -443,7 +443,7 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 |---|---|---|---|---|
 | REQ-HS-01 | Gli spoke sono **officine satellite** collegate all'hub da strade, su cui viaggiano i semilavorati. | Visibili con `WL-SSR` attivo. | M | Implementato |
 | REQ-HS-02 | Il **modello standard** ha **5 spoke generici**: Finance, Commerciale, HR, Operations, Marketing. | Sostituiti dagli spoke del profilo, se presente. | M | Implementato |
-| REQ-HS-03 | Il numero di spoke è **variabile** (da 1 a 10) e il layout si adatta automaticamente. | Prova con 1, 3 e 8 spoke senza sovrapposizioni. | S | Implementato |
+| REQ-HS-03 | Il numero di spoke è **variabile** (da 1 a 10) e il layout si adatta automaticamente. | Prova con 1, 3, 8 e 10 spoke senza sovrapposizioni. | S | Implementato |
 | REQ-HS-04 | Ogni spoke **riceve semilavorati** (furgoni con pacchi ciano) e li **personalizza**: report self-service su live connection ai modelli certificati. | Animazione dei furgoni verso lo spoke e schermo con dashboard personalizzata. | M | Implementato |
 | REQ-HS-05 | Ogni spoke può **aggiungere dati locali** (composite model con Excel e liste), rappresentati come un piccolo **deposito proprio** accanto all'officina. | Deposito visibile; il pannello spiega "dati locali + semilavorato = prodotto personalizzato". | M | Implementato |
 | REQ-HS-06 | Il pannello di uno spoke distingue le **responsabilità**: il dato core resta dell'hub, il contenuto personalizzato è dello spoke. | Sezione "chi lo gestisce" presente. | M | Implementato |
@@ -456,7 +456,7 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 | ID | Requisito | Criterio di accettazione | Pr. | Stato |
 |---|---|---|---|---|
 | REQ-CFG-01 | Tutti i contenuti stanno in un unico blocco **`CONFIG`** in cima all'HTML: workload, elementi, colori, spoke, sorgenti e capitoli; i **testi** vengono da `TESTI.md` (REQ-CFG-08). | Il motore non contiene stringhe di contenuto. | M | Implementato |
-| REQ-CFG-02 | Un blocco **`PROFILE`**, separato, **sovrascrive** il CONFIG per chiave (merge profondo). Un profilo vuoto equivale al modello standard. | Con `PROFILE = {}` si ottiene esattamente lo standard. | M | Implementato |
+| REQ-CFG-02 | Un blocco **`PROFILE`**, separato, **si sovrappone** al CONFIG per i soli campi del profilo (REQ-CFG-03). Un profilo vuoto equivale al modello standard. | Con `PROFILE = {}` si ottiene esattamente lo standard. | M | Implementato |
 | REQ-CFG-03 | Il profilo di un'azienda contiene **solo**: nome dell'azienda, **spoke** (nome + stato on/wip/off), **sorgenti** (nome noto al business + **categoria** + **flusso on/off**), **team dati** (numero di uomini e di donne per gruppo: Integration, Architecture, Visualization, Coordination) e un **contatto** ("a chi rivolgerti"). Tutto il resto (workload, capitoli, percorsi, testi) è standard. **Nessun nome tecnico.** | Il template `profili/PROFILO-TEMPLATE.md` ha esattamente questi campi. | M | Implementato |
 | REQ-CFG-04 | Ogni chiave del CONFIG riporta i **REQ** che la governano (campo `reqs` o commento). | Ricerca di `REQ-xx` nel file e ritrovamento della chiave. | M | Implementato |
 | REQ-CFG-05 | Il documento di profilo (`profili/<org>.md`) e il blocco `PROFILE` nell'HTML sono **allineati**: il blocco si ricava dal documento. | Ogni campo del blocco esiste nel documento di profilo. | S | Implementato |
@@ -657,6 +657,7 @@ const CONFIG = {
 | RDM-029 | Team diviso in Data Integration, Data Visualization, Architecture e Project Management; il coordinamento non si accende più con l'architettura | Standard · SCN, WL, UI, CFG | §5.1, §5.2, REQ-SCN-11, REQ-SCN-13, REQ-UI-12, REQ-CFG-03, D-28, D-36, D-50 | Approvata |
 | RDM-030 | Gli omini non di Data Integration ruotano tra i flussi attivi | Standard · SCN, UI | REQ-SCN-11, REQ-UI-12, D-36 | Approvata |
 | RDM-031 | Lavori avviati in autonomia su richiesta: narrativa, percorsi sul nuovo layout, benvenuto, schermi piccoli, contatore fps, camminata delle figure, cartelli dei fornitori più grandi, schede proprie per Sala sensori e Ufficio tecnico | Standard · NAR, PER, LIT, UI, SCN | REQ-NAR-*, REQ-PER-*, REQ-LIT-04…06, REQ-UI-08, REQ-UI-10, REQ-SRC-10, §8.1.1, D-52, D-53 | Approvata |
+| RDM-032 | Verifica dell'allineamento tra requisiti e codice | Standard · PRC | REQ-WL-03, REQ-WL-12, REQ-UI-05, REQ-CFG-02, REQ-HS-03, NFR-05 | Approvata |
 
 ---
 
@@ -664,4 +665,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.11 | 2026-11-12 | Requisiti approvati: base per l'implementazione | RDM-001…031 |
+| 1.12 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…032 |

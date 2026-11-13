@@ -11,7 +11,7 @@ export function elementiSorgenti(cfg) {
     const cat = cfg.categorie[s.categoria] || cfg.categorie.esterni, modalita = s.modalita || cat.modalita, mz = cfg.modalita[modalita];
     const x = (i - (n - 1) / 2) * passo, id = s.id || 'src-' + i;
     return [
-      /* [REQ-SRC-01] l'edificio del fornitore: appartiene alle Data Sources */
+      /* [REQ-SRC-01] l'edificio del fornitore: appartiene alle Data Sources. [REQ-SRC-09] la sua scheda dice che tipo di sistema è, come arriva il materiale e se è acceso */
       { id, wl: 'SRC', tipo: 'sorgente', nome: s.nome, categoria: s.categoria, forma: cat.forma, modalita,
         pos: [x, L.z], dim: [10, 10, 7], stato: s.stato || 'on', narrativa: s.narrativa || 'on', categoriaNome: cat.nome, etichetta: [0, i % 2 ? 15 : 10.5, 0],
         fabbrica: cat.fabbrica, perTe: cat.perTe, mezzo: mz.nome + '. ' + mz.testo, tecnico: cat.tecnico + ' · ' + mz.tecnico },

@@ -11,6 +11,7 @@ export function createGuida(cfg, world, state, ui) {
   let modo = null, passo = 0, passi = [], percorso = null, vista = null;
 
   /* ---------- scheda comune a capitoli e tappe ---------- */
+  /* [REQ-NAR-07, REQ-PER-04] una scheda per capitolo o tappa: Avanti, Indietro, torna all'inquadratura */
   function scheda({ intestazione, titolo, testo, righe = [], colore }) {
     box.innerHTML = ''; box.style.borderTopColor = colore || '#64748b';
     const nav = h('div', { className: 'nav' });
@@ -30,7 +31,7 @@ export function createGuida(cfg, world, state, ui) {
     const sorgenti = state.recs.filter((r) => r.el.tipo === 'sorgente');
     for (const r of sorgenti) propri[r.el.id] = 'off';
     for (let i = 0; i <= passo; i++) {                                           // [REQ-NAR-03] quello che è stato acceso resta acceso
-      Object.assign(wl, cs[i].accendi || {});
+      Object.assign(wl, cs[i].accendi || {});                                  // [REQ-NAR-04] il valore può essere 'wip': il capitolo mostra il cantiere
       if (cs[i].sorgenti) for (const r of sorgenti) propri[r.el.id] = r.el.narrativa || 'on';   // [REQ-NAR-08] stato del profilo
       for (const [id, st] of Object.entries(cs[i].elementi || {})) propri[id] = st;             // [REQ-SRC-10] singole sorgenti
     }

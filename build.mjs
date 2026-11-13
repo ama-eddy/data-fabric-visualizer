@@ -1,4 +1,6 @@
 // [NFR-01] Unisce sorgenti e three.js in un unico file HTML offline: fabbrica-dati.html
+// [NFR-06, REQ-PRC-01] ogni blocco dei sorgenti porta tra parentesi quadre il requisito che realizza.
+// [NFR-02] la prova automatica gira su Chromium: Edge e Firefox vanno provati a mano.
 // [REQ-CFG-01] CONFIG e PROFILE restano due blocchi leggibili in cima al file.
 import { build } from 'esbuild';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -26,6 +28,7 @@ const page = (profile) => readFileSync('src/index.html', 'utf8')
   .replace('/*@PROFILE*/', () => safe(readFileSync(profile, 'utf8')))
   .replace('/*@BUNDLE*/', () => safe(out.outputFiles[0].text));
 const html = page('src/profile.js');
+if (html.length > 2 * 1024 * 1024) { console.error('fabbrica-dati.html supera i 2 MB [NFR-05]'); process.exit(1); }
 writeFileSync('fabbrica-dati.html', html);
 console.log(`fabbrica-dati.html: ${(html.length / 1024).toFixed(0)} KB`);
 // [REQ-CFG-07] Il profilo reale dell'azienda resta in locale: src/profile.local.js non entra nel repository,
