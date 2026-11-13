@@ -183,7 +183,7 @@ Pannello
 I numeri che leggi nei report non nascono nei report: nascono nei sistemi che usi ogni giorno e fanno un viaggio, come in una fabbrica.
 
 ### ui.benvenuto2
-Qui vedi quel viaggio: i fornitori, il lago dove arriva il materiale, i reparti che lo lavorano, i semilavorati certificati e le officine delle funzioni.
+Qui vedi quel viaggio: i fornitori, il lago dove arriva il materiale, i reparti che lo lavorano, i semilavorati certificati e i negozi delle funzioni.
 
 ### ui.benvenuto3
 Puoi seguire la presentazione, un capitolo alla volta, oppure esplorare da solo: accendi i reparti dal pannello e clicca su ciò che vedi.
@@ -328,10 +328,10 @@ Self-service (spoke)
 Workspace di dominio · report self-service · composite model
 
 ### workloads.SSR.fabbrica
-Le officine delle funzioni: ricevono i semilavorati e li personalizzano, aggiungendo se serve il proprio materiale.
+I negozi delle funzioni: ricevono i semilavorati e li personalizzano, aggiungendo se serve il proprio materiale.
 
 ### workloads.SSR.perTe
-È la tua officina: parti da dati certificati e costruisci i report che servono alla tua funzione, senza aspettare nessuno.
+È il tuo negozio: parti da dati certificati e costruisci i report che servono alla tua funzione, senza aspettare nessuno.
 
 ### workloads.GOV.nome
 Data Governance
@@ -352,7 +352,7 @@ Monitoraggio costi
 Capacity Metrics app · chargeback
 
 ### workloads.FIN.fabbrica
-I contatori della centrale: misurano quanta energia consuma ogni reparto e ogni officina.
+I contatori della centrale: misurano quanta energia consuma ogni reparto e ogni negozio.
 
 ### workloads.FIN.perTe
 La fabbrica ha un costo, e si può vedere quanto consuma ogni funzione: aiuta a decidere dove investire.
@@ -510,7 +510,7 @@ Spedizioni
 Condivisione dei Semantic model (permesso Build)
 
 ### elements.spedizioni.fabbrica
-Il reparto spedizioni: da qui i semilavorati collaudati partono verso le officine delle funzioni.
+Il reparto spedizioni: da qui i semilavorati collaudati partono verso i negozi delle funzioni.
 
 ### elements.spedizioni.perTe
 È da qui che i dati certificati arrivano alla tua funzione.
@@ -558,7 +558,7 @@ Recinzione e telecamere
 Sicurezza di rete · audit degli accessi
 
 ### elements.recinzione.fabbrica
-La recinzione attorno alla fabbrica e le telecamere: tengono fuori chi non deve entrare e registrano chi passa.
+La recinzione attorno alla fabbrica e ai negozi delle funzioni, con le telecamere: tiene fuori chi non deve entrare e registra chi passa. Tra la fabbrica e i negozi si passa dal cancello.
 
 ### elements.recinzione.perTe
 I dati della tua funzione sono protetti come quelli di tutte le altre: si sa sempre chi ha guardato cosa.
@@ -621,7 +621,7 @@ Capacity Metrics app
 I contatori della centrale: più reparti lavorano, più energia si consuma. Qui si vede quanto consuma ciascuno.
 
 ### elements.contatori.perTe
-Anche la tua officina ha il suo contatore: sapere quanto consuma aiuta a decidere dove vale la pena investire.
+Anche il tuo negozio ha il suo contatore: sapere quanto consuma aiuta a decidere dove vale la pena investire.
 
 ### elements.sensori.nome
 Sala sensori
@@ -705,6 +705,15 @@ Dataflow Gen2
 ### modalita.dataflow.testo
 Il materiale scende su una scialuppa che lo sistema un po' già durante il viaggio, attraversa il lago e lo lascia al pontile.
 
+### modalita.mirroring.nome
+Scivolo di vetro
+
+### modalita.mirroring.tecnico
+Mirroring
+
+### modalita.mirroring.testo
+Una copia sempre aggiornata: il materiale scende senza sosta nel lago da uno scivolo di vetro, appena cambia nel sistema d'origine.
+
 ### modalita.shortcut.nome
 Ponte di vetro
 
@@ -744,7 +753,7 @@ CRM
 Customer Relationship Management
 
 ### categorie.crm.fabbrica
-Un negozio: qui nasce tutto ciò che riguarda il rapporto con i clienti.
+Un'agenzia commerciale: qui nasce tutto ciò che riguarda il rapporto con i clienti.
 
 ### categorie.crm.perTe
 È il sistema dove si seguono clienti, contatti, offerte e trattative.
@@ -895,10 +904,10 @@ Archivio dati esistente
 ## Officine degli spoke: scheda
 
 ### spoke.fabbrica
-L'officina della funzione: riceve i semilavorati dall'hub e li personalizza. Accanto c'è il piccolo deposito del materiale proprio.
+Il negozio della funzione: riceve i semilavorati dalla fabbrica e ne fa prodotti su misura per i propri clienti, che mette in vetrina. Sul retro c'è il piccolo deposito del materiale proprio.
 
 ### spoke.perTe
-Semilavorato + dati tuoi = prodotto su misura: parti da dati certificati, aggiungi i tuoi fogli di calcolo e costruisci i report che ti servono.
+Semilavorato + dati tuoi = prodotto su misura: parti da dati certificati, aggiungi i tuoi fogli di calcolo e metti in vetrina i report che servono alla tua funzione.
 
 ### spoke.gestoreTesto
 I report e i dati locali sono della funzione. Il dato di base, dentro il semilavorato, resta del team dati: per questo è uguale per tutti.
@@ -1007,7 +1016,7 @@ BI developer
 Costruisce i report ufficiali sui semilavorati collaudati.
 
 ### team.postazioni.SSR.nome
-In un'officina
+In un negozio
 
 ### team.postazioni.SSR.tecnico
 Analista della funzione
@@ -1031,7 +1040,7 @@ Contatori della centrale
 Responsabile dei costi
 
 ### team.postazioni.FIN.cosa
-Legge i consumi e li riporta a ogni reparto e a ogni officina.
+Legge i consumi e li riporta a ogni reparto e a ogni negozio.
 
 ### team.postazioni.KNW.nome
 Ufficio tecnico
@@ -1107,10 +1116,10 @@ Data Visualization: i report ufficiali
 ### chapters.visualizzazione.testo
 Nello showroom nascono i report ufficiali, in Power BI, costruiti sui semilavorati collaudati: gli stessi numeri per tutta l'azienda.
 
-### chapters.officine.titolo
-Self-service: le officine delle funzioni
+### chapters.negozi.titolo
+Self-service: i negozi delle funzioni
 
-### chapters.officine.testo
+### chapters.negozi.testo
 Ogni funzione riceve i semilavorati e ci costruisce i propri report, aggiungendo se serve i propri dati. Non si parte da zero e non si aspetta nessuno.
 
 ### chapters.governance.titolo
@@ -1123,7 +1132,7 @@ La torre fissa le regole comuni e mette il marchio di qualità. La sala controll
 Monitoraggio costi: quanto consuma la fabbrica
 
 ### chapters.costi.testo
-La fabbrica ha un costo, e i contatori mostrano quanto consuma ogni reparto e ogni officina: serve a decidere dove vale la pena investire.
+La fabbrica ha un costo, e i contatori mostrano quanto consuma ogni reparto e ogni negozio: serve a decidere dove vale la pena investire.
 
 ### chapters.conoscenza.titolo
 Knowledge: parlare la stessa lingua
@@ -1224,7 +1233,7 @@ Change request
 Mi serve un nuovo indicatore
 
 ### paths.richiesta.messaggio
-Quello che serve a tutti entra nel semilavorato; quello che serve solo a te lo costruisci nella tua officina.
+Quello che serve a tutti entra nel semilavorato; quello che serve solo a te lo costruisci nel tuo negozio.
 
 ### paths.richiesta.tappe.0.chi
 La funzione
@@ -1239,7 +1248,7 @@ Descrivi cosa ti serve e per quale decisione.
 Il team dati con la funzione
 
 ### paths.richiesta.tappe.1.cosa
-Allo sportello si capisce: esiste già? Serve a tutti o solo a questa funzione? Se serve solo a te, lo costruisci nella tua officina, con il nostro aiuto.
+Allo sportello si capisce: esiste già? Serve a tutti o solo a questa funzione? Se serve solo a te, lo costruisci nel tuo negozio, con il nostro aiuto.
 
 ### paths.richiesta.tappe.1.tu
 Porti la richiesta allo sportello.
@@ -1281,7 +1290,7 @@ Il semilavorato aggiornato riceve il marchio di qualità.
 Il team dati
 
 ### paths.richiesta.tappe.7.cosa
-Il semilavorato aggiornato parte verso tutte le officine.
+Il semilavorato aggiornato parte verso tutti i negozi.
 
 ### paths.richiesta.tappe.8.chi
 La funzione
@@ -1380,7 +1389,7 @@ L'ingresso della funzione entra nel piano di lavoro.
 Il team dati
 
 ### paths.ingresso.tappe.2.cosa
-Si costruisce l'officina della funzione.
+Si costruisce il negozio della funzione.
 
 ### paths.ingresso.tappe.3.chi
 La funzione
@@ -1404,7 +1413,7 @@ Indichi quali dati sono riservati.
 Il team dati
 
 ### paths.ingresso.tappe.5.cosa
-Parte il primo semilavorato verso la nuova officina.
+Parte il primo semilavorato verso il nuovo negozio.
 
 ### paths.ingresso.tappe.6.chi
 La funzione
@@ -1419,4 +1428,4 @@ Costruisci il report, con il supporto del team dati.
 La funzione
 
 ### paths.ingresso.tappe.7.cosa
-La funzione vede quanta energia consuma la sua officina.
+La funzione vede quanta energia consuma il suo negozio.

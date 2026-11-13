@@ -109,7 +109,7 @@ builders.confezionamento = (g, el, ctx) => {
   for (const x of [-27, 27]) for (const dz of [-1, 1]) for (let i = 0; i < 2; i++) { const p = box(g, 1.5, 1.1, 1.5, mat(col, { e: '#0891b2', ei: 0.25 }), x, i * 1.15, dz); box(g, 1.56, 0.25, 0.4, mat('#ffffff'), x, i * 1.15 + 0.45, dz); p.castShadow = true; }
 };
 
-/* ===== [REQ-FLW-07] Spedizioni: i semilavorati partono verso le officine ===== */
+/* ===== [REQ-FLW-07] Spedizioni: i semilavorati partono verso i negozi ===== */
 builders.spedizioni = (g, el, ctx) => {
   const [w, d, h] = el.dim, col = ctx.cfg.materiali.semilavorato.colore;
   box(g, w - 2, 0.4, 4, mat('#6b7280'), 0, 0, d / 2 - 2.5);

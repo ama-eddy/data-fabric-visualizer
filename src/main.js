@@ -15,7 +15,13 @@ function applicaProfilo(cfg, p) {
   if (p.azienda) { cfg.meta.titolo += ' · ' + p.azienda; cfg.meta.azienda = p.azienda; }
   if (p.contatto && p.contatto.chi) cfg.contatto = p.contatto;        // [REQ-LIT-02]
   /* [REQ-CFG-03] sorgenti del profilo: nome, categoria e flusso on/off sostituiscono il catalogo standard */
-  if (p.sorgenti && p.sorgenti.length) cfg.sources = p.sorgenti.map((s, i) => ({ id: 'src-' + i, nome: s.nome, categoria: s.categoria, stato: s.flusso === 'off' ? 'off' : 'on', narrativa: s.flusso === 'off' ? 'off' : 'on' }));
+  if (p.sorgenti && p.sorgenti.length) {
+    /* [REQ-CFG-03, RDM-036] metodo di integrazione di ogni sorgente: copia (scivolo), tempo reale (nastro veloce), mirroring (scivolo di vetro) */
+    const METODI = { copia: 'copy', copy: 'copy', scivolo: 'copy', 'tempo reale': 'streaming', 'real time': 'streaming', 'real-time': 'streaming', 'nastro veloce': 'streaming', streaming: 'streaming',
+      mirroring: 'mirroring', 'scivolo di vetro': 'mirroring', scialuppa: 'dataflow', dataflow: 'dataflow', 'ponte di vetro': 'shortcut', shortcut: 'shortcut' };
+    cfg.sources = p.sorgenti.map((s, i) => { const m = s.metodo ? METODI[String(s.metodo).trim().toLowerCase()] : null; if (s.metodo && !m) console.warn(`Sorgente "${s.nome}": metodo "${s.metodo}" sconosciuto. Metodi validi: copia, tempo reale, mirroring`);
+      return { id: 'src-' + i, nome: s.nome, categoria: s.categoria, modalita: m || undefined, stato: s.flusso === 'off' ? 'off' : 'on', narrativa: s.flusso === 'off' ? 'off' : 'on' }; });
+  }
   /* [REQ-HS-02, REQ-HS-07] spoke del profilo: nome e stato on/wip/off */
   if (p.spoke && p.spoke.length) cfg.spokes = p.spoke.map((s) => ({ nome: s.nome, stato: ['on', 'wip', 'off'].includes(s.stato) ? s.stato : 'on' }));
   /* [REQ-SCN-11] team dati del profilo: uomini e donne al trasporto e a rotazione */

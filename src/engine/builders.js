@@ -30,7 +30,7 @@ export const builders = {
   riserva(g, el) {
     const [w, d] = el.dim, water = mat('#38bdf8', { e: '#0284c7', ei: 0.5, r: 0.3 });
     box(g, w, 0.35, d, water, 0, 0.02, 0);
-    for (const x of [-24, 0, 24]) {                                     // condotte verso le officine
+    for (const x of [-24, 0, 24]) {                                     // condotte verso i negozi
       const p = cyl(g, 0.55, 0.55, 26, water, x, 0.1, d / 2 + 13, 12); p.rotation.x = Math.PI / 2; p.position.y = 0.6;
     }
   },

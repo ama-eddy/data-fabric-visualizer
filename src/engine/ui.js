@@ -32,7 +32,7 @@ export function createUI(cfg, world, state) {
       for (const r of singoli) {
         const s2 = h('div', { className: 'seg' });
         for (const s of ['off', 'wip', 'on']) { const b = h('button', { textContent: ui.stati[s] }); b.dataset.s = s; b.onclick = () => state.setElemento(r.el.id, s); s2.append(b); }
-        const nm = h('button', { className: 'name', title: r.el.nome }, r.el.nome.replace(/^Officina /, ''), r.el.categoriaNome && r.el.categoriaNome !== r.el.nome ? h('small', { textContent: r.el.categoriaNome }) : '');
+        const nm = h('button', { className: 'name', title: r.el.nome }, (r.el.tipo === 'officina' ? r.el.nome.replace(/^Negozio /, '') : r.el.nome), r.el.categoriaNome && r.el.categoriaNome !== r.el.nome ? h('small', { textContent: r.el.categoriaNome }) : '');
         nm.onclick = () => { mostraElemento(r.el.id); world.frame([r.el.pos], 12); };
         const sr = h('div', { className: 'row subrow' }, nm, s2); sr.dataset.el = r.el.id; lista.append(sr);
       }
@@ -194,7 +194,7 @@ export function createUI(cfg, world, state) {
   }
 
   /* ===== [REQ-SCN-06, RDM-028] Etichette senza sovrapposizioni: vince la più importante, poi la più vicina; le altre si nascondono =====
-     Priorità: elemento con la scheda aperta → priorita 1 del CONFIG → reparti e edifici → sorgenti e officine. */
+     Priorità: elemento con la scheda aperta → priorita 1 del CONFIG → reparti e edifici → sorgenti e negozi. */
   let scelto = null, tEt = 0;
   const v = new THREE.Vector3();
   function ordinaEtichette(dt) {

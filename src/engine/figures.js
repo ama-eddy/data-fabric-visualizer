@@ -56,12 +56,12 @@ export function createFigures(cfg, world, state, flows) {
 
   /* ---------- postazioni ---------- */
   const acceso = (tipo) => state.recs.find((r) => r.el.tipo === tipo && state.effettivo(r) === 'on');
-  const scivoli = () => cfg.elements.filter((e) => e.tipo === 'trasporto' && (e.modalita === 'copy' || e.modalita === 'dataflow') && state.effettivo(state.elemento(e.id)) !== 'off').map((e) => e.pos[0]);
+  const scivoli = () => cfg.elements.filter((e) => e.tipo === 'trasporto' && ['copy', 'dataflow', 'mirroring'].includes(e.modalita) && state.effettivo(state.elemento(e.id)) !== 'off').map((e) => e.pos[0]);
   const lavorabile = (wl) => state.stato[wl] === 'on' && (wl !== 'SRC' || !!acceso('sorgente')) && (wl !== 'SSR' || !!acceso('officina'));
   function posto(wl, n) {                                              // n = quante persone ci sono già
     const P = T.postazioni[wl];
     if (wl === 'SRC') { const e = acceso('sorgente').el; return { p: V(e.pos[0] - 3 + n * 1.6, e.pos[1] + 8.2), verso: 0 }; }
-    if (wl === 'SSR') { const e = acceso('officina').el; return { p: V(e.pos[0] - e.dim[0] * 0.16 + n * 1.6, e.pos[1] + e.dim[1] * 0.18 + 2.4), verso: 0 }; }
+    if (wl === 'SSR') { const e = acceso('officina').el; return { p: V(e.pos[0] + e.dim[0] * 0.09 + n * 1.6, e.pos[1] + e.dim[1] * 0.2 + 3.2), verso: 0 }; }
     if (wl === 'INT' && n === 0) return { scivoli: true };
     const k = wl === 'INT' ? n - 1 : n;
     return { p: V(P.pos[0] + P.passo[0] * k, P.pos[1] + P.passo[1] * k), verso: P.verso || 0, cabina: k === 0 ? P.cabina : null, y: wl === 'INT' ? 0.85 : null };

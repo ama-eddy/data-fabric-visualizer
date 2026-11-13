@@ -9,14 +9,14 @@
 | Campo | Valore |
 |---|---|
 | Azienda | |
-| Basato su standard | REQUISITI.md v1.14 |
+| Basato su standard | REQUISITI.md v1.15 |
 
 ---
 
 ## 1. Spoke (REQ-HS-02, REQ-HS-07)
 
-> Le funzioni aziendali che hanno, o avranno, un'officina. Sostituiscono i 5 spoke generici dello standard.
-> **Stato**: `on` = officina attiva oggi · `wip` = in costruzione · `off` = non ancora prevista.
+> Le funzioni aziendali che hanno, o avranno, un negozio. Sostituiscono i 5 spoke generici dello standard.
+> **Stato**: `on` = negozio attiva oggi · `wip` = in costruzione · `off` = non ancora prevista.
 
 | Nome dello spoke | Stato (on/wip/off) |
 |---|---|
@@ -24,13 +24,14 @@
 
 ## 2. Sorgenti e flussi (REQ-SRC-01…10)
 
-> Sostituiscono il catalogo standard (REQUISITI.md §6.1.5).
-> **Categoria** (tipo di software): `erp` · `crm` · `pim` · `hr` · `mes` (produzione e magazzino) · `ecommerce` · `marketing` · `excel` (fogli di calcolo) · `iot` (sensori) · `esterni` · `datalake` — forma dell'edificio e mezzo di trasporto: REQUISITI §6.1.2.
+> Sostituiscono il catalogo standard (REQUISITI §6.1.5).
+> **Categoria** (tipo di software): `erp` · `crm` · `pim` · `hr` · `mes` (produzione e magazzino) · `ecommerce` · `marketing` · `excel` (fogli di calcolo) · `iot` (sensori) · `esterni` · `datalake`.
+> **Metodo** di integrazione: `copia` (scivolo) · `tempo reale` (nastro veloce) · `mirroring` (scivolo di vetro). Se manca, vale quello tipico della categoria.
 > **Flusso**: `on` = il materiale arriva già oggi alla fabbrica · `off` = non ancora collegata.
 
-| Nome della sorgente | Categoria | Flusso (on/off) |
-|---|---|---|
-| | | |
+| Nome della sorgente | Categoria | Metodo | Flusso (on/off) |
+|---|---|---|---|
+| | | | |
 
 ## 3. Team dati di partenza (REQ-SCN-11, REQ-UI-12…14)
 

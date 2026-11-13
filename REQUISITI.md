@@ -1,11 +1,11 @@
 # Fabbrica Dati 3D — Documento dei requisiti
 
 > Metafora 3D esplorabile di una data platform **Microsoft Fabric** con organizzazione **hub & spoke**.
-> L'hub è una fabbrica che produce **semilavorati** (modelli semantici certificati); gli **spoke** sono officine che li personalizzano (self-service reporting).
+> L'hub è una fabbrica che produce **semilavorati** (modelli semantici certificati); gli **spoke** sono negozi che li personalizzano (self-service reporting).
 
 | Campo | Valore |
 |---|---|
-| Versione documento | 1.14 |
+| Versione documento | 1.15 |
 | Data | 2026-11-12 |
 | Stato | Requisiti approvati — implementazione da avviare (vedi `PIANO.md`) |
 | Approva | Il responsabile del progetto (richiedente) |
@@ -110,7 +110,7 @@ Richiesta (RDM) ──► 1. Classificazione ──► 2. Requisito ──► 3.
 | RLS / OLS / CLS | "regole su chi vede cosa" |
 | Capacity, CU, SKU | "l'energia della fabbrica, che ha un costo" |
 | Dev / Test / Prod, deployment pipeline | "laboratorio prove" → "produzione" |
-| Workspace | "reparto" (hub) / "officina" (spoke) |
+| Workspace | "reparto" (hub) / "negozio" (spoke) |
 | Entra ID, gruppi, ruoli | "badge" / "chi può entrare e cosa può fare" |
 | Lineage | "risalire la filiera" |
 | Endorsement | "marchio di qualità" |
@@ -125,8 +125,8 @@ Aggiungere un termine a una delle due tabelle è una modifica al framework: pass
 
 | ID | Il manager sa… | Domanda a cui risponde | Criterio di verifica (cosa sa dire con parole sue) |
 |---|---|---|---|
-| LO-01 | **capire il lavoro del team data** | "Cosa fate voi del team data?" | Descrive con la metafora cosa fa l'hub: costruisce e mantiene la fabbrica, porta il materiale dai sistemi, lo lavora fino ai semilavorati certificati, produce i report istituzionali, supporta le officine. Distingue cosa fa l'hub da cosa fa la sua funzione. |
-| LO-02 | **sapere cosa esiste già** | "Chi la usa già, e cosa c'è di pronto?" | Sa quali funzioni hanno già un'officina attiva e quali sono in costruzione, e cosa potrebbe usare subito la sua funzione. |
+| LO-01 | **capire il lavoro del team data** | "Cosa fate voi del team data?" | Descrive con la metafora cosa fa l'hub: costruisce e mantiene la fabbrica, porta il materiale dai sistemi, lo lavora fino ai semilavorati certificati, produce i report istituzionali, supporta i negozi. Distingue cosa fa l'hub da cosa fa la sua funzione. |
+| LO-02 | **sapere cosa esiste già** | "Chi la usa già, e cosa c'è di pronto?" | Sa quali funzioni hanno già un negozio attivo e quali sono in costruzione, e cosa potrebbe usare subito la sua funzione. |
 | LO-03 | **conoscere il viaggio di un dato, dalla sorgente all'insight** | "Da dove viene il numero che leggo nel report?" | Racconta il viaggio di un dato dal sistema di origine al report e spiega perché ci si può fidare (lavorazione, controlli, certificazione) e perché un dato può "arrivare domani". |
 
 **Regola:** ogni requisito deve servire almeno un obiettivo di apprendimento, oppure essere un **abilitatore** (motore, configurazione, processo). Un requisito che non serve né l'uno né l'altro va riconsiderato (§13.1).
@@ -226,7 +226,7 @@ Il pannello e la narrativa li presentano in quest'ordine (D-08): Data Sources, D
 | `WL-INT` | **Data Integration** | Scivoli e scialuppe dai fornitori al **lago dei dati** (Landing, che appartiene all'Architettura), ponte di vetro, **pontile** con le gru che pescano dal lago, **magazzino materie prime** (Bronze) | Data pipeline, Copy job, Dataflow Gen2, Shortcut; **Landing = file su OneLake**; **Bronze = Warehouse** | off |
 | `WL-TRF` | **Data Transformation** | **Reparto lavorazione** (Silver), **linea di assemblaggio** (Gold), **confezionamento** dei semilavorati, spedizioni | **Silver = Warehouse**, **Gold = Warehouse** (modello a stella), T-SQL (stored procedure) orchestrato da pipeline, **modelli semantici** sul Gold | off |
 | `WL-VIS` | **Data Visualization istituzionale** | **Showroom dell'hub** con prodotti finiti a marchio aziendale | Report Power BI dell'hub, org app, KPI direzionali, report certificati | off |
-| `WL-SSR` | **Self-service reporting (Spoke)** | **Officine satellite** che personalizzano i semilavorati | Workspace degli spoke, live connection ai modelli certificati, **composite model con dati locali** (Excel, liste) | off |
+| `WL-SSR` | **Self-service reporting (Spoke)** | **Negozi** che personalizzano i semilavorati | Workspace degli spoke, live connection ai modelli certificati, **composite model con dati locali** (Excel, liste) | off |
 | `WL-RTI` | **Real-Time Intelligence** | Sala sensori che lavora il materiale **in diretta**, senza passare dal magazzino | Eventstream, Eventhouse (KQL), Real-Time Dashboard, Activator | off |
 | `WL-KNW` | **Knowledge / Ontology** | **Ufficio tecnico e archivio progetti**: la mappa di cosa sono le cose e come si collegano | Ontology (Fabric IQ), entità e relazioni di business collegate a Gold e modelli semantici, graph, data agent | off |
 
@@ -252,7 +252,7 @@ Il pannello e la narrativa li presentano in quest'ordine (D-08): Data Sources, D
 | REQ-WL-10 | La piattaforma gestisce **tutti e 13 i workload** del §5.1, ciascuno con codice, nome, metafora, concetti Fabric, colore, dipendenze ed elementi 3D. | Ogni riga del §5.1 corrisponde a una voce di `CONFIG.workloads`. | M | Implementato |
 | REQ-WL-11 | Ogni workload ha un **colore identificativo**, usato per l'etichetta, il bordo della zona e il badge nel pannello. | Colori distinti e leggibili sia su sfondo chiaro sia su sfondo scuro. | S | Implementato |
 | REQ-WL-12 | Aggiungere un workload **non richiede modifiche al motore**: basta una voce in `CONFIG.workloads`, i suoi elementi in `CONFIG.elements` e i suoi testi in `TESTI.md` (`npm run testi`). Un elemento senza costruttore 3D proprio compare come volume provvisorio. | Un workload aggiunto dal CONFIG compare nel pannello e nella scena. | S | Implementato |
-| REQ-WL-13 | Un workload **acceso senza nessuna persona assegnata** è segnalato come **scoperto** ("nessuno se ne occupa") nella riga del pannello e in scena, **senza fermare il reparto**. | Con un workload acceso e nessuno assegnato compare il segnale; assegnando una persona scompare; i flussi non cambiano. | S | Approvato |
+| REQ-WL-13 | Un workload **acceso senza nessuna persona assegnata** è segnalato come **scoperto** ("nessuno se ne occupa") nella riga del pannello e in scena, **senza fermare il reparto**. | Con un workload acceso e nessuno assegnato compare il segnale; assegnando una persona scompare; i flussi non cambiano. | S | Implementato |
 
 ---
 
@@ -282,7 +282,7 @@ Ogni sorgente è una voce del catalogo (`CONFIG.sources`, sovrascrivibile da `PR
 |---|---|---|
 | `id`, `nome` | testo; dal profilo, il nome con cui le persone conoscono il sistema (es. "il gestionale") | etichetta |
 | `categoria` | categoria di software: `erp` · `crm` · `pim` · `hr` · `mes` · `ecommerce` · `marketing` · `excel` · `iot` · `esterni` · `datalake` | **sì**: forma dell'edificio (§6.1.2) |
-| `modalita` | `copy` · `dataflow` · `shortcut` · `streaming`; **derivata dalla categoria** (§6.1.2), modificabile solo nel CONFIG | **sì**: mezzo di trasporto e percorso (§6.1.3) |
+| `modalita` | `copy` · `mirroring` · `streaming` · `dataflow` · `shortcut`; **derivata dalla categoria** (§6.1.2), oppure **scelta nel profilo aziendale** per ogni sorgente (`metodo`: copia, tempo reale, mirroring) | **sì**: mezzo di trasporto e percorso (§6.1.3) |
 | `stato` | `off` · `wip` · `on`; dal profilo arriva il **flusso on/off**, `wip` si imposta dal vivo | **sì**: come per i workload (REQ-WL-02…04) |
 
 #### 6.1.2 Categoria di software → forma dell'edificio e modalità di default
@@ -309,6 +309,7 @@ Le sorgenti sono classificate per **categoria di software**, come le conoscono l
 |---|---|---|
 | `copy` (pipeline / copy job) | **Scivolo**: il materiale scivola dal fornitore nel lago | Sorgente → **lago dei dati** (Landing, file su OneLake) → pescato dalle gru del pontile → Bronze |
 | `dataflow` (Dataflow Gen2) | Scivolo fino a un molo, poi **scialuppa** che sistema un po' il materiale durante il viaggio | Sorgente → attraversa il **lago** → pontile → Bronze |
+| `mirroring` | **Scivolo di vetro**: il materiale scende senza sosta, appena cambia nel sistema d'origine | Sorgente → **lago dei dati** → pontile → Bronze |
 | `shortcut` | **Ponte di vetro**: il materiale **non si sposta**, compare nel lago "in conto deposito" | Sorgente ⇢ **lago**; nessun pezzo viaggia |
 | `streaming` | Nastro veloce luminoso con eventi | Sorgente → **sala sensori `WL-RTI`** (se `WL-RTI` è spento, il flusso non c'è) |
 
@@ -318,7 +319,7 @@ Le sorgenti sono classificate per **categoria di software**, come le conoscono l
 |---|---|---|---|---|
 | REQ-SRC-01 | Le sorgenti sono definite in un **catalogo** con gli attributi del §6.1.1; aggiungerne una non richiede codice. | Aggiungendo una voce al catalogo, la sorgente compare in scena e nel pannello. | M | Implementato |
 | REQ-SRC-02 | La **categoria** determina la **forma** dell'edificio secondo il §6.1.2. | Le 11 forme sono distinguibili a colpo d'occhio da vicino. | M | Implementato |
-| REQ-SRC-03 | La **modalità** determina **mezzo e percorso** secondo il §6.1.3. Una **legenda** spiega i mezzi. | Le 4 modalità sono distinguibili; la legenda è presente. | M | Implementato |
+| REQ-SRC-03 | La **modalità** determina **mezzo e percorso** secondo il §6.1.3. Una **legenda** spiega i mezzi. | Le 5 modalità sono distinguibili; la legenda è presente. | M | Implementato |
 | REQ-SRC-04 | **Tra i fornitori e la fabbrica non ci sono strade**: tutto il materiale finisce nel **lago** (scivolo, scialuppa, ponte di vetro) e da lì viene recuperato. Fa eccezione solo il nastro veloce del Real-Time. | Nessuna strada tra area fornitori e capannone; ogni mezzo termina nel lago. | M | Implementato |
 | REQ-SRC-05 | Lo **Shortcut** non muove materiale: il ponte di vetro arriva al lago, ma non viaggia nessun pezzo. Nel lago compare un'"ombra" del materiale (accesso senza copia). | Nessun pezzo in movimento sul ponte. | S | Implementato |
 | REQ-SRC-06 | Lo **Streaming** alimenta solo `WL-RTI`; se `WL-RTI` non è `on`, la sorgente è visibile ma senza flusso, e il pannello lo segnala. | Con `WL-RTI` spento il nastro luminoso è fermo. | M | Implementato |
@@ -351,21 +352,21 @@ Una sorgente per categoria, così da poter raccontare ogni caso.
 
 | ID | Requisito | Criterio di accettazione | Pr. | Stato |
 |---|---|---|---|---|
-| REQ-SCN-01 | Layout **a valle verso il pubblico**: l'**area fornitori** (sorgenti) sul fondo, il **capannone dell'hub** al centro (Integration, Transformation, Visualization), le **officine degli spoke** in primo piano, vicino a chi guarda. Il materiale scende dal fondo verso il pubblico. | La vista d'insieme di default inquadra la scena dal lato degli spoke; la catena sorgenti → hub → spoke si legge in profondità. | M | Implementato |
+| REQ-SCN-01 | Layout **a valle verso il pubblico**: l'**area fornitori** (sorgenti) sul fondo, il **capannone dell'hub** al centro (Integration, Transformation, Visualization), le **negozi degli spoke** in primo piano, vicino a chi guarda. Il materiale scende dal fondo verso il pubblico. | La vista d'insieme di default inquadra la scena dal lato degli spoke; la catena sorgenti → hub → spoke si legge in profondità. | M | Implementato |
 | REQ-SCN-02 | Le **zone** del capannone hanno il pavimento colorato secondo il workload. | Ogni zona è riconoscibile per colore ed etichetta. | M | Implementato |
-| REQ-SCN-03 | I workload **trasversali** (ACC, SEC, GOV, FIN) sono elementi **che avvolgono** la fabbrica: cancelli e tornelli, recinzione e telecamere, torre di controllo, sala controllo, contatori della centrale. | Ogni workload trasversale ha almeno un elemento dedicato, cliccabile. | M | Implementato |
+| REQ-SCN-03 | I workload **trasversali** (ACC, SEC, GOV, FIN) sono elementi **che avvolgono** la fabbrica: cancelli e tornelli, recinzione e telecamere, torre di controllo, sala controllo, contatori della centrale. La **recinzione protegge anche i negozi degli spoke**: il perimetro li racchiude, e tra la fabbrica e i negozi si passa dal cancello. | Ogni workload trasversale ha almeno un elemento dedicato, cliccabile; i negozi stanno dentro il perimetro. | M | Implementato |
 | REQ-SCN-04 | `WL-ARC` comprende il **terreno edificabile**, le fondamenta, la struttura del capannone, la **centrale elettrica** (capacity) e il **lago dei dati** (OneLake), **tra l'area fornitori e il capannone**. | Con solo `WL-ARC` attivo si vedono il capannone vuoto, la centrale e il lago. | M | Implementato |
 | REQ-SCN-05 | `WL-RTI` e `WL-KNW` stanno in **edifici separati**, ai lati del capannone. | Edifici distinti dal capannone. | M | Implementato |
-| REQ-SCN-06 | Ogni elemento ha un'**etichetta**; le etichette si possono nascondere e **non si sovrappongono mai**: quando lo spazio non basta resta visibile la più importante (l'elemento con la scheda aperta, poi capannone, lago, area fornitori e showroom, poi reparti ed edifici, infine sorgenti e officine) e, a parità, la più vicina. Le altre ricompaiono avvicinandosi. | Nella vista d'insieme con tutto acceso nessuna etichetta ne copre un'altra né finisce sotto i pannelli. | M | Implementato |
+| REQ-SCN-06 | Ogni elemento ha un'**etichetta**; le etichette si possono nascondere e **non si sovrappongono mai**: quando lo spazio non basta resta visibile la più importante (l'elemento con la scheda aperta, poi capannone, lago, area fornitori e showroom, poi reparti ed edifici, infine sorgenti e negozi) e, a parità, la più vicina. Le altre ricompaiono avvicinandosi. | Nella vista d'insieme con tutto acceso nessuna etichetta ne copre un'altra né finisce sotto i pannelli. | M | Implementato |
 | REQ-SCN-07 | Gli schermi dello showroom e degli spoke mostrano **dashboard di esempio** generate (dati fittizi). | Nessun dato reale; i grafici sono generati nel codice. | S | Implementato |
 | REQ-SCN-08 | Lo stile è **originale** e "da plastico" (low-poly), senza marchi, loghi o asset di terze parti. | Nessun logo Microsoft o di altri marchi in scena. | M | Implementato |
 | REQ-SCN-09 | Lo **sportello dell'hub** (reception / Center of Excellence) è il punto in cui le funzioni entrano in contatto con la piattaforma: segnalazioni, richieste, onboarding. Appartiene a `WL-GOV`. | L'elemento è presente e cliccabile, ed è la tappa di partenza o di contatto dei percorsi. | M | Implementato |
 | REQ-SCN-10 | Il **laboratorio prove** sta **dentro il capannone**, subito dopo il confezionamento, e compare con la **Data Transformation** (`WL-TRF`): ogni semilavorato viene collaudato qui prima di uscire, e qui si provano le modifiche prima della produzione. | L'elemento compare con `WL-TRF`; il flusso dei semilavorati lo attraversa; è usato da Change request e New project. | M | Implementato |
-| REQ-SCN-11 | Il **team dati** è rappresentato da **figure stilizzate, una per persona**, con due sagome (uomo / donna) e un colore unico per l'hub. Le persone **non hanno un compito fisso**: lo ricevono con le assegnazioni (REQ-UI-13). In scena: chi ha **un'assegnazione** sta alla postazione di quel workload; chi ne ha **più d'una** ruota a turno tra le postazioni dei suoi workload accesi; chi **non è assegnato**, o ha solo workload spenti, aspetta alla **macchinetta del caffè** (REQ-SCN-15). | In scena ci sono esattamente le persone del pannello; cambiando un'assegnazione la figura si sposta; con due assegnazioni accese la figura alterna le due postazioni. | M | Approvato |
-| REQ-SCN-12 | Nelle officine degli spoke lavorano **figure delle funzioni business**, con il colore dello spoke, che usano i semilavorati e guardano i report. | Le figure compaiono con l'officina. | S | Implementato |
+| REQ-SCN-11 | Il **team dati** è rappresentato da **figure stilizzate, una per persona**, con due sagome (uomo / donna) e un colore unico per l'hub. Le persone **non hanno un compito fisso**: lo ricevono con le assegnazioni (REQ-UI-13). In scena: chi ha **un'assegnazione** sta alla postazione di quel workload; chi ne ha **più d'una** ruota a turno tra le postazioni dei suoi workload accesi; chi **non è assegnato**, o ha solo workload spenti, aspetta alla **macchinetta del caffè** (REQ-SCN-15). | In scena ci sono esattamente le persone del pannello; cambiando un'assegnazione la figura si sposta; con due assegnazioni accese la figura alterna le due postazioni. | M | Implementato |
+| REQ-SCN-12 | Nei negozi degli spoke lavorano **figure delle funzioni business**, con il colore dello spoke, che usano i semilavorati e guardano i report. | Le figure compaiono con il negozio. | S | Implementato |
 | REQ-SCN-13 | L'**ufficio di coordinamento** è la postazione del project management. Appartiene al workload **Project Management** (`WL-PMO`), indipendente dall'architettura. | L'ufficio compare con `WL-PMO`, anche a Data Architecture spenta, e non compare con la sola Data Architecture. | M | Implementato |
 | REQ-SCN-14 | Lo **showroom** è un **edificio a sé, vicino al capannone ma staccato**, collegato al laboratorio prove da una passerella coperta. | Lo showroom è fuori dal capannone; la passerella è visibile e i semilavorati la percorrono. | M | Implementato |
-| REQ-SCN-15 | **Ogni workload** ha una **postazione** con un gesto riconoscibile (§7.1), e c'è un **punto di raccolta, la macchinetta del caffè**, dove stanno le persone senza compito. Nella Data Integration il primo assegnato ripara gli scivoli, il secondo manovra le gru, gli altri si affiancano. | Tutte le postazioni del §7.1 esistono; le persone non assegnate sono visibili alla macchinetta del caffè. | M | Approvato |
+| REQ-SCN-15 | **Ogni workload** ha una **postazione** con un gesto riconoscibile (§7.1), e c'è un **punto di raccolta, la macchinetta del caffè**, dove stanno le persone senza compito. Nella Data Integration il primo assegnato ripara gli scivoli, il secondo manovra le gru, gli altri si affiancano. | Tutte le postazioni del §7.1 esistono; le persone non assegnate sono visibili alla macchinetta del caffè. | M | Implementato |
 
 ### 7.1 Postazioni del team dati (REQ-SCN-15)
 
@@ -379,13 +380,13 @@ Una sorgente per categoria, così da poter raccontare ogni caso.
 | Security | Caveau | Custodisce il materiale riservato |
 | Accessi | Portineria del cancello | Consegna i badge |
 | Data Visualization | Showroom | Costruisce i report ufficiali |
-| Self-service (spoke) | Dentro un'officina accesa | Costruisce i report della funzione |
+| Self-service (spoke) | Dentro un negozio acceso | Costruisce i report della funzione |
 | Data Governance | Cabina della torre di controllo | Governa la fabbrica e certifica |
 | Monitoraggio costi | Contatori della centrale | Legge i consumi |
 | Knowledge | Ufficio tecnico | Tiene la mappa dei significati |
 | Real-Time | Sala sensori | Sorveglia i segnali in diretta |
 
-Tutti i 13 workload sono assegnabili: il team dati è **misto tra IT e business**, quindi una persona può stare anche alle sorgenti o in un'officina degli spoke.
+Tutti i 13 workload sono assegnabili: il team dati è **misto tra IT e business**, quindi una persona può stare anche alle sorgenti o in un negozio degli spoke.
 
 ---
 
@@ -431,12 +432,12 @@ Le tappe complete (cosa succede, chi, cosa fai tu) stanno in `CONFIG.paths` e si
 
 | Percorso | Titolo | Tappe (elemento · workload) |
 |---|---|---|
-| `incidente` (Incident) | "Il numero nel mio report è sbagliato" | Officina (SSR) → Sportello (GOV) → Sala controllo (GOV) → Confezionamento (TRF) → Gold (TRF) → Silver (TRF) → Bronze (INT) → Lago (INT) → Laboratorio prove (TRF) → Officina (SSR) |
-| `richiesta` (Change request) | "Mi serve un nuovo indicatore" | Officina (SSR) → Sportello (GOV) → Ufficio di coordinamento (PMO) → Gold (TRF) → Confezionamento (TRF) → Laboratorio prove (TRF) → Torre di controllo (GOV) → Spedizioni (TRF) → Officina (SSR) |
+| `incidente` (Incident) | "Il numero nel mio report è sbagliato" | Negozio (SSR) → Sportello (GOV) → Sala controllo (GOV) → Confezionamento (TRF) → Gold (TRF) → Silver (TRF) → Bronze (INT) → Lago (INT) → Laboratorio prove (TRF) → Negozio (SSR) |
+| `richiesta` (Change request) | "Mi serve un nuovo indicatore" | Negozio (SSR) → Sportello (GOV) → Ufficio di coordinamento (PMO) → Gold (TRF) → Confezionamento (TRF) → Laboratorio prove (TRF) → Torre di controllo (GOV) → Spedizioni (TRF) → Negozio (SSR) |
 | `progetto` (New project · il viaggio del dato, LO-03) | "Vogliamo analizzare un'area nuova" | Area fornitori (SRC) → Lago (INT) → Bronze (INT) → Silver (TRF) → Gold (TRF) → Confezionamento (TRF) → Showroom (VIS) |
-| `ingresso` (Onboarding) | "Come entra la mia funzione nella fabbrica?" | Sportello (GOV) → Ufficio di coordinamento (PMO) → Officina (SSR) → Cancelli (ACC) → Caveau (SEC) → Spedizioni (TRF) → Officina (SSR) → Contatori (FIN) |
+| `ingresso` (Onboarding) | "Come entra la mia funzione nella fabbrica?" | Sportello (GOV) → Ufficio di coordinamento (PMO) → Negozio (SSR) → Cancelli (ACC) → Caveau (SEC) → Spedizioni (TRF) → Negozio (SSR) → Contatori (FIN) |
 
-Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali allo sportello e il team dati risale la filiera per te"; Change request, "Quello che serve a tutti entra nel semilavorato; quello che serve solo a te lo costruisci nella tua officina"; New project, "Ogni numero che leggi ha fatto questo viaggio, con un controllo a ogni reparto: per questo ti puoi fidare"; Onboarding, "Non parti da zero: ricevi semilavorati già controllati e ci costruisci sopra quello che ti serve".
+Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali allo sportello e il team dati risale la filiera per te"; Change request, "Quello che serve a tutti entra nel semilavorato; quello che serve solo a te lo costruisci nel tuo negozio"; New project, "Ogni numero che leggi ha fatto questo viaggio, con un controllo a ogni reparto: per questo ti puoi fidare"; Onboarding, "Non parti da zero: ricevi semilavorati già controllati e ci costruisci sopra quello che ti serve".
 
 ---
 
@@ -455,9 +456,9 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 | REQ-UI-09 | Durante il meeting il presentatore può **cambiare dal vivo lo stato** (off/wip/on) di workload, **singoli spoke** e **singole sorgenti**, dal pannello o cliccando sull'elemento; la scena alla fine rappresenta l'as-is di business costruito insieme. | Cambio di stato in ≤ 2 clic, con effetto immediato in scena. | M | Implementato |
 | REQ-UI-10 | Due **modalità**: **esplorazione libera** (navigazione, clic sugli elementi, stati dal vivo, percorsi) e **narrativa** (tutti i workload in ordine, §8). Si passa dall'una all'altra con un pulsante; uscendo dalla narrativa, la scena resta nello stato raggiunto. | Il cambio di modalità non ricarica la scena e non perde lo stato. | M | Implementato |
 | REQ-UI-11 | Nel pannello, i workload con elementi a **stato proprio** (Data Integration → sorgenti, Self-service → spoke) si aprono **a tendina**: ogni sorgente o spoke ha il suo selettore off/cantiere/on, per **accenderli uno alla volta**. | Aprendo la tendina di Data Integration e spegnendo una sorgente, si spegne solo quella. | M | Implementato |
-| REQ-UI-12 | **In alto a destra**, il pannello **Team dati** mostra **un pupazzino per persona** (sagoma uomo/donna; il nome compare solo se indicato nel profilo aziendale). Con **+** si aggiunge una persona (un pulsante per sagoma), con **−** si toglie quella selezionata o l'ultima aggiunta; il massimo è 12. Sotto ogni pupazzino c'è **un pallino colorato per ogni workload assegnato**. Il clic su un pupazzino lo seleziona e lo **evidenzia in scena** (anello a terra e freccia sopra la testa). | Aggiungendo o togliendo una persona dal pannello, la figura compare o scompare in scena, senza toccare alcun file. | M | Approvato |
-| REQ-UI-13 | **Assegnazione dal vivo**: si **trascina** un pupazzino sulla riga di un workload (la riga si illumina), oppure si clicca il pupazzino e poi il workload. Una persona può avere **più workload**: ogni trascinamento ne aggiunge uno. Il clic su un pallino toglie quell'assegnazione. In presentazione, dove il pannello dei workload è nascosto, l'elenco dei workload si apre dal pupazzino. | Trascinando la stessa persona su due workload compaiono due pallini; il clic su un pallino lo toglie; tutti i 13 workload accettano persone. | M | Approvato |
-| REQ-UI-14 | Il team composto a schermo (persone e assegnazioni) viene **ricordato dal browser** di quel computer; **Azzera** lo riporta al punto di partenza, cioè al profilo aziendale se c'è, altrimenti al modello standard. | Dopo una ricarica il team è quello lasciato; dopo Azzera torna quello di partenza. | S | Approvato |
+| REQ-UI-12 | **In alto a destra**, il pannello **Team dati** mostra **un pupazzino per persona** (sagoma uomo/donna; il nome compare solo se indicato nel profilo aziendale). Con **+** si aggiunge una persona (un pulsante per sagoma), con **−** si toglie quella selezionata o l'ultima aggiunta; il massimo è 12. Sotto ogni pupazzino c'è **un pallino colorato per ogni workload assegnato**. Il clic su un pupazzino lo seleziona e lo **evidenzia in scena** (anello a terra e freccia sopra la testa). | Aggiungendo o togliendo una persona dal pannello, la figura compare o scompare in scena, senza toccare alcun file. | M | Implementato |
+| REQ-UI-13 | **Assegnazione dal vivo**: si **trascina** un pupazzino sulla riga di un workload (la riga si illumina), oppure si clicca il pupazzino e poi il workload. Una persona può avere **più workload**: ogni trascinamento ne aggiunge uno. Il clic su un pallino toglie quell'assegnazione. In presentazione, dove il pannello dei workload è nascosto, l'elenco dei workload si apre dal pupazzino. | Trascinando la stessa persona su due workload compaiono due pallini; il clic su un pallino lo toglie; tutti i 13 workload accettano persone. | M | Implementato |
+| REQ-UI-14 | Il team composto a schermo (persone e assegnazioni) viene **ricordato dal browser** di quel computer; **Azzera** lo riporta al punto di partenza, cioè al profilo aziendale se c'è, altrimenti al modello standard. | Dopo una ricarica il team è quello lasciato; dopo Azzera torna quello di partenza. | S | Implementato |
 
 ---
 
@@ -465,11 +466,11 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 
 | ID | Requisito | Criterio di accettazione | Pr. | Stato |
 |---|---|---|---|---|
-| REQ-HS-01 | Gli spoke sono **officine satellite** collegate all'hub da strade, su cui viaggiano i semilavorati. | Visibili con `WL-SSR` attivo. | M | Implementato |
+| REQ-HS-01 | Gli spoke sono **negozi**: vetrina, tenda e insegna nel colore della funzione, prodotti esposti e un retrobottega per il materiale proprio. Sono collegati all'hub da strade, su cui viaggiano i semilavorati. | Visibili con `WL-SSR` attivo; si riconoscono come negozi, non come reparti della fabbrica. | M | Implementato |
 | REQ-HS-02 | Il **modello standard** ha **5 spoke generici**: Finance, Commerciale, HR, Operations, Marketing. | Sostituiti dagli spoke del profilo, se presente. | M | Implementato |
 | REQ-HS-03 | Il numero di spoke è **variabile** (da 1 a 10) e il layout si adatta automaticamente. | Prova con 1, 3, 8 e 10 spoke senza sovrapposizioni. | S | Implementato |
 | REQ-HS-04 | Ogni spoke **riceve semilavorati** (furgoni con pacchi ciano) e li **personalizza**: report self-service su live connection ai modelli certificati. | Animazione dei furgoni verso lo spoke e schermo con dashboard personalizzata. | M | Implementato |
-| REQ-HS-05 | Ogni spoke può **aggiungere dati locali** (composite model con Excel e liste), rappresentati come un piccolo **deposito proprio** accanto all'officina. | Deposito visibile; il pannello spiega "dati locali + semilavorato = prodotto personalizzato". | M | Implementato |
+| REQ-HS-05 | Ogni spoke può **aggiungere dati locali** (composite model con Excel e liste), rappresentati come un piccolo **deposito proprio** accanto alil negozio. | Deposito visibile; il pannello spiega "dati locali + semilavorato = prodotto personalizzato". | M | Implementato |
 | REQ-HS-06 | Il pannello di uno spoke distingue le **responsabilità**: il dato core resta dell'hub, il contenuto personalizzato è dello spoke. | Sezione "chi lo gestisce" presente. | M | Implementato |
 | REQ-HS-07 | Ogni spoke ha uno **stato proprio** (off/wip/on), indicato nel profilo e modificabile dal vivo, che si combina con quello di `WL-SSR`: racconta quali funzioni sono già attive e quali in arrivo. | Prova: `WL-SSR` attivo, uno spoke in `wip` mostrato come cantiere, uno `off` assente. | M | Implementato |
 
@@ -481,7 +482,7 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 |---|---|---|---|---|
 | REQ-CFG-01 | Tutti i contenuti stanno in un unico blocco **`CONFIG`** in cima all'HTML: workload, elementi, colori, spoke, sorgenti e capitoli; i **testi** vengono da `TESTI.md` (REQ-CFG-08). | Il motore non contiene stringhe di contenuto. | M | Implementato |
 | REQ-CFG-02 | Un blocco **`PROFILE`**, separato, **si sovrappone** al CONFIG per i soli campi del profilo (REQ-CFG-03). Un profilo vuoto equivale al modello standard. | Con `PROFILE = {}` si ottiene esattamente lo standard. | M | Implementato |
-| REQ-CFG-03 | Il profilo di un'azienda contiene **solo**: nome dell'azienda, **spoke** (nome + stato on/wip/off), **sorgenti** (nome noto al business + **categoria** + **flusso on/off**), **team dati di partenza** (quante persone, la sagoma di ciascuna, il **nome**, che esiste solo nella versione aziendale, e i workload assegnati) e un **contatto** ("a chi rivolgerti"). Tutto il resto (workload, capitoli, percorsi, testi) è standard. **Nessun nome tecnico.** | Il template `profili/PROFILO-TEMPLATE.md` ha esattamente questi campi. | M | Approvato |
+| REQ-CFG-03 | Il profilo di un'azienda contiene **solo**: nome dell'azienda, **spoke** (nome + stato on/wip/off), **sorgenti** (nome noto al business + **categoria** + **metodo di integrazione** + **flusso on/off**), **team dati di partenza** (quante persone, la sagoma di ciascuna, il **nome**, che esiste solo nella versione aziendale, e i workload assegnati) e un **contatto** ("a chi rivolgerti"). Tutto il resto (workload, capitoli, percorsi, testi) è standard. **Nessun nome tecnico.** | Il template `profili/PROFILO-TEMPLATE.md` ha esattamente questi campi. | M | Approvato |
 | REQ-CFG-04 | Ogni chiave del CONFIG riporta i **REQ** che la governano (campo `reqs` o commento). | Ricerca di `REQ-xx` nel file e ritrovamento della chiave. | M | Implementato |
 | REQ-CFG-05 | Il documento di profilo (`profili/<org>.md`) e il blocco `PROFILE` nell'HTML sono **allineati**: il blocco si ricava dal documento. | Ogni campo del blocco esiste nel documento di profilo. | S | Implementato |
 | REQ-CFG-06 | Si può **caricare un profilo da file JSON** tramite l'interfaccia, senza modificare l'HTML. | Il pulsante "Carica profilo" applica il JSON alla scena (D-11). | C | Approvato |
@@ -545,7 +546,7 @@ const CONFIG = {
 | REQ-FLW-11 | WL-KNW | `src/engine/trasversali.js` (archiviotecnico) | schermate | Implementato |
 | REQ-SCN-01…10 | tutti | `src/engine/scene.js` · `builders.js` · `reparti.js` · `spoke.js` · `trasversali.js` · `CONFIG.layout` · `CONFIG.elements` | `npm test` + schermate | Implementato |
 | REQ-SCN-12…14 | tutti | `src/engine/spoke.js` (figure degli spoke, ufficio, showroom) | `npm test` | Implementato |
-| REQ-SCN-11, 15 · REQ-UI-12…14 · REQ-WL-13 | team dati | `src/engine/figures.js` · `src/engine/ui.js` · `CONFIG.team` | — | Approvato (RDM-033) |
+| REQ-SCN-11, 15 · REQ-UI-12…14 · REQ-WL-13 | team dati | `src/engine/figures.js` · `src/engine/ui.js` (pannello, scheda della persona) · `CONFIG.team` | `npm test` | Implementato |
 | REQ-NAR-01…08 | — | `src/engine/guida.js` · `CONFIG.chapters` | `npm test` | Implementato |
 | REQ-PER-01…07 | trasversale | `src/engine/guida.js` · `CONFIG.paths` | `npm test` | Implementato |
 | REQ-LIT-01…02 | trasversale | `TESTI.md` (`fabbrica`, `perTe`) · `src/engine/ui.js` (scheda) | `npm test` | Implementato |
@@ -583,7 +584,7 @@ const CONFIG = {
 | D-06 | Anche i workload `off` restano **elencati nel pannello**, così si possono accendere dal vivo. | Utente | Confermata |
 | D-07 | Accendere un workload accende solo quello; se manca un workload a monte, resta fermo e il buco si vede (REQ-WL-06). | Utente | Confermata |
 | D-08 | La **narrativa** è lo strumento della presentazione; ordine dei workload, nel pannello e nei capitoli: SRC → ARC → PMO → INT → TRF → SEC → ACC → VIS → SSR → GOV → FIN → KNW → RTI. | Utente | Confermata |
-| D-09 | Gli spoke sono **officine**: personalizzano i semilavorati e aggiungono dati locali (composite model), senza una propria linea di produzione. | Utente | Confermata |
+| D-09 | Gli spoke sono **negozi**: personalizzano i semilavorati e aggiungono dati locali (composite model), senza una propria linea di produzione. | Utente | Confermata |
 | D-10 | **Un unico file offline**, con three.js incorporato. | Utente | Confermata |
 | D-11 | Personalizzazione tramite **profilo separato** (`profili/<org>.md` → blocco `PROFILE`); caricamento da JSON solo in futuro (REQ-CFG-06, priorità C). | Utente | Confermata |
 | D-12 | Solo italiano; testi nel CONFIG per un eventuale multilingua futuro. | Utente | Confermata |
@@ -591,7 +592,7 @@ const CONFIG = {
 | D-14 | Livello **concettuale** nello standard; il profilo personalizza solo con elementi riconoscibili dal business, **senza mappatura tecnica** (vedi D-26). | Utente | Confermata |
 | D-15 | Layout **a valle verso il pubblico**: sorgenti sul fondo, hub al centro, spoke in primo piano (REQ-SCN-01). | Utente | Confermata |
 | D-16 | Di una sorgente si rappresentano **categoria** (forma dell'edificio) e **modalità** (mezzo di trasporto). | Utente | Confermata |
-| D-17 | Tutto il materiale passa dal **lago** (il Landing): nessuna strada tra fornitori e fabbrica; il **mirroring non è rappresentato**. | Utente | Confermata |
+| D-17 | Tutto il materiale passa dal **lago** (il Landing): nessuna strada tra fornitori e fabbrica. I metodi di integrazione che si scelgono nel profilo sono tre: **copia** (scivolo), **tempo reale** (nastro veloce) e **mirroring** (scivolo di vetro). | Utente | Confermata |
 | D-18 | *Nota tecnica per gli autori*: gli shortcut sono una funzione del **Lakehouse** in OneLake; in scena il ponte di vetro termina nel lago. | Utente | Confermata |
 | D-19 | Le sorgenti hanno uno **stato proprio** off/wip/on, combinato con WL-INT. | Utente | Confermata |
 | D-20 | Percorsi standard: **Incident, Change request, New project, Onboarding funzione**. | Utente | Confermata |
@@ -630,6 +631,7 @@ const CONFIG = {
 | D-53 | Chi ruota tra le postazioni cammina lungo un **corridoio davanti al capannone**, senza attraversare gli edifici. | Proposta | Confermata |
 | D-54 | Il team si compone **a schermo**: persone aggiunte e tolte con + e −, assegnate trascinandole sui workload, anche a **più workload**; di default nessuno è assegnato. | Utente | Confermata |
 | D-55 | I non assegnati stanno alla **macchinetta del caffè**; **tutti i workload sono assegnabili**, compresi Data Sources e Self-service, perché il team dati è misto tra IT e business; un workload acceso senza persone è segnalato come **scoperto** ma non si ferma; il team si **ricorda nel browser**, con Azzera; il **nome** delle persone non c'è nel modello standard e si indica solo nel profilo aziendale. | Utente | Confermata |
+| D-56 | Gli spoke sono rappresentati come **negozi**, non come officine, e la **recinzione li protegge**: il perimetro racchiude fabbrica e negozi, con il cancello tra le due parti. | Utente (negozi, recinzione) · proposta (divisorio interno con il cancello) | Confermata |
 
 ---
 
@@ -685,7 +687,10 @@ const CONFIG = {
 | RDM-030 | Gli omini non di Data Integration ruotano tra i flussi attivi | Standard · SCN, UI | REQ-SCN-11, REQ-UI-12, D-36 | Approvata |
 | RDM-031 | Lavori avviati in autonomia su richiesta: narrativa, percorsi sul nuovo layout, benvenuto, schermi piccoli, contatore fps, camminata delle figure, cartelli dei fornitori più grandi, schede proprie per Sala sensori e Ufficio tecnico | Standard · NAR, PER, LIT, UI, SCN | REQ-NAR-*, REQ-PER-*, REQ-LIT-04…06, REQ-UI-08, REQ-UI-10, REQ-SRC-10, §8.1.1, D-52, D-53 | Approvata |
 | RDM-032 | Verifica dell'allineamento tra requisiti e codice | Standard · PRC | REQ-WL-03, REQ-WL-12, REQ-UI-05, REQ-CFG-02, REQ-HS-03, NFR-05 | Approvata |
-| RDM-033 | Team componibile a schermo: persone aggiunte e tolte con + e −, non assegnate di default, assegnabili per trascinamento anche a più workload; nel profilo aziendale il numero di persone e le assegnazioni di partenza | Standard · SCN, UI, WL, CFG | REQ-SCN-11, REQ-SCN-15, §7.1, REQ-UI-12…14, REQ-WL-13, REQ-CFG-03, D-36, D-54, D-55 | Approvata, da implementare |
+| RDM-033 | Team componibile a schermo: persone aggiunte e tolte con + e −, non assegnate di default, assegnabili per trascinamento anche a più workload; nel profilo aziendale il numero di persone e le assegnazioni di partenza | Standard · SCN, UI, WL, CFG | REQ-SCN-11, REQ-SCN-15, §7.1, REQ-UI-12…14, REQ-WL-13, REQ-CFG-03, D-36, D-54, D-55 | Approvata |
+| RDM-034 | Togliere l'etichetta "Area fornitori" | Standard · SRC | REQ-SRC-07 | Approvata |
+| RDM-035 | La recinzione protegge anche gli spoke, rappresentati come negozi e non come officine | Standard · SCN, HS | REQ-SCN-03, REQ-HS-01, D-56 | Approvata |
+| RDM-036 | Nel profilo aziendale si sceglie, per ogni sorgente, il metodo di integrazione: copia (scivolo), tempo reale (nastro veloce), mirroring (scivolo di vetro) | Standard · SRC, CFG | §6.1.1, §6.1.3, REQ-SRC-03, REQ-CFG-03, D-17 | Approvata |
 
 ---
 
@@ -693,4 +698,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.14 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…033 |
+| 1.15 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…036 |

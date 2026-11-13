@@ -1,4 +1,4 @@
-// Consumo: showroom dell'hub, officine degli spoke, ufficio di coordinamento. [REQ-HS-01…07, REQ-SCN-07, REQ-SCN-13]
+// Consumo: showroom dell'hub, negozi degli spoke, ufficio di coordinamento. [REQ-HS-01…07, REQ-SCN-07, REQ-SCN-13]
 import * as THREE from 'three';
 import { mat, box, cyl } from './kit.js';
 import { builders } from './builders.js';
@@ -54,24 +54,29 @@ builders.ufficio = (g, el) => {
 /* ===== [REQ-HS-02, REQ-HS-03, REQ-HS-07] Dagli spoke del CONFIG (o del profilo) agli elementi ===== */
 export function elementiSpoke(cfg) {
   const S = cfg.spoke, n = cfg.spokes.length, passo = Math.min(S.passo, S.larghezza / Math.max(n, 1));
-  return cfg.spokes.map((s, i) => ({ id: 'spoke-' + i, wl: 'SSR', tipo: 'officina', nome: 'Officina ' + s.nome, stato: s.stato || 'on',
+  return cfg.spokes.map((s, i) => ({ id: 'spoke-' + i, wl: 'SSR', tipo: 'officina', nome: 'Negozio ' + s.nome, stato: s.stato || 'on',
     pos: [(i - (n - 1) / 2) * passo, S.z], dim: [Math.min(15, passo - 3), 11, 6], colore: s.colore || S.colori[i % S.colori.length], indice: i,
     fabbrica: S.fabbrica, perTe: S.perTe, gestore: 'spoke', gestoreTesto: S.gestoreTesto, tecnico: S.tecnico }));
 }
 
-/* ===== [REQ-HS-01, REQ-HS-04, REQ-HS-05, REQ-SCN-12] Officina di uno spoke ===== */
+/* ===== [REQ-HS-01, REQ-HS-04, REQ-HS-05, REQ-SCN-12] Negozio di uno spoke ===== */
 builders.officina = (g, el, ctx) => {
   const [w, d, h] = el.dim, c = el.colore, [sx, sz] = el.pos, cap = ctx.cfg.layout.capannone;
+  /* [RDM-035] un negozio: vetrina, tenda e insegna nel colore della funzione, prodotti esposti, retrobottega dei dati locali */
+  const bw = w * 0.66, bx = -w * 0.14, fz = d * 0.2, bh = h * 0.72;
   box(g, w + 2, 0.2, d + 2, mat('#d6d3d1', { r: 1 }));
-  box(g, w * 0.62, h * 0.7, d * 0.6, mat('#f8fafc'), -w * 0.16, 0.2, -d * 0.12);                       // officina
-  for (let i = 0; i < 2; i++) { const r = box(g, w * 0.31, 0.3, d * 0.6, mat(c), -w * 0.16 - w * 0.155 + i * w * 0.31, 0.2 + h * 0.7 + 0.5, -d * 0.12); r.rotation.z = 0.35; }
-  box(g, w * 0.62, 0.7, 0.15, mat(c), -w * 0.16, 0.2 + h * 0.7 - 1, d * 0.18 + 0.1);
-  box(g, 2.6, 2.6, 0.15, mat('#334155'), -w * 0.16, 0.2, d * 0.18 + 0.05);                               // portone
-  const dx = w * 0.34;                                                                                  // [REQ-HS-05] deposito dei dati locali
-  box(g, w * 0.26, 2.6, d * 0.4, mat('#e7e5e4'), dx, 0.2, -d * 0.2); box(g, w * 0.26 + 0.4, 0.25, d * 0.4 + 0.4, mat('#78716c'), dx, 2.8, -d * 0.2);
-  for (const [x, n] of [[dx - 1, 2], [dx + 0.6, 1]]) for (let i = 0; i < n; i++) box(g, 1.1, 0.8, 1.1, mat('#c8a26b'), x, 0.2 + i * 0.85, d * 0.1);
-  const s = schermo(g, 4.6, 2.9, w * 0.12, 0.9, d * 0.42, c, 11 + el.indice * 3); for (const x of [-2, 2]) cyl(s, 0.1, 0.1, 0.9, mat('#475569'), x, -0.7, -0.1, 6); // report personalizzato
-  [-1, 1].forEach((k, i) => { const f = figura(c, (el.indice + i) % 2 ? 'f' : 'm', null); f.position.set(w * 0.12 + k * 1.6, 0.2, d * 0.42 + 2.6); f.rotation.y = Math.PI - k * 0.35; g.add(f); ctx.animate((t) => { f.position.y = 0.2 + Math.abs(Math.sin(t * 1.5 + el.indice + i)) * 0.06; }); });
+  box(g, bw, bh, d * 0.6, mat('#fffbeb'), bx, 0.2, -d * 0.1);                                           // negozio
+  box(g, bw + 0.5, 0.35, d * 0.6 + 0.5, mat('#57534e'), bx, 0.2 + bh, -d * 0.1);
+  box(g, bw * 0.92, 1.1, 0.25, mat(c), bx, 0.2 + bh + 0.35, fz - 0.1);                                  // insegna
+  box(g, bw * 0.6, bh * 0.5, 0.12, mat('#bae6fd', { e: '#7dd3fc', ei: 0.35, r: 0.1, op: 0.75 }), bx - bw * 0.14, 1, fz + 0.02).castShadow = false;   // vetrina
+  box(g, bw * 0.18, bh * 0.72, 0.12, mat('#334155'), bx + bw * 0.34, 0.2, fz + 0.02);                   // porta
+  for (let i = 0; i < 6; i++) { const t = box(g, bw / 6, 0.14, 2.4, mat(i % 2 ? '#ffffff' : c), bx - bw / 2 + bw / 12 + (i * bw) / 6, bh * 0.78, fz + 1.05); t.rotation.x = 0.42; }   // tenda a righe
+  for (let i = 0; i < 3; i++) { box(g, 0.9, 0.5, 0.5, mat('#e7e5e4'), bx - bw * 0.36 + i * 1.3, 1, fz - 0.6); const r = box(g, 0.75, 0.55, 0.08, mat(ctx.cfg.materiali.report.colore, { e: '#b45309', ei: 0.5 }), bx - bw * 0.36 + i * 1.3, 1.5, fz - 0.55); r.rotation.x = -0.25; }   // prodotti in vetrina
+  const dx = w * 0.36;                                                                                  // [REQ-HS-05] retrobottega: il deposito dei dati locali
+  box(g, w * 0.24, 2.4, d * 0.36, mat('#e7e5e4'), dx, 0.2, -d * 0.2); box(g, w * 0.24 + 0.4, 0.25, d * 0.36 + 0.4, mat('#78716c'), dx, 2.6, -d * 0.2);
+  for (const [x, n] of [[dx - 0.9, 2], [dx + 0.6, 1]]) for (let i = 0; i < n; i++) box(g, 1.1, 0.8, 1.1, mat('#c8a26b'), x, 0.2 + i * 0.85, d * 0.08);
+  const s = schermo(g, 4.6, 2.9, w * 0.12, 0.9, d * 0.46, c, 11 + el.indice * 3); for (const x of [-2, 2]) cyl(s, 0.1, 0.1, 0.9, mat('#475569'), x, -0.7, -0.1, 6); // report su misura, davanti al negozio
+  [-1, 1].forEach((k, i) => { const f = figura(c, (el.indice + i) % 2 ? 'f' : 'm', null); f.position.set(w * 0.12 + k * 1.6, 0.2, d * 0.46 + 2.6); f.rotation.y = Math.PI - k * 0.35; g.add(f); ctx.animate((t) => { f.position.y = 0.2 + Math.abs(Math.sin(t * 1.5 + el.indice + i)) * 0.06; }); });
   /* [REQ-HS-04] strada e furgoni: i semilavorati arrivano dalle spedizioni */
   const L = (x, y, z) => [x - sx, y, z - sz], pts = [[16, 0.1, cap.z[1] + 1], [16, 0.1, cap.z[1] + 9], [sx - w * 0.16, 0.1, sz - d / 2 - 12], [sx - w * 0.16, 0.1, sz - d / 2 - 1]];
   for (let i = 0; i < 3; i++) {

@@ -5,7 +5,7 @@
 window.PROFILE = {
   // azienda: 'Nome azienda',
   // spoke:    [{ nome: 'Finance', stato: 'on' }],
-  // sorgenti: [{ nome: 'Il gestionale', categoria: 'erp', flusso: 'on' }],
+  // sorgenti: [{ nome: 'Il gestionale', categoria: 'erp', metodo: 'copia', flusso: 'on' }],   // metodo: copia | tempo reale | mirroring
   // team:     [{ sagoma: 'uomo', nome: 'Luca', workload: ['Data Integration', 'Data Architecture'] }, { sagoma: 'donna', nome: 'Sara', workload: [] }],
   // contatto: { chi: 'Team dati', come: 'dati@azienda.it' },
 };

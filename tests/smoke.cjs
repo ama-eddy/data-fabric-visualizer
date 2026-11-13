@@ -83,7 +83,7 @@ const path = require('path'), fs = require('fs');
   check((await page.locator('#info .tecnico').textContent()).includes('Shortcut'), 'scheda: nome tecnico (In Fabric)');
   await page.evaluate(() => fabbrica.ui.mostraElemento('confezionamento'));
   check((await page.locator('#info .tecnico').textContent()).includes('Semantic model') && !(await page.locator('#info h3').textContent()).includes('Semantic'), 'semilavorati: Semantic model nella scheda, non nel nome');
-  check(await page.locator('#legenda .voce').count() === 10, 'legenda: 6 materiali e 4 mezzi');
+  check(await page.locator('#legenda .voce').count() === 11, 'legenda: 6 materiali e 5 mezzi');
   await page.getByText('Pausa flussi').click(); const p0 = await page.evaluate(() => fabbrica.flows.routes.find((r) => r.items.length).items[0].u);
   await page.waitForTimeout(500);
   check(await page.evaluate((u) => fabbrica.flows.routes.find((r) => r.items.length).items[0].u === u, p0), 'pausa: il materiale si ferma');
@@ -95,7 +95,7 @@ const path = require('path'), fs = require('fs');
   await page.evaluate(() => { fabbrica.ui.chiudi(); fabbrica.world.flyTo([10, 60, 150], [0, 2, 52]); });
   check(await page.waitForFunction(() => fabbrica.flows.routes.some((r) => r.tipo === 'furgone' && r.items.length), null, { timeout: 20000 }).then(() => true, () => false), 'furgoni verso gli spoke');
   await shot('9-spoke', 2500);
-  check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'officina' && r.on.visible).length) === 5, '5 officine visibili');
+  check(await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'officina' && r.on.visible).length) === 5, '5 negozi visibili');
   // ---- RDM-033: team componibile a schermo ----
   let f = await page.evaluate(() => fabbrica.figures.conta());
   check(f.totale === 5 && f.caffe === 5, 'di partenza: 5 persone, nessuna assegnata, tutte alla macchinetta del caffè: ' + JSON.stringify(f));
@@ -161,6 +161,9 @@ const path = require('path'), fs = require('fs');
   await shot('19-gru-e-pannello', 4000);
   await page.evaluate(() => { fabbrica.state.set('RTI', 'on'); fabbrica.ui.chiudi(); fabbrica.world.home(); });
   await shot('12-tutto-on', 3500);
+  await page.evaluate(() => fabbrica.world.flyTo([20, 34, 128], [8, 2, 76]));
+  await shot('25-negozi-e-recinzione', 3500);
+  await page.evaluate(() => fabbrica.world.home()); await page.waitForTimeout(4000);
   const sovrapposte = await page.evaluate(() => { const r = [...document.querySelectorAll('.lbl')].filter((e) => e.offsetParent && getComputedStyle(e).opacity > 0.5 && !e.classList.contains('nascosta')).map((e) => e.getBoundingClientRect()); let n = 0; for (let i = 0; i < r.length; i++) for (let j = i + 1; j < r.length; j++) if (r[i].left < r[j].right && r[i].right > r[j].left && r[i].top < r[j].bottom && r[i].bottom > r[j].top) n++; return [n, r.length]; });
   check(sovrapposte[0] === 0 && sovrapposte[1] >= 8, 'etichette: nessuna sovrapposizione nella vista d\'insieme (sovrapposte, visibili): ' + sovrapposte);
   await page.evaluate(() => fabbrica.world.flyTo([-10, 26, 92], [-22, 4, 44]));
@@ -178,12 +181,13 @@ const path = require('path'), fs = require('fs');
   check(await pe.locator('#benvenuto.open').count() === 0, 'avvio=libero salta il benvenuto');
   await pe.getByText('Tutto on').click(); await pe.waitForTimeout(2500);
   const ep = await pe.evaluate(() => { const S = fabbrica.state, st = (t) => S.recs.filter((r) => r.el.tipo === t).map((r) => r.el.nome + ':' + S.effettivo(r)); fabbrica.ui.mostraElemento('pontile');
-    return { titolo: document.getElementById('titolo').textContent, spoke: st('officina'), src: st('sorgente'), team: fabbrica.figures.tutte.map((x) => x.nome + ':' + x.wl.join('+')).join(), scheda: document.getElementById('info').textContent }; });
+    return { titolo: document.getElementById('titolo').textContent, spoke: st('officina'), src: st('sorgente'), team: fabbrica.figures.tutte.map((x) => x.nome + ':' + x.wl.join('+')).join(), metodi: S.recs.filter((r) => r.el.tipo === 'sorgente').map((r) => r.el.modalita).join(), scheda: document.getElementById('info').textContent }; });
   check(ep.titolo.includes('Esempio S.p.A.'), 'profilo: nome azienda');
-  check(ep.spoke.join() === 'Officina Amministrazione:on,Officina Vendite:on,Officina Acquisti:wip,Officina Personale:off', 'profilo: spoke e stati: ' + ep.spoke);
+  check(ep.spoke.join() === 'Negozio Amministrazione:on,Negozio Vendite:on,Negozio Acquisti:wip,Negozio Personale:off', 'profilo: spoke e stati: ' + ep.spoke);
   check(ep.src.join() === 'Il gestionale:on,CRM vendite:on,Budget (Excel):on,Presenze:off', 'profilo: sorgenti e flussi: ' + ep.src);
   check(ep.team === 'Luca:INT+ARC,Sara:VIS,Elena:SSR+SRC,Marco:' && ep.scheda.includes('dati@esempio.example'), 'profilo: team di partenza con nomi e assegnazioni, contatto: ' + ep.team);
   check(await pe.locator('#team .gruppo small').first().textContent() === 'Luca', 'profilo: il nome compare sotto il pupazzino');
+  check(ep.metodi === 'copy,mirroring,dataflow,copy', 'profilo: metodo di integrazione per sorgente (copia, mirroring; se manca, quello della categoria): ' + ep.metodi);   // [RDM-036]
   await pe.screenshot({ path: path.join(out, '11-profilo-esempio.png') }); await pe.close();
 
   // ---- Batch 5: narrativa, percorsi, benvenuto ----

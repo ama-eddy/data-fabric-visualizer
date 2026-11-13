@@ -4,8 +4,8 @@ window.PROFILE = {
   azienda: 'Esempio S.p.A.',
   spoke: [{ nome: 'Amministrazione', stato: 'on' }, { nome: 'Vendite', stato: 'on' }, { nome: 'Acquisti', stato: 'wip' }, { nome: 'Personale', stato: 'off' }],
   sorgenti: [
-    { nome: 'Il gestionale', categoria: 'erp', flusso: 'on' },
-    { nome: 'CRM vendite', categoria: 'crm', flusso: 'on' },
+    { nome: 'Il gestionale', categoria: 'erp', metodo: 'copia', flusso: 'on' },
+    { nome: 'CRM vendite', categoria: 'crm', metodo: 'mirroring', flusso: 'on' },
     { nome: 'Budget (Excel)', categoria: 'excel', flusso: 'on' },
     { nome: 'Presenze', categoria: 'hr', flusso: 'off' },
   ],

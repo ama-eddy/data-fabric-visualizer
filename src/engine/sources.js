@@ -107,17 +107,17 @@ function infrastruttura(g, el, ctx) {
   const m = el.modalita;
   const lago = ctx.cfg.elements.find((e) => e.tipo === 'lago'), lz = lago.pos[1], lw = lago.dim[0] / 2 - 6, ld = lago.dim[1] / 2;
   const xl = Math.max(-lw, Math.min(lw, sx)), arrivo = [ax * 0.9, lz + ld - 3];       // dove il materiale entra nel lago · dove arriva al pontile
-  const scivolo = (top, fondo, colore) => {                          // scivolo dal fornitore al lago: nessuna strada
-    const sc = tratto(top, fondo, { w: 1.8, h: 0.2 }, mat(colore)); sc.castShadow = true;
+  const scivolo = (top, fondo, colore, vetro) => {                   // scivolo dal fornitore al lago: nessuna strada
+    const sc = tratto(top, fondo, { w: 1.8, h: 0.2 }, vetro ? mat(colore, { op: 0.5, r: 0.1, e: '#0ea5e9', ei: 0.25 }) : mat(colore)); sc.castShadow = !vetro;
     for (const s of [-1, 1]) tratto([top[0] + s * 0.9, top[1] + 0.4, top[2]], [fondo[0] + s * 0.9, fondo[1] + 0.4, fondo[2]], 0.08, mat('#fde68a')).castShadow = false;
     cyl(g, 0.25, 0.3, top[1], mat('#64748b'), ...L(top[0], 0, top[2] + 0.4), 8);
   };
   const top = [sx, 4.2, sz + 5.5], riva = lz - ld - 1;
-  if (m === 'copy') {                                               // [RDM-019] scivolo: il materiale scivola nel lago e galleggia fino al pontile
-    const fondo = [xl, 0.5, lz - ld + 1.5];
-    scivolo(top, fondo, '#f97316');
-    ctx.flows.addRoute({ punti: [[top[0], top[1] + 0.6, top[2]], [fondo[0], 0.9, fondo[2]]], tipo: 'grezzo', attivo, ogni: 2.2 + Math.random(), vel: 9 });
-    ctx.flows.addRoute({ punti: [[fondo[0], 0.35, fondo[2] + 1], [arrivo[0], 0.35, arrivo[1]]], tipo: 'galleggiante', attivo, ogni: 2.2 + Math.random(), vel: 2.6 });
+  if (m === 'copy' || m === 'mirroring') {                          // [RDM-019] scivolo: il materiale scivola nel lago e galleggia fino al pontile
+    const fondo = [xl, 0.5, lz - ld + 1.5], vetro = m === 'mirroring';   // [RDM-036] mirroring = scivolo di vetro, il materiale scende senza sosta
+    scivolo(top, fondo, vetro ? '#7dd3fc' : '#f97316', vetro);
+    ctx.flows.addRoute({ punti: [[top[0], top[1] + 0.6, top[2]], [fondo[0], 0.9, fondo[2]]], tipo: 'grezzo', attivo, ogni: vetro ? 0.8 : 2.2 + Math.random(), vel: 9 });
+    ctx.flows.addRoute({ punti: [[fondo[0], 0.35, fondo[2] + 1], [arrivo[0], 0.35, arrivo[1]]], tipo: 'galleggiante', attivo, ogni: vetro ? 1.1 : 2.2 + Math.random(), vel: 2.6 });
   } else if (m === 'dataflow') {                                    // [RDM-019] scivolo fino a un piccolo molo, poi la scialuppa attraversa il lago
     const molo = [xl, riva];
     scivolo(top, [molo[0], 0.9, molo[1] - 0.5], '#a16207');

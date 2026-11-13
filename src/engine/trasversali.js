@@ -32,9 +32,11 @@ builders.recinzione = (g, el, ctx) => {
   };
   const X = w / 2, Z0 = -d / 2, Z1 = el.fronte;
   lato(-X, Z0, -68, Z0); lato(68, Z0, X, Z0);            // sul fondo passano scivoli, condotte e ponti: il varco è largo
-  lato(-X, Z0, -X, Z1); lato(X, Z0, X, Z1);
-  lato(-X, Z1, 9.5, Z1); lato(22.5, Z1, X, Z1);          // sul fronte, il varco del cancello
-  for (const [x, z] of [[-X, Z0], [X, Z0], [-X, Z1], [X, Z1]]) {                                        // telecamere
+  const Z2 = el.fronteEsterno || Z1;                     // [RDM-035] il perimetro protegge anche i negozi delle funzioni
+  lato(-X, Z0, -X, Z2); lato(X, Z0, X, Z2);
+  if (Z2 > Z1) lato(-X, Z2, X, Z2);
+  lato(-X, Z1, 9.5, Z1); lato(22.5, Z1, X, Z1);          // divisorio tra fabbrica e negozi, con il varco del cancello
+  for (const [x, z] of [[-X, Z0], [X, Z0], [-X, Z2], [X, Z2]]) {                                        // telecamere
     cyl(g, 0.18, 0.22, 6.5, palo, x, 0, z, 8);
     const t = new THREE.Group(); t.position.set(x, 6.6, z); g.add(t);
     box(t, 0.6, 0.5, 1.3, mat('#f8fafc'), 0, 0, 0.5); box(t, 0.3, 0.3, 0.1, mat('#ef4444', { e: '#dc2626', ei: 1 }), 0, 0.1, 1.16);
