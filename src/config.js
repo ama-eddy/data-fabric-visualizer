@@ -3,7 +3,7 @@
 // Tutti i contenuti (testi, colori, workload, elementi) stanno qui: il motore non contiene testi.
 // Ogni chiave riporta i requisiti che la governano [REQ-CFG-04]. Testi scritti secondo il lessico (REQUISITI §1.2).
 window.CONFIG = {
-  meta: { titolo: 'Fabbrica Dati', sottotitolo: 'Come nascono i numeri che leggi nei report' },
+  meta: { titolo: 'Data Platform as a Fabric', sottotitolo: 'Come nascono i numeri che leggi nei report' },
 
   // [REQ-UI-07] testi dell'interfaccia
   ui: {
@@ -39,7 +39,7 @@ window.CONFIG = {
   // [REQ-SCN-01] layout "a valle verso il pubblico": sorgenti sul fondo (z negativo), hub al centro, spoke in primo piano
   layout: {
     capannone: { x: [-32, 32], z: [-40, 40], pavimento: 0.8, altezza: 14 },
-    camera: { pos: [0, 122, 188], target: [0, 0, 4] },
+    camera: { pos: [0, 140, 216], target: [0, 0, 16] },
     sorgenti: { z: -86, passo: 12.8, larghezza: 140 },   // [REQ-SRC-07] area fornitori sul fondo
     margineSinistro: 332, // larghezza occupata dal pannello: la scena viene centrata nello spazio libero
   },
@@ -104,7 +104,7 @@ window.CONFIG = {
     { nome: 'Operations', stato: 'on' }, { nome: 'Marketing', stato: 'on' },
   ],
   spoke: {
-    z: 82, passo: 27, larghezza: 132,
+    z: 98, passo: 27, larghezza: 132, strada: 83,   // [REQ-HS-01] la via esce dal cancello e si dirama verso i negozi
     colori: ['#0284c7', '#e11d48', '#65a30d', '#ea580c', '#9333ea', '#0d9488', '#ca8a04', '#db2777', '#4f46e5', '#57534e'],
     fabbrica: "Il negozio della funzione: riceve i semilavorati dalla fabbrica e ne fa prodotti su misura per i propri clienti, che mette in vetrina. Sul retro c'è il piccolo deposito del materiale proprio.",
     perTe: 'Semilavorato + dati tuoi = prodotto su misura: parti da dati certificati, aggiungi i tuoi fogli di calcolo e metti in vetrina i report che servono alla tua funzione.',
@@ -121,14 +121,13 @@ window.CONFIG = {
     raccolta: { nome: 'Macchinetta del caffè', pos: [-46.5, -10.2] },   // accanto alla centrale elettrica: chi non ha un compito aspetta qui [RDM-038]
     // una postazione per workload. pos = [x, z] · passo = spostamento per ogni persona in più · verso = dove guarda (radianti)
     postazioni: {
-      SRC: { nome: 'Accanto a un fornitore', tecnico: 'Referente del sistema', cosa: 'Conosce il sistema da cui nasce il dato e spiega al team che cosa contiene.' },
       ARC: { nome: 'Tavolo dei progetti', tecnico: 'Data architect', cosa: 'Progetta la fabbrica: dove vanno i reparti, quanta energia serve, come si collegano.', pos: [-38, 6], passo: [0, 2.2], verso: 1.57, tavolo: true },
       PMO: { nome: 'Ufficio di coordinamento', tecnico: 'Project manager', cosa: 'Coordina gli operatori: chi fa cosa, in che ordine, entro quando.', pos: [44, 40], passo: [-1.7, 0] },
       INT: { nome: 'Scivoli e gru', tecnico: 'Data engineer', cosa: 'Il primo costruisce e ripara gli scivoli; il secondo manovra dal pannello le gru che pescano dal lago e riempiono il magazzino.', pos: [28.5, -44], passo: [1.4, 0], verso: 1.57, zScivoli: -77 },
       TRF: { nome: 'Banchi del laboratorio prove', tecnico: 'Analytics engineer', cosa: 'Costruisce la lavorazione e collauda i semilavorati prima che escano.', pos: [-20, 38.9], passo: [2.7, 0], verso: 3.14 },
       SEC: { nome: 'Caveau', tecnico: 'Responsabile della sicurezza dei dati', cosa: 'Decide come si protegge il materiale riservato e controlla chi lo ha guardato.', pos: [60, -33.5], passo: [-1.7, 0], verso: 3.14 },
       ACC: { nome: 'Portineria del cancello', tecnico: 'Amministratore degli accessi', cosa: 'Consegna i badge: chi entra e che cosa può fare.', pos: [11.8, 42.4], passo: [-1.6, 0], verso: 1.57 },
-      VIS: { nome: 'Showroom', tecnico: 'BI developer', cosa: 'Costruisce i report ufficiali sui semilavorati collaudati.', pos: [-48, 37.5], passo: [-1.8, 0], verso: 3.14 },
+      VIS: { nome: 'Showroom', tecnico: 'BI developer', cosa: 'Costruisce i report ufficiali sui semilavorati collaudati.', pos: [3, 68], passo: [-1.8, 0], verso: 3.14 },
       SSR: { nome: 'In un negozio', tecnico: 'Analista della funzione', cosa: 'Costruisce i report della funzione sui semilavorati, con i dati locali.' },
       GOV: { nome: 'Cabina della torre di controllo', tecnico: 'Data steward', cosa: 'Fissa le regole comuni, sorveglia i reparti e mette il marchio di qualità.', pos: [-36.4, 58], passo: [0, 1.7], cabina: [-40, 14.7, 58] },
       FIN: { nome: 'Contatori della centrale', tecnico: 'Responsabile dei costi', cosa: 'Legge i consumi e li riporta a ogni reparto e a ogni negozio.', pos: [-64, -34.3], passo: [1.7, 0], verso: 3.14 },
@@ -246,8 +245,8 @@ window.CONFIG = {
       fabbrica: 'Il reparto spedizioni: da qui i semilavorati collaudati partono verso i negozi delle funzioni.',
       perTe: 'È da qui che i dati certificati arrivano alla tua funzione.' },
     // --- Data Visualization [REQ-FLW-07, REQ-SCN-07] ---
-    { id: 'showroom', wl: 'VIS', priorita: 1, tipo: 'showroom', nome: 'Showroom', tecnico: 'Report e app Power BI', pos: [-55, 28], dim: [28, 14, 6], zona: true,
-      fabbrica: "Lo showroom dell'hub, accanto alla fabbrica: i prodotti finiti ufficiali, costruiti dal team dati sui semilavorati collaudati e uguali per tutta l'azienda.",
+    { id: 'showroom', wl: 'VIS', priorita: 1, tipo: 'showroom', nome: 'Showroom', tecnico: 'Report e app Power BI', pos: [-4, 70], dim: [28, 14, 6], zona: true,   // [REQ-SCN-14] nella zona clienti, oltre la cinta interna
+      fabbrica: "Lo showroom dell'hub, appena fuori dalla fabbrica e aperto a chi entra dall'ingresso clienti: i prodotti finiti ufficiali, costruiti dal team dati sui semilavorati collaudati e uguali per tutta l'azienda.",
       perTe: "Sono i report ufficiali, in Power BI: li apri e leggi il numero, senza costruire nulla. È lo stesso numero che vedono tutti." },
     // --- Ufficio di coordinamento [REQ-SCN-13] ---
     { id: 'coordinamento', wl: 'PMO', tipo: 'ufficio', nome: 'Ufficio di coordinamento', tecnico: 'Project management del team dati', pos: [52, 38], dim: [12, 8, 5],
@@ -257,8 +256,12 @@ window.CONFIG = {
     { id: 'cancelli', wl: 'ACC', tipo: 'cancelli', nome: 'Cancelli e tornelli', tecnico: 'Microsoft Entra ID · ruoli e permessi', pos: [16, 44.5], dim: [16, 4, 5],
       fabbrica: 'Il cancello, i tornelli e il lettore di badge: si entra solo se autorizzati, e ognuno raggiunge solo i reparti che gli servono.',
       perTe: 'Per far entrare una persona della tua funzione si chiede un badge: decidi tu chi entra e che cosa può fare.' },
-    { id: 'recinzione', wl: 'SEC', tipo: 'recinzione', nome: 'Recinzione e telecamere', tecnico: 'Sicurezza di rete · audit degli accessi', pos: [0, -16], dim: [150, 120, 3], fronte: 60.5, fronteEsterno: 113, cantiere: false, etichetta: [75, 5, 20],
-      fabbrica: 'La recinzione attorno alla fabbrica e ai negozi delle funzioni, con le telecamere: tiene fuori chi non deve entrare e registra chi passa. Tra la fabbrica e i negozi si passa dal cancello.',
+    // [REQ-SCN-03] ingresso clienti: il varco nella cinta esterna da cui entra chi fa parte dell'azienda
+    { id: 'ingresso', wl: 'ACC', tipo: 'ingresso', nome: 'Ingresso clienti', tecnico: 'Accesso con l\'account aziendale (Microsoft Entra ID)', pos: [0, 120], dim: [12, 4, 5],
+      fabbrica: "L'ingresso clienti: chi fa parte dell'azienda passa il badge ai tornelli e raggiunge lo showroom e i negozi. Nella fabbrica, oltre il cancello interno, entra solo il team dati.",
+      perTe: 'Entri con il tuo account aziendale: guardi i report ufficiali nello showroom e quelli della tua funzione nel tuo negozio. Non ti serve entrare in fabbrica.' },
+    { id: 'recinzione', wl: 'SEC', tipo: 'recinzione', nome: 'Recinzione e telecamere', tecnico: 'Sicurezza di rete · audit degli accessi', pos: [0, -16], dim: [150, 120, 3], fronte: 60.5, fronteEsterno: 120, varco: [-6, 6], cantiere: false, etichetta: [75, 5, 20],
+      fabbrica: "Le due cinte, con le telecamere. Quella esterna racchiude tutto e tiene fuori chi non è dell'azienda: si entra dall'ingresso clienti. Quella interna protegge la fabbrica: oltre il cancello va solo il team dati. Chi passa viene registrato.",
       perTe: 'I dati della tua funzione sono protetti come quelli di tutte le altre: si sa sempre chi ha guardato cosa.' },
     { id: 'caveau', wl: 'SEC', tipo: 'caveau', nome: 'Caveau', tecnico: 'RLS / OLS · sensitivity label', pos: [60, -40], dim: [9, 8, 5],
       fabbrica: 'Il caveau: il materiale più delicato sta qui, sotto chiave.',

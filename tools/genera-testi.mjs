@@ -11,7 +11,7 @@ const SEZIONI = [
 ];
 const testi = estraiTesti(caricaConfig());
 if (!existsSync('TESTI.md')) {
-  let md = `# Testi della Fabbrica Dati
+  let md = `# Testi di Data Platform as a Fabric
 
 > **Come si usa.** Ogni testo ha un titolo con la sua chiave (\`### chiave\`): si cambia **solo il testo sotto il titolo**, mai la chiave.
 > Il testo può andare a capo liberamente: viene unito in un'unica riga. Niente apici o caratteri speciali da rispettare.

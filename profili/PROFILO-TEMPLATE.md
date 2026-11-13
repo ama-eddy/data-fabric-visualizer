@@ -37,7 +37,7 @@
 
 > Una riga per persona: è il team con cui si apre la fabbrica. Lasciare vuoto per partire senza persone e comporre il team a schermo con + e −.
 > **Sagoma**: `uomo` o `donna`. **Nome**: facoltativo, compare sotto il pupazzino (nel modello standard i nomi non ci sono). **Workload**: nessuno, uno o più, tra tutti i 13:
-> Data Sources, Data Architecture, Project Management, Data Integration, Data Transformation, Security, Accessi, Data Visualization, Self-service, Data Governance, Monitoraggio costi, Knowledge, Real-Time.
+> Data Architecture, Project Management, Data Integration, Data Transformation, Security, Accessi, Data Visualization, Self-service, Data Governance, Monitoraggio costi, Knowledge, Real-Time.
 > Dal vivo si può cambiare tutto: aggiungere e togliere persone, spostare le assegnazioni.
 
 | Sagoma | Nome | Workload assegnati |

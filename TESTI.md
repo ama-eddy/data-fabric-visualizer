@@ -1,4 +1,4 @@
-# Testi della Fabbrica Dati
+# Testi di Data Platform as a Fabric
 
 > **Come si usa.** Ogni testo ha un titolo con la sua chiave (`### chiave`): si cambia **solo il testo sotto il titolo**, mai la chiave.
 > Il testo può andare a capo liberamente: viene unito in un'unica riga. Niente apici o caratteri speciali da rispettare.
@@ -10,7 +10,7 @@
 ## Titolo
 
 ### meta.titolo
-Fabbrica Dati
+Data Platform as a Fabric
 
 ### meta.sottotitolo
 Come nascono i numeri che leggi nei report
@@ -525,7 +525,7 @@ Showroom
 Report e app Power BI
 
 ### elements.showroom.fabbrica
-Lo showroom dell'hub, accanto alla fabbrica: i prodotti finiti ufficiali, costruiti dal team dati sui semilavorati collaudati e uguali per tutta l'azienda.
+Lo showroom dell'hub, appena fuori dalla fabbrica e aperto a chi entra dall'ingresso clienti: i prodotti finiti ufficiali, costruiti dal team dati sui semilavorati collaudati e uguali per tutta l'azienda.
 
 ### elements.showroom.perTe
 Sono i report ufficiali, in Power BI: li apri e leggi il numero, senza costruire nulla. È lo stesso numero che vedono tutti.
@@ -554,6 +554,18 @@ Il cancello, i tornelli e il lettore di badge: si entra solo se autorizzati, e o
 ### elements.cancelli.perTe
 Per far entrare una persona della tua funzione si chiede un badge: decidi tu chi entra e che cosa può fare.
 
+### elements.ingresso.nome
+Ingresso clienti
+
+### elements.ingresso.tecnico
+Accesso con l'account aziendale (Microsoft Entra ID)
+
+### elements.ingresso.fabbrica
+L'ingresso clienti: chi fa parte dell'azienda passa il badge ai tornelli e raggiunge lo showroom e i negozi. Nella fabbrica, oltre il cancello interno, entra solo il team dati.
+
+### elements.ingresso.perTe
+Entri con il tuo account aziendale: guardi i report ufficiali nello showroom e quelli della tua funzione nel tuo negozio. Non ti serve entrare in fabbrica.
+
 ### elements.recinzione.nome
 Recinzione e telecamere
 
@@ -561,7 +573,7 @@ Recinzione e telecamere
 Sicurezza di rete · audit degli accessi
 
 ### elements.recinzione.fabbrica
-La recinzione attorno alla fabbrica e ai negozi delle funzioni, con le telecamere: tiene fuori chi non deve entrare e registra chi passa. Tra la fabbrica e i negozi si passa dal cancello.
+Le due cinte, con le telecamere. Quella esterna racchiude tutto e tiene fuori chi non è dell'azienda: si entra dall'ingresso clienti. Quella interna protegge la fabbrica: oltre il cancello va solo il team dati. Chi passa viene registrato.
 
 ### elements.recinzione.perTe
 I dati della tua funzione sono protetti come quelli di tutte le altre: si sa sempre chi ha guardato cosa.
@@ -945,15 +957,6 @@ Il team dati è fatto di poche persone, di IT e di business, e ognuna segue più
 
 ### team.raccolta.nome
 Macchinetta del caffè
-
-### team.postazioni.SRC.nome
-Accanto a un fornitore
-
-### team.postazioni.SRC.tecnico
-Referente del sistema
-
-### team.postazioni.SRC.cosa
-Conosce il sistema da cui nasce il dato e spiega al team che cosa contiene.
 
 ### team.postazioni.ARC.nome
 Tavolo dei progetti

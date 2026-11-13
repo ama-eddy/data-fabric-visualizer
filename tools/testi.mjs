@@ -43,7 +43,7 @@ const PAROLE = ['Delta', 'Parquet', 'Direct Lake', 'semantic model', 'modello se
 export function controllaLessico(testi) {
   const errori = [];
   for (const [k, t] of testi) {
-    if (k.endsWith('.tecnico')) continue;              // [RDM-026] il nome tecnico, mostrato solo nella scheda, è l'unico campo esente
+    if (k.endsWith('.tecnico') || k === 'meta.titolo') continue;   // [D-58] anche il titolo, che è il nome del progetto              // [RDM-026] il nome tecnico, mostrato solo nella scheda, è esente
     for (const v of SIGLE) if (new RegExp(`(^|[^\\p{L}])${v}([^\\p{L}]|$)`, 'u').test(t)) errori.push(`${k}: contiene "${v}"`);
     for (const v of PAROLE) if (new RegExp(`(^|[^\\p{L}])${v}([^\\p{L}]|$)`, 'iu').test(t)) errori.push(`${k}: contiene "${v}"`);
   }

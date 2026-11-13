@@ -30,12 +30,13 @@ builders.showroom = (g, el, ctx) => {
   box(g, w - 1.6, 0.3, d - 1.6, mat(col, { op: 0.55 }), 0, h, 0).castShadow = false;
   [-8, 0, 8].forEach((x, i) => schermo(g, 6.4, 4, x, 1, -d / 2 + 1.4, col, 3 + i));     // tre report ufficiali
   /* [REQ-FLW-07, REQ-SCN-14] passerella coperta dal laboratorio prove: i semilavorati collaudati arrivano qui */
-  const [sx, sz] = el.pos, lab = ctx.cfg.elements.find((e) => e.id === 'laboratorio'), x0 = lab ? lab.pos[0] - lab.dim[0] / 2 : -24, xs = sx + w / 2;
-  const tubo = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, x0 - xs, 14, 1, true), mat('#bae6fd', { op: 0.35, side: THREE.DoubleSide, r: 0.1 }));
-  tubo.rotation.z = Math.PI / 2; tubo.position.set((x0 + xs) / 2 - sx, 4.6, 0); g.add(tubo);
-  box(g, x0 - xs, 0.25, 1.6, mat('#374151'), (x0 + xs) / 2 - sx, 3.7, 0);
-  for (const x of [xs + 1.5, (x0 + xs) / 2 - 1]) cyl(g, 0.22, 0.28, 3.7, mat('#64748b'), x - sx, 0, 0, 8);
-  ctx.flows.addRoute({ punti: [[x0, 4.4, sz], [xs - 1, 4.4, sz], [xs - 3, 1.6, sz + 1]], tipo: 'semilavorato', ogni: 2.6, vel: 5,
+  /* [REQ-SCN-14] lo showroom è nella zona clienti: la passerella esce dal fronte del laboratorio e scavalca la cinta interna */
+  const [sx, sz] = el.pos, lab = ctx.cfg.elements.find((e) => e.id === 'laboratorio'), z0 = lab ? lab.pos[1] + lab.dim[1] / 2 : 36, zs = sz - d / 2, xp = (lab ? lab.pos[0] : -16) + 2, len = zs - z0;
+  const tubo = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, len, 14, 1, true), mat('#bae6fd', { op: 0.35, side: THREE.DoubleSide, r: 0.1 }));
+  tubo.rotation.x = Math.PI / 2; tubo.position.set(xp - sx, 4.6, (z0 + zs) / 2 - sz); g.add(tubo);
+  box(g, 1.6, 0.25, len, mat('#374151'), xp - sx, 3.7, (z0 + zs) / 2 - sz);
+  for (const z of [zs - 1.5, z0 + len * 0.62, z0 + len * 0.3]) cyl(g, 0.22, 0.28, 3.7, mat('#64748b'), xp - sx, 0, z - sz, 8);
+  ctx.flows.addRoute({ punti: [[xp, 4.4, z0], [xp, 4.4, zs + 1], [xp + 1, 1.6, zs + 3]], tipo: 'semilavorato', ogni: 2.6, vel: 5,
     attivo: () => ctx.flows.lavora('TRF') && ctx.flows.lavora('VIS') && ctx.flows.alimentato() });
   for (const x of [-8, 0, 8]) { box(g, 1.6, 1, 1.6, mat('#f8fafc'), x, 0, 2.5); const r = box(g, 1.1, 0.8, 0.1, mat(ctx.cfg.materiali.report.colore, { e: '#b45309', ei: 0.4 }), x, 1.1, 2.5); r.rotation.x = -0.3; }
 };
@@ -78,10 +79,10 @@ builders.officina = (g, el, ctx) => {
   const s = schermo(g, 4.6, 2.9, w * 0.12, 0.9, d * 0.46, c, 11 + el.indice * 3); for (const x of [-2, 2]) cyl(s, 0.1, 0.1, 0.9, mat('#475569'), x, -0.7, -0.1, 6); // report su misura, davanti al negozio
   [-1, 1].forEach((k, i) => { const f = figura(c, (el.indice + i) % 2 ? 'f' : 'm', null); f.position.set(w * 0.12 + k * 1.6, 0.2, d * 0.46 + 2.6); f.rotation.y = Math.PI - k * 0.35; g.add(f); ctx.animate((t) => { f.position.y = 0.2 + Math.abs(Math.sin(t * 1.5 + el.indice + i)) * 0.06; }); });
   /* [REQ-HS-04] strada e furgoni: i semilavorati arrivano dalle spedizioni */
-  const L = (x, y, z) => [x - sx, y, z - sz], pts = [[16, 0.1, cap.z[1] + 1], [16, 0.1, cap.z[1] + 9], [sx - w * 0.16, 0.1, sz - d / 2 - 12], [sx - w * 0.16, 0.1, sz - d / 2 - 1]];
+  const L = (x, y, z) => [x - sx, y, z - sz], S = ctx.cfg.spoke, pts = [[16, 0.1, cap.z[1] + 1], [16, 0.1, S.strada], [sx - w * 0.16, 0.1, S.strada], [sx - w * 0.16, 0.1, sz - d / 2 - 1]];   // la via esce dal cancello e si dirama
   for (let i = 0; i < 3; i++) {
-    const A = new THREE.Vector3(...L(...pts[i])), B = new THREE.Vector3(...L(...pts[i + 1])), dir = B.clone().sub(A), len = dir.length();
-    const m = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.08, len), mat('#9ca3af', { r: 1 })); m.position.copy(A).add(B).multiplyScalar(0.5); m.position.y = 0.05;
+    const A = new THREE.Vector3(...L(...pts[i])), B = new THREE.Vector3(...L(...pts[i + 1])), dir = B.clone().sub(A), len = dir.length(); if (len < 0.05) continue;
+    const m = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.08, len + 2.8), mat('#9ca3af', { r: 1 })); m.position.copy(A).add(B).multiplyScalar(0.5); m.position.y = 0.05;
     m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), dir.normalize()); m.receiveShadow = true; g.add(m);
   }
   ctx.flows.addRoute({ punti: pts, tipo: 'furgone', ogni: 6 + (el.indice % 3), vel: 9, attivo: () => ctx.flows.lavora('SSR') && ctx.state().effettivo(ctx.state().elemento(el.id)) === 'on' });

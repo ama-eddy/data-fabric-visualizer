@@ -21,6 +21,20 @@ builders.cancelli = (g, el, ctx) => {
   box(g, 0.3, 1.5, 0.3, mat('#334155'), 4.3, 0, 1.4); box(g, 0.45, 0.35, 0.1, mat('#4ade80', { e: '#22c55e', ei: 0.9 }), 4.3, 1.5, 1.5);                                          // lettore di badge
 };
 
+/* ===== [REQ-SCN-03] Accessi: ingresso clienti, con insegna, tornelli e lettori di badge ===== */
+builders.ingresso = (g, el, ctx) => {
+  const [w, , h] = el.dim, c = ctx.cfg.workloads.ACC.colore;
+  box(g, w + 2, 0.12, 7, mat('#e7e5e4', { r: 1 }), 0, 0, 0);
+  for (const x of [-w / 2, w / 2]) box(g, 0.9, h, 0.9, mat('#334155'), x, 0, 0);
+  box(g, w + 0.9, 1.3, 1, mat(c), 0, h, 0);
+  box(g, w * 0.5, 0.7, 0.12, mat('#f8fafc', { e: '#e0f2fe', ei: 0.5 }), 0, h + 0.3, 0.56);
+  for (const x of [-3, -1, 1, 3]) {                                                                     // tornelli con il lettore di badge
+    box(g, 0.5, 1.2, 1.6, mat('#64748b', { m: 0.6, r: 0.4 }), x, 0, 0);
+    box(g, 0.3, 0.2, 0.3, mat('#4ade80', { e: '#22c55e', ei: 0.9 }), x, 1.2, 0.5);
+    if (x < 3) { const b = box(g, 1.4, 0.1, 0.1, mat('#f8fafc'), x + 1, 0.9, 0); ctx.animate((t) => { b.rotation.y = ctx.flows.lavora('ACC') ? t * 1.5 + x : 0; }); }
+  }
+};
+
 /* ===== Security: recinzione perimetrale con telecamere ===== */
 builders.recinzione = (g, el, ctx) => {
   const [w, d, h] = el.dim, c = ctx.cfg.workloads.SEC.colore, rete = mat('#94a3b8', { op: 0.3 }), palo = mat('#475569');
@@ -34,7 +48,8 @@ builders.recinzione = (g, el, ctx) => {
   lato(-X, Z0, -68, Z0); lato(68, Z0, X, Z0);            // sul fondo passano scivoli, condotte e ponti: il varco è largo
   const Z2 = el.fronteEsterno || Z1;                     // [RDM-035] il perimetro protegge anche i negozi delle funzioni
   lato(-X, Z0, -X, Z2); lato(X, Z0, X, Z2);
-  if (Z2 > Z1) lato(-X, Z2, X, Z2);
+  const [v0, v1] = el.varco || [0, 0];                   // [REQ-SCN-03] varco dell'ingresso clienti nella cinta esterna
+  if (Z2 > Z1) { lato(-X, Z2, v0, Z2); lato(v1, Z2, X, Z2); }
   lato(-X, Z1, 9.5, Z1); lato(22.5, Z1, X, Z1);          // divisorio tra fabbrica e negozi, con il varco del cancello
   for (const [x, z] of [[-X, Z0], [X, Z0], [-X, Z2], [X, Z2]]) {                                        // telecamere
     cyl(g, 0.18, 0.22, 6.5, palo, x, 0, z, 8);

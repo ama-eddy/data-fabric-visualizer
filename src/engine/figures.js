@@ -21,7 +21,8 @@ export function createFigures(cfg, world, state, flows) {
   const T = cfg.team, cap = cfg.layout.capannone, V = (x, z) => new THREE.Vector3(x, 0, z);
   const quota = (x, z) => (state.stato.ARC === 'on' && x > cap.x[0] && x < cap.x[1] && z > cap.z[0] && z < cap.z[1] ? cap.pavimento : 0);
   const CHIAVE = 'fabbrica-team:' + (cfg.meta.azienda || 'standard');          // [REQ-UI-14] un team salvato per ogni azienda
-  const partenza = () => T.persone.map((p) => ({ sesso: p.sesso === 'f' ? 'f' : 'm', nome: p.nome || '', wl: (p.wl || []).filter((w) => cfg.workloads[w]) }));
+  const assegnabile = (w) => !!cfg.workloads[w] && !!T.postazioni[w];        // [REQ-UI-13] le Data Sources non hanno una postazione: nessuno del team le segue
+  const partenza = () => T.persone.map((p) => ({ sesso: p.sesso === 'f' ? 'f' : 'm', nome: p.nome || '', wl: (p.wl || []).filter(assegnabile) }));
   const tutte = [], ascolta = [];
   let seq = 0, scelta = null, turno = 0, tTurno = 0;
 
@@ -48,19 +49,18 @@ export function createFigures(cfg, world, state, flows) {
   const trova = (id) => tutte.find((f) => f.id === id);
   const aggiungi = (sesso) => { if (tutte.length >= T.max) return null; const f = crea({ sesso, nome: '', wl: [] }); salva(); return f; };
   const togli = (id) => { const f = id === null || id === undefined ? tutte[tutte.length - 1] : trova(id); if (f) { distruggi(f); salva(); } };
-  const assegna = (id, wl) => { const f = trova(id); if (f && cfg.workloads[wl] && !f.wl.includes(wl)) { f.wl.push(wl); salva(); } };   // [REQ-UI-13] più workload per persona
+  const assegna = (id, wl) => { const f = trova(id); if (f && assegnabile(wl) && !f.wl.includes(wl)) { f.wl.push(wl); salva(); } };   // [REQ-UI-13] più workload per persona
   const rimuovi = (id, wl) => { const f = trova(id); if (f && f.wl.includes(wl)) { f.wl.splice(f.wl.indexOf(wl), 1); salva(); } };
   const azzera = () => { while (tutte.length) distruggi(tutte[0]); partenza().forEach(crea); try { localStorage.removeItem(CHIAVE); } catch (e) { /* niente da togliere */ } ascolta.forEach((fn) => fn()); };
   let salvato = null; try { salvato = JSON.parse(localStorage.getItem(CHIAVE)); } catch (e) { salvato = null; }
-  (Array.isArray(salvato) ? salvato.slice(0, T.max).map((p) => ({ sesso: p.sesso === 'f' ? 'f' : 'm', nome: p.nome || '', wl: (p.wl || []).filter((w) => cfg.workloads[w]) })) : partenza()).forEach(crea);
+  (Array.isArray(salvato) ? salvato.slice(0, T.max).map((p) => ({ sesso: p.sesso === 'f' ? 'f' : 'm', nome: p.nome || '', wl: (p.wl || []).filter(assegnabile) })) : partenza()).forEach(crea);
 
   /* ---------- postazioni ---------- */
   const acceso = (tipo) => state.recs.find((r) => r.el.tipo === tipo && state.effettivo(r) === 'on');
   const scivoli = () => cfg.elements.filter((e) => e.tipo === 'trasporto' && ['copy', 'dataflow', 'mirroring'].includes(e.modalita) && state.effettivo(state.elemento(e.id)) !== 'off').map((e) => e.pos[0]);
-  const lavorabile = (wl) => state.stato[wl] === 'on' && (wl !== 'SRC' || !!acceso('sorgente')) && (wl !== 'SSR' || !!acceso('officina'));
+  const lavorabile = (wl) => state.stato[wl] === 'on' && (wl !== 'SSR' || !!acceso('officina'));
   function posto(wl, n) {                                              // n = quante persone ci sono già
     const P = T.postazioni[wl];
-    if (wl === 'SRC') { const e = acceso('sorgente').el; return { p: V(e.pos[0] - 3 + n * 1.6, e.pos[1] + 8.2), verso: 0 }; }
     if (wl === 'SSR') { const e = acceso('officina').el; return { p: V(e.pos[0] + e.dim[0] * 0.09 + n * 1.6, e.pos[1] + e.dim[1] * 0.2 + 3.2), verso: 0 }; }
     if (wl === 'INT' && n === 0) return { scivoli: true };
     const k = wl === 'INT' ? n - 1 : n;
@@ -69,11 +69,12 @@ export function createFigures(cfg, world, state, flows) {
 
   /* ---------- camminata: un anello attorno al capannone, senza attraversare edifici, lago e recinzione [D-53] ---------- */
   const X0 = -36, X1 = 36, Z0 = -41.2, Z1 = 42.3, LATI = [X1 - X0, Z1 - Z0, X1 - X0, Z1 - Z0], GIRO = 2 * (X1 - X0) + 2 * (Z1 - Z0);
+  const VIA = cfg.spoke.strada;                                        // fuori dal cancello si cammina lungo la via dei negozi
   const zona = (p) => (p.z < -70 ? 'nord' : p.z > 44.6 ? 'fuori' : 'dentro');
   function uscita(p) {                                                 // dal punto all'anello: [tappe intermedie], punto sull'anello
     const z = zona(p);
     if (z === 'nord') return [[V(-57.5, p.z), V(-57.5, Z0)], V(X0, Z0)];
-    if (z === 'fuori') return [[V(p.x, 62), V(16, 62)], V(16, Z1)];
+    if (z === 'fuori') return [[V(p.x, VIA), V(16, VIA)], V(16, Z1)];
     const x = Math.min(X1, Math.max(X0, p.x)), zz = Math.min(Z1, Math.max(Z0, p.z));
     if (x > X0 && x < X1 && zz > Z0 && zz < Z1) { const d = [zz - Z0, X1 - x, Z1 - zz, x - X0], m = d.indexOf(Math.min(...d)); return [[], m === 0 ? V(x, Z0) : m === 1 ? V(X1, zz) : m === 2 ? V(x, Z1) : V(X0, zz)]; }
     return [[], V(x, zz)];
@@ -83,7 +84,7 @@ export function createFigures(cfg, world, state, flows) {
   function percorso(a, b) {
     const za = zona(a), zb = zona(b);
     if (a.distanceTo(b) < 9 || (za === 'nord' && zb === 'nord')) return [a.clone(), b.clone()];
-    if (za === 'fuori' && zb === 'fuori') return [a.clone(), V(a.x, 62), V(b.x, 62), b.clone()];
+    if (za === 'fuori' && zb === 'fuori') return [a.clone(), V(a.x, VIA), V(b.x, VIA), b.clone()];
     const [ua, ra] = uscita(a), [ub, rb] = uscita(b), ta = sulGiro(ra), tb = sulGiro(rb), avanti = (tb - ta + GIRO) % GIRO, senso = avanti <= GIRO / 2 ? 1 : -1, tratto = senso === 1 ? avanti : GIRO - avanti;
     const angoli = ANGOLI.map(([t, p]) => [((t - ta) * senso + GIRO) % GIRO, p]).filter(([d]) => d > 0.01 && d < tratto - 0.01).sort((p, q) => p[0] - q[0]).map(([, p]) => p.clone());
     return [a.clone(), ...ua, ra, ...angoli, rb, ...ub.slice().reverse(), b.clone()];
@@ -133,7 +134,7 @@ export function createFigures(cfg, world, state, flows) {
     if (s) { segno.position.set(s.o.position.x, s.o.position.y, s.o.position.z); freccia.position.y = 4.8 + Math.sin(t * 4) * 0.35; anello.scale.setScalar(1 + 0.12 * Math.sin(t * 5)); }
   }
   /* [REQ-WL-13] un workload acceso che nessuno segue è "scoperto" */
-  const scoperto = (wl) => state.stato[wl] === 'on' && !tutte.some((f) => f.wl.includes(wl));
+  const scoperto = (wl) => assegnabile(wl) && state.stato[wl] === 'on' && !tutte.some((f) => f.wl.includes(wl));
   const conta = () => { const c = { totale: tutte.length, caffe: tutte.filter((f) => !f.ora).length }; for (const f of tutte) if (f.ora) c[f.ora] = (c[f.ora] || 0) + 1; return c; };
-  return { update, tutte, trova, aggiungi, togli, assegna, rimuovi, azzera, evidenzia, scoperto, conta, scelta: () => scelta, onChange: (fn) => ascolta.push(fn) };
+  return { update, tutte, trova, assegnabile, aggiungi, togli, assegna, rimuovi, azzera, evidenzia, scoperto, conta, scelta: () => scelta, onChange: (fn) => ascolta.push(fn) };
 }

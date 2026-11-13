@@ -13,7 +13,7 @@ window.PROFILE = {
   team: [
     { sagoma: 'uomo', nome: 'Luca', workload: ['Data Integration', 'Data Architecture'] },
     { sagoma: 'donna', nome: 'Sara', workload: ['Data Visualization'] },
-    { sagoma: 'donna', nome: 'Elena', workload: ['Self-service', 'Data Sources'] },
+    { sagoma: 'donna', nome: 'Elena', workload: ['Self-service'] },
     { sagoma: 'uomo', nome: 'Marco', workload: [] },
   ],
   contatto: { chi: 'Team dati', come: 'dati@esempio.example' },

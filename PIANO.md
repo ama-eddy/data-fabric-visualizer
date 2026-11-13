@@ -1,4 +1,4 @@
-# Fabbrica Dati 3D — Piano di implementazione
+# Data Platform as a Fabric — Piano di implementazione
 
 > Realizza `REQUISITI.md` v1.1 in **6 batch**. Ogni batch è pensato per stare in **una sessione di lavoro** e si chiude con un file `fabbrica-dati.html` **funzionante e provabile**.
 

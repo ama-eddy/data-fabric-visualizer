@@ -102,7 +102,7 @@ const path = require('path'), fs = require('fs');
   for (const k of [0, 0, 1, 0, 0]) await page.locator('.tasto.piu').nth(k).click();                                          // [REQ-UI-12] si compone con +
   f = await page.evaluate(() => fabbrica.figures.conta());
   check(f.totale === 5 && f.caffe === 5, 'aggiunte 5 persone: non assegnate, tutte alla macchinetta del caffè: ' + JSON.stringify(f));
-  check(await page.locator('#wl > .row.scoperto').count() === 13, 'tutti i workload accesi sono scoperti');                // [REQ-WL-13]
+  check(await page.locator('#wl > .row.scoperto').count() === 12, 'tutti i workload accesi e assegnabili sono scoperti');                // [REQ-WL-13]
   await page.locator('.pupazzo').nth(0).dragTo(page.locator('#wl > .row[data-wl="INT"]'));                                 // [REQ-UI-13]
   await page.locator('.pupazzo').nth(0).dragTo(page.locator('#wl > .row[data-wl="VIS"]'));
   await page.locator('.pupazzo').nth(1).dragTo(page.locator('#wl > .row[data-wl="INT"]'));
@@ -133,7 +133,8 @@ const path = require('path'), fs = require('fs');
   await page.evaluate(() => ['m', 'm', 'f', 'm', 'm'].forEach((x) => fabbrica.figures.aggiungi(x)));
   await page.getByText('Tutto on').click();
   await page.evaluate(() => fabbrica.state.recs.filter((r) => r.el.tipo === 'sorgente').forEach((r) => fabbrica.state.setElemento(r.el.id, 'on')));
-  await page.evaluate(() => { fabbrica.figures.assegna(fabbrica.figures.tutte[3].id, 'GOV'); fabbrica.figures.assegna(fabbrica.figures.tutte[4].id, 'SRC'); fabbrica.figures.assegna(fabbrica.figures.tutte[1].id, 'SSR'); });
+  await page.evaluate(() => { fabbrica.figures.assegna(fabbrica.figures.tutte[3].id, 'GOV'); fabbrica.figures.assegna(fabbrica.figures.tutte[4].id, 'SRC'); fabbrica.figures.assegna(fabbrica.figures.tutte[4].id, 'PMO'); fabbrica.figures.assegna(fabbrica.figures.tutte[1].id, 'SSR'); });
+  check(await page.evaluate(() => !fabbrica.figures.tutte[4].wl.includes('SRC') && !fabbrica.figures.scoperto('SRC')) && await page.locator('#wl .row[data-wl="SRC"].scoperto').count() === 0, 'RDM-040: le Data Sources non si assegnano e non risultano scoperte');
 
   // ---- RDM-016/017/018: laboratorio e showroom, tendina delle sorgenti, pannello del team ----
   await page.locator('#wl .row[data-wl="SRC"] .apri').click();
@@ -146,7 +147,7 @@ const path = require('path'), fs = require('fs');
   await page.locator('.pupazzo').nth(3).click(); await page.waitForTimeout(1600);
   check(await page.evaluate(() => fabbrica.figures.scelta() === fabbrica.figures.tutte[3].id) && (await page.locator('#info h3').textContent()).startsWith('Persona del team dati'), 'clic sul pupazzino: evidenziato e scheda aperta');
   await shot('16-pupazzo-evidenziato', 300);
-  await page.evaluate(() => fabbrica.world.flyTo([-36, 34, 70], [-34, 3, 28]));
+  await page.evaluate(() => fabbrica.world.flyTo([-44, 36, 100], [-12, 3, 56]));
   await shot('17-laboratorio-showroom', 3000);
   await page.locator('.pupazzo').nth(3).click();
 
@@ -165,8 +166,11 @@ const path = require('path'), fs = require('fs');
   await shot('19-gru-e-pannello', 4000);
   await page.evaluate(() => { fabbrica.state.set('RTI', 'on'); fabbrica.ui.chiudi(); fabbrica.world.home(); });
   await shot('12-tutto-on', 3500);
-  await page.evaluate(() => fabbrica.world.flyTo([20, 34, 128], [8, 2, 76]));
-  await shot('25-negozi-e-recinzione', 3500);
+  await page.evaluate(() => fabbrica.world.flyTo([26, 44, 162], [0, 2, 92]));
+  check(await page.waitForFunction(() => fabbrica.clienti.inCammino() >= 3, null, { timeout: 30000 }).then(() => true, () => false), 'RDM-039: i clienti entrano dall\'ingresso clienti');
+  await page.waitForTimeout(9000);
+  check(await page.evaluate(() => fabbrica.clienti.zMinima() > fabbrica.cfg.elements.find((e) => e.id === 'recinzione').fronte + 5 && fabbrica.state.elemento('ingresso').on.visible && fabbrica.state.elemento('showroom').el.pos[1] > 60.5), 'RDM-039: showroom nella zona clienti, nessun cliente oltre la cinta interna');
+  await shot('25-negozi-e-recinzione', 500);
   await page.evaluate(() => fabbrica.world.home()); await page.waitForTimeout(4000);
   const sovrapposte = await page.evaluate(() => { const r = [...document.querySelectorAll('.lbl')].filter((e) => e.offsetParent && getComputedStyle(e).opacity > 0.5 && !e.classList.contains('nascosta')).map((e) => e.getBoundingClientRect()); let n = 0; for (let i = 0; i < r.length; i++) for (let j = i + 1; j < r.length; j++) if (r[i].left < r[j].right && r[i].right > r[j].left && r[i].top < r[j].bottom && r[i].bottom > r[j].top) n++; return [n, r.length]; });
   check(sovrapposte[0] === 0 && sovrapposte[1] >= 8, 'etichette: nessuna sovrapposizione nella vista d\'insieme (sovrapposte, visibili): ' + sovrapposte);
@@ -189,7 +193,7 @@ const path = require('path'), fs = require('fs');
   check(ep.titolo.includes('Esempio S.p.A.'), 'profilo: nome azienda');
   check(ep.spoke.join() === 'Negozio Amministrazione:on,Negozio Vendite:on,Negozio Acquisti:wip,Negozio Personale:off', 'profilo: spoke e stati: ' + ep.spoke);
   check(ep.src.join() === 'Il gestionale:on,CRM vendite:on,Budget (Excel):on,Presenze:off', 'profilo: sorgenti e flussi: ' + ep.src);
-  check(ep.team === 'Luca:INT+ARC,Sara:VIS,Elena:SSR+SRC,Marco:' && ep.scheda.includes('dati@esempio.example'), 'profilo: team di partenza con nomi e assegnazioni, contatto: ' + ep.team);
+  check(ep.team === 'Luca:INT+ARC,Sara:VIS,Elena:SSR,Marco:' && ep.scheda.includes('dati@esempio.example'), 'profilo: team di partenza con nomi e assegnazioni, contatto: ' + ep.team);
   check(await pe.locator('#team .gruppo small').first().textContent() === 'Luca', 'profilo: il nome compare sotto il pupazzino');
   check(ep.metodi === 'copy,mirroring,dataflow,copy', 'profilo: metodo di integrazione per sorgente (copia, mirroring; se manca, quello della categoria): ' + ep.metodi);   // [RDM-036]
   await pe.screenshot({ path: path.join(out, '11-profilo-esempio.png') }); await pe.close();

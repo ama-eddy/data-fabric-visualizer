@@ -105,7 +105,7 @@ export function createUI(cfg, world, state) {
     for (const w of f.wl) { const P = cfg.team.postazioni[w], spento = state.stato[w] !== 'on'; box.append(h('p', { className: 'compito' }, h('b', { textContent: cfg.workloads[w].nome + ' — ' + P.nome + (spento ? ' (' + ui.inAttesa + ')' : '') }), h('br'), P.cosa)); }
     box.append(h('h4', { textContent: ui.assegna }));
     const chips = h('div', { className: 'chips' });
-    for (const w of cfg.ordine) { const on = f.wl.includes(w), c = h('button', { className: 'chip2' + (on ? ' on' : ''), textContent: cfg.workloads[w].nome }); c.dataset.wl = w; c.style.borderColor = cfg.workloads[w].colore; if (on) c.style.background = cfg.workloads[w].colore; c.onclick = () => (on ? figure.rimuovi(f.id, w) : figure.assegna(f.id, w)); chips.append(c); }
+    for (const w of cfg.ordine.filter(figure.assegnabile)) { const on = f.wl.includes(w), c = h('button', { className: 'chip2' + (on ? ' on' : ''), textContent: cfg.workloads[w].nome }); c.dataset.wl = w; c.style.borderColor = cfg.workloads[w].colore; if (on) c.style.background = cfg.workloads[w].colore; c.onclick = () => (on ? figure.rimuovi(f.id, w) : figure.assegna(f.id, w)); chips.append(c); }
     box.append(chips, h('h4', { textContent: ui.perTe }), h('p', { textContent: cfg.team.perTe }));
     box.classList.add('open');
   }
@@ -179,7 +179,7 @@ export function createUI(cfg, world, state) {
       scoperti(); if (aperta) aperta();
     }
     /* [REQ-UI-13] le righe dei workload accettano le persone trascinate */
-    for (const k of cfg.ordine) {
+    for (const k of cfg.ordine.filter(fig.assegnabile)) {
       const r = rows[k];
       r.ondragover = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; r.classList.add('sopra'); };
       r.ondragleave = () => r.classList.remove('sopra');

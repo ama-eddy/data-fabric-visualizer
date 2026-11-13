@@ -8,6 +8,7 @@ import { elementiSorgenti } from './engine/sources.js';
 import { elementiSpoke } from './engine/spoke.js';
 import { createFigures } from './engine/figures.js';
 import { createGuida } from './engine/guida.js';
+import { createClienti } from './engine/clienti.js';
 
 /* ===== [REQ-CFG-02] Il profilo dell'azienda si sovrappone al modello standard ===== */
 function applicaProfilo(cfg, p) {
@@ -52,6 +53,7 @@ try {
   const state = createState(cfg, world, flows);
   flows.collega(state);
   const figures = createFigures(cfg, world, state, flows);
+  const clienti = createClienti(cfg, world, state);
   const ui = createUI(cfg, world, state);
   ui.collegaTeam(figures);
   const guida = createGuida(cfg, world, state, ui);
@@ -65,11 +67,12 @@ try {
     state.update(dt, clock.elapsedTime);
     flows.update(dt, ui.inPausa());
     figures.update(dt, clock.elapsedTime);
+    clienti.update(dt, clock.elapsedTime);
     ui.ordinaEtichette(dt);
     fps.n++; fps.t += dt; if (fps.t >= 1) { fps.v = Math.round(fps.n / fps.t); fps.n = 0; fps.t = 0; fpsEl.textContent = fps.v + ' fps'; }
     world.update(dt);
   })();
-  window.fabbrica = { cfg, world, state, ui, flows, figures, guida, fps: () => fps.v };                         // per prove e collaudo
+  window.fabbrica = { cfg, world, state, ui, flows, figures, clienti, guida, fps: () => fps.v };                         // per prove e collaudo
 } catch (e) {
   const el = document.getElementById('err');
   el.style.display = 'flex'; el.textContent = 'Impossibile avviare la fabbrica: ' + e.message;

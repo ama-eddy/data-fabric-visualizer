@@ -1,4 +1,4 @@
-# Fabbrica Dati 3D
+# Data Platform as a Fabric
 
 Metafora 3D esplorabile di una data platform hub & spoke, pensata per spiegarla alle funzioni aziendali.
 
