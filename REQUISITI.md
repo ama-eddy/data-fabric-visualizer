@@ -5,7 +5,7 @@
 
 | Campo | Valore |
 |---|---|
-| Versione documento | 1.13 |
+| Versione documento | 1.14 |
 | Data | 2026-11-12 |
 | Stato | Requisiti approvati — implementazione da avviare (vedi `PIANO.md`) |
 | Approva | Il responsabile del progetto (richiedente) |
@@ -252,7 +252,7 @@ Il pannello e la narrativa li presentano in quest'ordine (D-08): Data Sources, D
 | REQ-WL-10 | La piattaforma gestisce **tutti e 13 i workload** del §5.1, ciascuno con codice, nome, metafora, concetti Fabric, colore, dipendenze ed elementi 3D. | Ogni riga del §5.1 corrisponde a una voce di `CONFIG.workloads`. | M | Implementato |
 | REQ-WL-11 | Ogni workload ha un **colore identificativo**, usato per l'etichetta, il bordo della zona e il badge nel pannello. | Colori distinti e leggibili sia su sfondo chiaro sia su sfondo scuro. | S | Implementato |
 | REQ-WL-12 | Aggiungere un workload **non richiede modifiche al motore**: basta una voce in `CONFIG.workloads`, i suoi elementi in `CONFIG.elements` e i suoi testi in `TESTI.md` (`npm run testi`). Un elemento senza costruttore 3D proprio compare come volume provvisorio. | Un workload aggiunto dal CONFIG compare nel pannello e nella scena. | S | Implementato |
-| REQ-WL-13 | Un workload **acceso senza nessuna persona assegnata** è segnalato come **scoperto** ("nessuno se ne occupa") nella riga del pannello e in scena, **senza fermare il reparto**. Vale solo per i workload assegnabili. | Con un workload acceso e nessuno assegnato compare il segnale; assegnando una persona scompare; i flussi non cambiano. | S | Approvato |
+| REQ-WL-13 | Un workload **acceso senza nessuna persona assegnata** è segnalato come **scoperto** ("nessuno se ne occupa") nella riga del pannello e in scena, **senza fermare il reparto**. | Con un workload acceso e nessuno assegnato compare il segnale; assegnando una persona scompare; i flussi non cambiano. | S | Approvato |
 
 ---
 
@@ -361,16 +361,17 @@ Una sorgente per categoria, così da poter raccontare ogni caso.
 | REQ-SCN-08 | Lo stile è **originale** e "da plastico" (low-poly), senza marchi, loghi o asset di terze parti. | Nessun logo Microsoft o di altri marchi in scena. | M | Implementato |
 | REQ-SCN-09 | Lo **sportello dell'hub** (reception / Center of Excellence) è il punto in cui le funzioni entrano in contatto con la piattaforma: segnalazioni, richieste, onboarding. Appartiene a `WL-GOV`. | L'elemento è presente e cliccabile, ed è la tappa di partenza o di contatto dei percorsi. | M | Implementato |
 | REQ-SCN-10 | Il **laboratorio prove** sta **dentro il capannone**, subito dopo il confezionamento, e compare con la **Data Transformation** (`WL-TRF`): ogni semilavorato viene collaudato qui prima di uscire, e qui si provano le modifiche prima della produzione. | L'elemento compare con `WL-TRF`; il flusso dei semilavorati lo attraversa; è usato da Change request e New project. | M | Implementato |
-| REQ-SCN-11 | Il **team dati** è rappresentato da **figure stilizzate, una per persona**, con due sagome (uomo / donna) e un colore unico per l'hub. Le persone **non hanno un compito fisso**: lo ricevono con le assegnazioni (REQ-UI-13). In scena: chi ha **un'assegnazione** sta alla postazione di quel workload; chi ne ha **più d'una** ruota a turno tra le postazioni dei suoi workload accesi; chi **non è assegnato**, o ha solo workload spenti, aspetta al punto di raccolta (REQ-SCN-15). | In scena ci sono esattamente le persone del pannello; cambiando un'assegnazione la figura si sposta; con due assegnazioni accese la figura alterna le due postazioni. | M | Approvato |
+| REQ-SCN-11 | Il **team dati** è rappresentato da **figure stilizzate, una per persona**, con due sagome (uomo / donna) e un colore unico per l'hub. Le persone **non hanno un compito fisso**: lo ricevono con le assegnazioni (REQ-UI-13). In scena: chi ha **un'assegnazione** sta alla postazione di quel workload; chi ne ha **più d'una** ruota a turno tra le postazioni dei suoi workload accesi; chi **non è assegnato**, o ha solo workload spenti, aspetta alla **macchinetta del caffè** (REQ-SCN-15). | In scena ci sono esattamente le persone del pannello; cambiando un'assegnazione la figura si sposta; con due assegnazioni accese la figura alterna le due postazioni. | M | Approvato |
 | REQ-SCN-12 | Nelle officine degli spoke lavorano **figure delle funzioni business**, con il colore dello spoke, che usano i semilavorati e guardano i report. | Le figure compaiono con l'officina. | S | Implementato |
 | REQ-SCN-13 | L'**ufficio di coordinamento** è la postazione del project management. Appartiene al workload **Project Management** (`WL-PMO`), indipendente dall'architettura. | L'ufficio compare con `WL-PMO`, anche a Data Architecture spenta, e non compare con la sola Data Architecture. | M | Implementato |
 | REQ-SCN-14 | Lo **showroom** è un **edificio a sé, vicino al capannone ma staccato**, collegato al laboratorio prove da una passerella coperta. | Lo showroom è fuori dal capannone; la passerella è visibile e i semilavorati la percorrono. | M | Implementato |
-| REQ-SCN-15 | Ogni workload assegnabile ha una **postazione** con un gesto riconoscibile (§7.1), e c'è un **punto di raccolta** vicino all'ingresso dove stanno le persone senza compito. Nella Data Integration il primo assegnato ripara gli scivoli, il secondo manovra le gru, gli altri si affiancano. | Tutte le postazioni del §7.1 esistono; le persone non assegnate sono visibili al punto di raccolta. | M | Approvato |
+| REQ-SCN-15 | **Ogni workload** ha una **postazione** con un gesto riconoscibile (§7.1), e c'è un **punto di raccolta, la macchinetta del caffè**, dove stanno le persone senza compito. Nella Data Integration il primo assegnato ripara gli scivoli, il secondo manovra le gru, gli altri si affiancano. | Tutte le postazioni del §7.1 esistono; le persone non assegnate sono visibili alla macchinetta del caffè. | M | Approvato |
 
 ### 7.1 Postazioni del team dati (REQ-SCN-15)
 
 | Workload | Postazione | Cosa fa la persona |
 |---|---|---|
+| Data Sources | Area fornitori, accanto a un fornitore acceso | Conosce il sistema e spiega cosa contiene |
 | Data Architecture | Tavolo dei progetti accanto al capannone | Progetta la fabbrica |
 | Project Management | Ufficio di coordinamento | Coordina gli operatori |
 | Data Integration | Scivoli (1ª persona) · pannello delle gru (2ª) | Ripara gli scivoli · pesca dal lago e riempie il Bronze |
@@ -378,12 +379,13 @@ Una sorgente per categoria, così da poter raccontare ogni caso.
 | Security | Caveau | Custodisce il materiale riservato |
 | Accessi | Portineria del cancello | Consegna i badge |
 | Data Visualization | Showroom | Costruisce i report ufficiali |
+| Self-service (spoke) | Dentro un'officina accesa | Costruisce i report della funzione |
 | Data Governance | Cabina della torre di controllo | Governa la fabbrica e certifica |
 | Monitoraggio costi | Contatori della centrale | Legge i consumi |
 | Knowledge | Ufficio tecnico | Tiene la mappa dei significati |
 | Real-Time | Sala sensori | Sorveglia i segnali in diretta |
 
-**Data Sources** e **Self-service** non sono assegnabili: sono i sistemi e le officine delle funzioni, non lavoro del team dati.
+Tutti i 13 workload sono assegnabili: il team dati è **misto tra IT e business**, quindi una persona può stare anche alle sorgenti o in un'officina degli spoke.
 
 ---
 
@@ -453,9 +455,9 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 | REQ-UI-09 | Durante il meeting il presentatore può **cambiare dal vivo lo stato** (off/wip/on) di workload, **singoli spoke** e **singole sorgenti**, dal pannello o cliccando sull'elemento; la scena alla fine rappresenta l'as-is di business costruito insieme. | Cambio di stato in ≤ 2 clic, con effetto immediato in scena. | M | Implementato |
 | REQ-UI-10 | Due **modalità**: **esplorazione libera** (navigazione, clic sugli elementi, stati dal vivo, percorsi) e **narrativa** (tutti i workload in ordine, §8). Si passa dall'una all'altra con un pulsante; uscendo dalla narrativa, la scena resta nello stato raggiunto. | Il cambio di modalità non ricarica la scena e non perde lo stato. | M | Implementato |
 | REQ-UI-11 | Nel pannello, i workload con elementi a **stato proprio** (Data Integration → sorgenti, Self-service → spoke) si aprono **a tendina**: ogni sorgente o spoke ha il suo selettore off/cantiere/on, per **accenderli uno alla volta**. | Aprendo la tendina di Data Integration e spegnendo una sorgente, si spegne solo quella. | M | Implementato |
-| REQ-UI-12 | **In alto a destra**, il pannello **Team dati** mostra **un pupazzino per persona** (sagoma uomo/donna, nome facoltativo). Con **+** si aggiunge una persona (un pulsante per sagoma), con **−** si toglie quella selezionata o l'ultima aggiunta; il massimo è 12. Sotto ogni pupazzino c'è **un pallino colorato per ogni workload assegnato**. Il clic su un pupazzino lo seleziona e lo **evidenzia in scena** (anello a terra e freccia sopra la testa). | Aggiungendo o togliendo una persona dal pannello, la figura compare o scompare in scena, senza toccare alcun file. | M | Approvato |
-| REQ-UI-13 | **Assegnazione dal vivo**: si **trascina** un pupazzino sulla riga di un workload (la riga si illumina), oppure si clicca il pupazzino e poi il workload. Una persona può avere **più workload**: ogni trascinamento ne aggiunge uno. Il clic su un pallino toglie quell'assegnazione. In presentazione, dove il pannello dei workload è nascosto, l'elenco dei workload si apre dal pupazzino. | Trascinando la stessa persona su due workload compaiono due pallini; il clic su un pallino lo toglie; Data Sources e Self-service non accettano persone. | M | Approvato |
-| REQ-UI-14 | Il team composto a schermo (persone, nomi, assegnazioni) viene **ricordato dal browser** di quel computer; **Azzera** lo riporta al punto di partenza, cioè al profilo aziendale se c'è, altrimenti al modello standard. | Dopo una ricarica il team è quello lasciato; dopo Azzera torna quello di partenza. | S | Approvato |
+| REQ-UI-12 | **In alto a destra**, il pannello **Team dati** mostra **un pupazzino per persona** (sagoma uomo/donna; il nome compare solo se indicato nel profilo aziendale). Con **+** si aggiunge una persona (un pulsante per sagoma), con **−** si toglie quella selezionata o l'ultima aggiunta; il massimo è 12. Sotto ogni pupazzino c'è **un pallino colorato per ogni workload assegnato**. Il clic su un pupazzino lo seleziona e lo **evidenzia in scena** (anello a terra e freccia sopra la testa). | Aggiungendo o togliendo una persona dal pannello, la figura compare o scompare in scena, senza toccare alcun file. | M | Approvato |
+| REQ-UI-13 | **Assegnazione dal vivo**: si **trascina** un pupazzino sulla riga di un workload (la riga si illumina), oppure si clicca il pupazzino e poi il workload. Una persona può avere **più workload**: ogni trascinamento ne aggiunge uno. Il clic su un pallino toglie quell'assegnazione. In presentazione, dove il pannello dei workload è nascosto, l'elenco dei workload si apre dal pupazzino. | Trascinando la stessa persona su due workload compaiono due pallini; il clic su un pallino lo toglie; tutti i 13 workload accettano persone. | M | Approvato |
+| REQ-UI-14 | Il team composto a schermo (persone e assegnazioni) viene **ricordato dal browser** di quel computer; **Azzera** lo riporta al punto di partenza, cioè al profilo aziendale se c'è, altrimenti al modello standard. | Dopo una ricarica il team è quello lasciato; dopo Azzera torna quello di partenza. | S | Approvato |
 
 ---
 
@@ -479,7 +481,7 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 |---|---|---|---|---|
 | REQ-CFG-01 | Tutti i contenuti stanno in un unico blocco **`CONFIG`** in cima all'HTML: workload, elementi, colori, spoke, sorgenti e capitoli; i **testi** vengono da `TESTI.md` (REQ-CFG-08). | Il motore non contiene stringhe di contenuto. | M | Implementato |
 | REQ-CFG-02 | Un blocco **`PROFILE`**, separato, **si sovrappone** al CONFIG per i soli campi del profilo (REQ-CFG-03). Un profilo vuoto equivale al modello standard. | Con `PROFILE = {}` si ottiene esattamente lo standard. | M | Implementato |
-| REQ-CFG-03 | Il profilo di un'azienda contiene **solo**: nome dell'azienda, **spoke** (nome + stato on/wip/off), **sorgenti** (nome noto al business + **categoria** + **flusso on/off**), **team dati di partenza** (quante persone, la sagoma di ciascuna, il nome facoltativo e i workload assegnati) e un **contatto** ("a chi rivolgerti"). Tutto il resto (workload, capitoli, percorsi, testi) è standard. **Nessun nome tecnico.** | Il template `profili/PROFILO-TEMPLATE.md` ha esattamente questi campi. | M | Approvato |
+| REQ-CFG-03 | Il profilo di un'azienda contiene **solo**: nome dell'azienda, **spoke** (nome + stato on/wip/off), **sorgenti** (nome noto al business + **categoria** + **flusso on/off**), **team dati di partenza** (quante persone, la sagoma di ciascuna, il **nome**, che esiste solo nella versione aziendale, e i workload assegnati) e un **contatto** ("a chi rivolgerti"). Tutto il resto (workload, capitoli, percorsi, testi) è standard. **Nessun nome tecnico.** | Il template `profili/PROFILO-TEMPLATE.md` ha esattamente questi campi. | M | Approvato |
 | REQ-CFG-04 | Ogni chiave del CONFIG riporta i **REQ** che la governano (campo `reqs` o commento). | Ricerca di `REQ-xx` nel file e ritrovamento della chiave. | M | Implementato |
 | REQ-CFG-05 | Il documento di profilo (`profili/<org>.md`) e il blocco `PROFILE` nell'HTML sono **allineati**: il blocco si ricava dal documento. | Ogni campo del blocco esiste nel documento di profilo. | S | Implementato |
 | REQ-CFG-06 | Si può **caricare un profilo da file JSON** tramite l'interfaccia, senza modificare l'HTML. | Il pulsante "Carica profilo" applica il JSON alla scena (D-11). | C | Approvato |
@@ -627,7 +629,7 @@ const CONFIG = {
 | D-52 | Capitoli e tappe sono scritti con **testi provvisori**, da rivedere in `TESTI.md`; quali capitoli entrano nella presentazione si decide escludendoli dal CONFIG (`incluso: false`). | Proposta | Confermata |
 | D-53 | Chi ruota tra le postazioni cammina lungo un **corridoio davanti al capannone**, senza attraversare gli edifici. | Proposta | Confermata |
 | D-54 | Il team si compone **a schermo**: persone aggiunte e tolte con + e −, assegnate trascinandole sui workload, anche a **più workload**; di default nessuno è assegnato. | Utente | Confermata |
-| D-55 | I non assegnati sono visibili a un **punto di raccolta**; Data Sources e Self-service **non sono assegnabili**; un workload acceso senza persone è segnalato come **scoperto** ma non si ferma; il team si **ricorda nel browser**, con Azzera; il **nome** è facoltativo. | Proposta, confermata dall'utente | Confermata |
+| D-55 | I non assegnati stanno alla **macchinetta del caffè**; **tutti i workload sono assegnabili**, compresi Data Sources e Self-service, perché il team dati è misto tra IT e business; un workload acceso senza persone è segnalato come **scoperto** ma non si ferma; il team si **ricorda nel browser**, con Azzera; il **nome** delle persone non c'è nel modello standard e si indica solo nel profilo aziendale. | Utente | Confermata |
 
 ---
 
@@ -691,4 +693,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.13 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…033 |
+| 1.14 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…033 |
