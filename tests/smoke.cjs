@@ -254,6 +254,7 @@ const path = require('path'), fs = require('fs');
   const campo = page.locator('#info p[data-k="elements.lago.fabbrica"]');
   await campo.click(); await page.keyboard.press('Control+A'); await page.keyboard.type('Testo di prova del lago'); await page.keyboard.press('Enter');
   check(await page.evaluate(() => fabbrica.modifica.conta() === 1 && fabbrica.cfg.elements.find((e) => e.id === 'lago').fabbrica === 'Testo di prova del lago' && /### elements\.lago\.fabbrica\nTesto di prova del lago\n/.test(fabbrica.modifica.md()) && fabbrica.modifica.md().split('\n').length === window.TESTI_MD.split('\n').length), 'modifica testi: salvata e presente nel TESTI.md esportato');
+  check(await page.locator('#info [data-k="contatto.chi"]').count() === 1 && await page.locator('#info [data-k="contatto.come"]').count() === 1, 'modifica testi: anche "A chi rivolgerti"');
   check((await page.locator('#esporta-btn').textContent()) === 'Esporta testi (1)', 'modifica testi: pulsante di esportazione con il conteggio');
   await page.reload(); await page.waitForFunction(() => window.fabbrica); await page.getByText('Esplora liberamente').click();
   check(await page.evaluate(() => fabbrica.cfg.elements.find((e) => e.id === 'lago').fabbrica === 'Testo di prova del lago'), 'modifica testi: resta dopo la ricarica');

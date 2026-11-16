@@ -15,7 +15,7 @@ import { modifica, applicaTesti } from './engine/modifica.js';
 function applicaProfilo(cfg, p) {
   if (!p) return cfg;
   if (p.azienda) { cfg.meta.titolo += ' · ' + p.azienda; cfg.meta.azienda = p.azienda; }
-  if (p.contatto && p.contatto.chi) cfg.contatto = p.contatto;        // [REQ-LIT-02]
+  if (p.contatto && p.contatto.chi) cfg.contatto = { ...p.contatto, daProfilo: true };          // [REQ-LIT-02]
   /* [REQ-CFG-03] sorgenti del profilo: nome, categoria e flusso on/off sostituiscono il catalogo standard */
   if (p.sorgenti && p.sorgenti.length) {
     /* [REQ-CFG-03, RDM-036] metodo di integrazione di ogni sorgente: copia (scivolo), tempo reale (nastro veloce), mirroring (scivolo di vetro) */

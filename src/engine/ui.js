@@ -99,8 +99,11 @@ export function createUI(cfg, world, state) {
     sez(ui.nellaFabbrica, d.fabbrica || wl.fabbrica, 'fabbrica');
     if (d.mezzo) box.append(h('h4', { textContent: ui.mezzo }), h('p', {}, lega(h('span', { textContent: d.mezzoNome }), 'mezzoNome'), '. ', lega(h('span', { textContent: d.mezzo }), 'mezzo')));
     sez(ui.perTe, d.perTe || wl.perTe, 'perTe');
-    sez(ui.contatto, [cfg.contatto.chi, cfg.contatto.come].filter(Boolean).join(' — '));
-    sez(ui.gestore, [ui.gestori[d.gestore || wl.gestore], d.gestoreTesto].filter(Boolean).join('. '));
+    /* [REQ-CFG-09] contatto e gestore sono fatti di due testi: ognuno si modifica per conto suo (il contatto solo se non viene dal profilo) */
+    const due = (t, a, ka, b, kb, sep) => { if (!a && !b) return; const p = h('p'); if (a) p.append(modifica.lega(h('span', { textContent: a }), ka)); if (a && b) p.append(sep); if (b) p.append(modifica.lega(h('span', { textContent: b }), kb)); box.append(h('h4', { textContent: t }), p); };
+    const C = cfg.contatto, G = d.gestore || wl.gestore;
+    due(ui.contatto, C.chi, C.daProfilo ? null : 'contatto.chi', C.come, C.daProfilo ? null : 'contatto.come', ' — ');
+    due(ui.gestore, ui.gestori[G], 'ui.gestori.' + G, d.gestoreTesto, d.tipo === 'officina' ? 'spoke.gestoreTesto' : null, '. ');
     box.classList.add('open');
   }
   const persona = (id) => (figure ? figure.trova(+id.slice(5)) : null);
