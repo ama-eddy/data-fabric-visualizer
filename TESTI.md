@@ -13,7 +13,7 @@
 Data Platform as a Fabric
 
 ### meta.sottotitolo
-Come nascono i numeri che leggi nei report
+Il percorso dei numeri dalla sorgente al report
 
 ## Interfaccia: pulsanti e intestazioni
 
@@ -24,7 +24,7 @@ Workload
 Off
 
 ### ui.stati.wip
-Cantiere
+In progress
 
 ### ui.stati.on
 On
