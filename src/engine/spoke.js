@@ -30,7 +30,7 @@ builders.showroom = (g, el, ctx) => {
   box(g, w - 1.6, 0.3, d - 1.6, mat(col, { op: 0.55 }), 0, h, 0).castShadow = false;
   [-8, 0, 8].forEach((x, i) => schermo(g, 6.4, 4, x, 1, -d / 2 + 1.4, col, 3 + i));     // tre report ufficiali
   /* [REQ-FLW-07, REQ-SCN-14] passerella coperta dal laboratorio prove: i semilavorati collaudati arrivano qui */
-  /* [REQ-SCN-14] lo showroom è nella zona clienti: la passerella esce dal fronte del laboratorio e scavalca la cinta interna */
+  /* [REQ-SCN-14] lo showroom è davanti al capannone, verso i negozi: la passerella esce dal fronte del laboratorio */
   const [sx, sz] = el.pos, lab = ctx.cfg.elements.find((e) => e.id === 'laboratorio'), z0 = lab ? lab.pos[1] + lab.dim[1] / 2 : 36, zs = sz - d / 2, xp = (lab ? lab.pos[0] : -16) + 2, len = zs - z0;
   const tubo = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, len, 14, 1, true), mat('#bae6fd', { op: 0.35, side: THREE.DoubleSide, r: 0.1 }));
   tubo.rotation.x = Math.PI / 2; tubo.position.set(xp - sx, 4.6, (z0 + zs) / 2 - sz); g.add(tubo);
@@ -57,7 +57,8 @@ export function elementiSpoke(cfg) {
   const S = cfg.spoke, n = cfg.spokes.length, passo = Math.min(S.passo, S.larghezza / Math.max(n, 1));
   return cfg.spokes.map((s, i) => ({ id: 'spoke-' + i, wl: 'SSR', tipo: 'officina', nome: 'Negozio ' + s.nome, stato: s.stato || 'on',
     pos: [(i - (n - 1) / 2) * passo, S.z], dim: [Math.min(15, passo - 3), 11, 6], colore: s.colore || S.colori[i % S.colori.length], indice: i,
-    fabbrica: S.fabbrica, perTe: S.perTe, gestore: 'spoke', gestoreTesto: S.gestoreTesto, tecnico: S.tecnico }));
+    fabbrica: S.fabbrica, perTe: S.perTe, gestore: 'spoke', gestoreTesto: S.gestoreTesto, tecnico: S.tecnico,
+    chiavi: { fabbrica: 'spoke.fabbrica', perTe: 'spoke.perTe', tecnico: 'spoke.tecnico' } }));
 }
 
 /* ===== [REQ-HS-01, REQ-HS-04, REQ-HS-05, REQ-SCN-12] Negozio di uno spoke ===== */

@@ -1,5 +1,5 @@
 // Clienti: le persone delle funzioni che entrano dall'ingresso clienti, guardano i report nello showroom e vanno nel proprio negozio.
-// [REQ-SCN-16] si muovono solo verso ciò che è acceso e non entrano mai nella zona della fabbrica
+// [REQ-SCN-16] si muovono solo verso ciò che è acceso e non entrano mai nel capannone
 import * as THREE from 'three';
 import { figura } from './figures.js';
 
@@ -8,7 +8,7 @@ export function createClienti(cfg, world, state) {
   const V = (x, z) => new THREE.Vector3(x, 0, z);
   const el = (id) => cfg.elements.find((e) => e.id === id), sh = el('showroom'), rc = el('recinzione');
   const acceso = (id) => { const r = state.elemento(id); return !!r && state.effettivo(r) === 'on'; };
-  const ZE = rc ? rc.fronteEsterno : S.z + 22, ZA = S.z + 11, ZB = S.strada + 4.5;        // ingresso, corsia davanti ai negozi, corsia dietro
+  const ZE = rc ? rc.fronte : S.z + 22, ZA = S.z + 11, ZB = S.strada + 4.5;        // ingresso, corsia davanti ai negozi, corsia dietro
   const perSpoke = n <= 5 ? 2 : 1, tutti = [];
   cfg.elements.filter((e) => e.tipo === 'officina').forEach((neg) => {
     for (let k = 0; k < perSpoke; k++) {
@@ -37,7 +37,9 @@ export function createClienti(cfg, world, state) {
     return true;
   }
   function update(dt, t) {
+    const aperto = (sh && acceso('showroom')) || tutti.some((c) => acceso(c.neg.id));
     for (const c of tutti) {
+      if (!aperto && c.via) { c.via = null; c.attesa = 1.5 + c.i * 2.3; }                       // spento tutto, non resta nessuno in giro
       if (!c.via) { c.o.visible = false; c.attesa -= dt; if (c.attesa <= 0) { if (giro(c)) c.o.visible = true; else c.attesa = 2; } continue; }
       if (c.fermo > 0) { c.fermo -= dt; c.o.position.y = 0; continue; }
       c.fatto += dt * 7;

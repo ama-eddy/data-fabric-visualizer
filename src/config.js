@@ -11,6 +11,7 @@ window.CONFIG = {
     statoLungo: { off: 'Non presente', wip: 'In costruzione', on: 'Attivo' },
     vistaInsieme: "Vista d'insieme", etichette: 'Etichette', pausa: 'Pausa flussi', riprendi: 'Riprendi flussi',
     tuttoOn: 'Tutto on', tuttoOff: 'Tutto off',
+    modificaTesti: 'Modifica testi', fineModifica: 'Fine modifica', esportaTesti: 'Esporta testi', annullaTesti: 'Annulla modifiche', annullaTestiConferma: 'Tornare ai testi pubblicati? Le modifiche non esportate andranno perse.',   // [REQ-CFG-09]
     caricaProfilo: 'Carica profilo', togliProfilo: 'Togli profilo', profiloErrato: 'Il file scelto non è un profilo valido: deve essere un file JSON con la forma del profilo di esempio.',   // [REQ-CFG-06]
     nellaFabbrica: 'Nella fabbrica', perTe: 'Cosa significa per te', contatto: 'A chi rivolgerti', gestore: 'Chi lo gestisce',
     gestori: { hub: 'Il team dati (hub)', spoke: 'La tua funzione (spoke)', entrambi: 'Il team dati insieme alla tua funzione' },
@@ -26,7 +27,7 @@ window.CONFIG = {
     benvenutoTitolo: 'La fabbrica dei dati', esplora: 'Esplora liberamente', menu: 'Pannello',
     benvenuto1: 'I numeri che leggi nei report non nascono nei report: nascono nei sistemi che usi ogni giorno e fanno un viaggio, come in una fabbrica.',
     benvenuto2: 'Qui vedi quel viaggio: i fornitori, il lago dove arriva il materiale, i reparti che lo lavorano, i semilavorati certificati e i negozi delle funzioni.',
-    benvenuto3: 'Puoi seguire la presentazione, un capitolo alla volta, oppure esplorare da solo: accendi i reparti dal pannello e clicca su ciò che vedi.', legenda: 'Legenda', materiali: 'Materiali', mezzi: 'Trasporto',
+    benvenuto3: 'Puoi seguire la presentazione, un capitolo alla volta, oppure esplorare da solo: accendi i reparti dal pannello e clicca su ciò che vedi.',
     mezzo: 'Come arriva il materiale', statoElemento: 'Stato', categoria: 'Tipo di sistema',
     apri: 'Mostra uno per uno', team: 'Team dati', fuoriServizio: 'non in servizio',
   },
@@ -246,7 +247,7 @@ window.CONFIG = {
       fabbrica: 'Il reparto spedizioni: da qui i semilavorati collaudati partono verso i negozi delle funzioni.',
       perTe: 'È da qui che i dati certificati arrivano alla tua funzione.' },
     // --- Data Visualization [REQ-FLW-07, REQ-SCN-07] ---
-    { id: 'showroom', wl: 'VIS', priorita: 1, tipo: 'showroom', nome: 'Showroom', tecnico: 'Report e app Power BI', pos: [-4, 70], dim: [28, 14, 6], zona: true,   // [REQ-SCN-14] nella zona clienti, oltre la cinta interna
+    { id: 'showroom', wl: 'VIS', priorita: 1, tipo: 'showroom', nome: 'Showroom', tecnico: 'Report e app Power BI', pos: [-4, 70], dim: [28, 14, 6], zona: true,   // [REQ-SCN-14] davanti al capannone, verso i negozi
       fabbrica: "Lo showroom dell'hub, appena fuori dalla fabbrica e aperto a chi entra dall'ingresso clienti: i prodotti finiti ufficiali, costruiti dal team dati sui semilavorati collaudati e uguali per tutta l'azienda.",
       perTe: "Sono i report ufficiali, in Power BI: li apri e leggi il numero, senza costruire nulla. È lo stesso numero che vedono tutti." },
     // --- Ufficio di coordinamento [REQ-SCN-13] ---
@@ -257,12 +258,12 @@ window.CONFIG = {
     { id: 'cancelli', wl: 'ACC', tipo: 'cancelli', nome: 'Cancelli e tornelli', tecnico: 'Microsoft Entra ID · ruoli e permessi', pos: [16, 44.5], dim: [16, 4, 5],
       fabbrica: 'Il cancello della fabbrica, con i tornelli e il lettore di badge: oltre questo punto va solo il team dati, e ognuno raggiunge solo i reparti che gli servono. Da qui escono i semilavorati verso i negozi.',
       perTe: 'Per far entrare una persona della tua funzione si chiede un badge: decidi tu chi entra e che cosa può fare.' },
-    // [REQ-SCN-03] ingresso clienti: il varco nella cinta esterna da cui entra chi fa parte dell'azienda
+    // [REQ-SCN-03] ingresso clienti: il varco nella recinzione da cui entra chi fa parte dell'azienda
     { id: 'ingresso', wl: 'ACC', tipo: 'ingresso', nome: 'Ingresso clienti', tecnico: 'Accesso con l\'account aziendale (Microsoft Entra ID)', pos: [0, 120], dim: [12, 4, 5],
-      fabbrica: "L'ingresso clienti: chi fa parte dell'azienda passa il badge ai tornelli e raggiunge lo showroom e i negozi. Nella fabbrica, oltre il cancello interno, entra solo il team dati.",
+      fabbrica: "L'ingresso clienti: chi fa parte dell'azienda passa il badge ai tornelli e raggiunge lo showroom e i negozi. Nel capannone, oltre il cancello della fabbrica, lavora il team dati.",
       perTe: 'Entri con il tuo account aziendale: guardi i report ufficiali nello showroom e quelli della tua funzione nel tuo negozio. Non ti serve entrare in fabbrica.' },
-    { id: 'recinzione', wl: 'SEC', tipo: 'recinzione', nome: 'Recinzione e telecamere', tecnico: 'Sicurezza di rete · audit degli accessi', pos: [0, -16], dim: [150, 120, 3], fronte: 60.5, fronteEsterno: 120, varco: [-6, 6], cantiere: false, etichetta: [75, 5, 20],
-      fabbrica: "Le due cinte, con le telecamere. Quella esterna racchiude tutto e tiene fuori chi non è dell'azienda: si entra dall'ingresso clienti. Quella interna protegge la fabbrica: oltre il cancello va solo il team dati. Chi passa viene registrato.",
+    { id: 'recinzione', wl: 'SEC', tipo: 'recinzione', nome: 'Recinzione e telecamere', tecnico: 'Sicurezza di rete · audit degli accessi', pos: [0, -16], dim: [150, 120, 3], fronte: 120, varco: [-6, 6], cantiere: false, etichetta: [75, 5, 20],
+      fabbrica: "La recinzione, con le telecamere: un solo perimetro racchiude fabbrica, showroom e negozi, e tiene fuori chi non è dell'azienda. Si entra dall'ingresso clienti, e chi passa viene registrato.",
       perTe: 'I dati della tua funzione sono protetti come quelli di tutte le altre: si sa sempre chi ha guardato cosa.' },
     { id: 'caveau', wl: 'SEC', tipo: 'caveau', nome: 'Caveau', tecnico: 'RLS / OLS · sensitivity label', pos: [60, -40], dim: [9, 8, 5],
       fabbrica: 'Il caveau: il materiale più delicato sta qui, sotto chiave.',
@@ -307,7 +308,7 @@ window.CONFIG.chapters = [
   { id: 'trasformazione', incluso: true, accendi: { TRF: 'on' }, vista: ['silver', 'gold', 'confezionamento', 'laboratorio'], titolo: 'Data Transformation: dal grezzo al semilavorato',
     testo: 'Il materiale viene pulito, assemblato e confezionato in semilavorati: dati certificati, con i calcoli già pronti. Ogni semilavorato passa dal laboratorio prove prima di uscire dalla fabbrica.' },
   { id: 'sicurezza', incluso: true, accendi: { SEC: 'on' }, vista: 'insieme', titolo: 'Security: proteggere ciò che vale',
-    testo: 'Due cinte, telecamere e caveau: da fuori non entra nessuno, i dati riservati li vede solo chi deve, e si sa sempre chi ha guardato cosa.' },
+    testo: 'Recinzione, telecamere e caveau: da fuori non entra nessuno, i dati riservati li vede solo chi deve, e si sa sempre chi ha guardato cosa.' },
   { id: 'accessi', incluso: true, accendi: { ACC: 'on' }, titolo: 'Accessi: chi entra e cosa può fare',
     testo: 'Si entra con il badge. Dall\'ingresso clienti chi fa parte dell\'azienda raggiunge lo showroom e il proprio negozio; oltre il cancello della fabbrica va solo il team dati. Ogni funzione decide chi dei suoi entra, e ognuno raggiunge solo ciò che gli serve.' },
   { id: 'visualizzazione', incluso: true, accendi: { VIS: 'on' }, titolo: 'Data Visualization: i report ufficiali',

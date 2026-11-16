@@ -1,5 +1,6 @@
 // Interfaccia: pannello dei workload, comandi, scheda, tooltip. Tutti i testi vengono dal CONFIG [REQ-UI-07].
 import * as THREE from 'three';
+import { modifica } from './modifica.js';
 
 const $ = (id) => document.getElementById(id);
 const h = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); e.append(...kids.filter((k) => k !== null && k !== undefined)); return e; };
@@ -63,12 +64,12 @@ export function createUI(cfg, world, state) {
   };
   btn(haProfilo ? ui.togliProfilo : ui.caricaProfilo, () => { if (haProfilo) { localStorage.removeItem(CHIAVE_PROFILO); location.reload(); } else scegli.click(); }).id = 'profilo-btn';
 
-  /* ===== [REQ-FLW-08, REQ-SRC-03] Legenda dei materiali e dei mezzi di trasporto ===== */
-  const leg = $('legenda');
-  const voce = (colore, nome, cls = '', tec = '') => { const c = h('span', { className: 'chip ' + cls }); c.style.background = colore; return h('div', { className: 'voce', title: tec ? ui.tecnico + ': ' + tec : '' }, c, nome); };
-  leg.append(h('h4', { textContent: ui.materiali }), h('div', { className: 'riga' }, ...Object.values(cfg.materiali).map((m) => voce(m.colore, m.nome, '', m.tecnico))),
-    h('h4', { textContent: ui.mezzi }), h('div', { className: 'riga' }, ...Object.values(cfg.modalita).map((m) => voce(m.colore, m.nome, 'linea', m.tecnico))));
-  btn(ui.legenda, () => leg.classList.toggle('open'));
+  /* [REQ-CFG-09] modifica dei testi sul posto: le correzioni restano in questo browser e si esportano come TESTI.md */
+  const bMod = btn(ui.modificaTesti, () => modifica.attiva(!modifica.attivo())); bMod.id = 'modifica-btn';
+  const bEsp = btn('', () => modifica.esporta()); bEsp.id = 'esporta-btn';
+  const bAnn = btn(ui.annullaTesti, () => { if (confirm(ui.annullaTestiConferma)) modifica.annulla(); }); bAnn.id = 'annulla-btn';
+  const statoMod = () => { const n = modifica.conta(); bMod.classList.toggle('attivo', modifica.attivo()); bMod.textContent = modifica.attivo() ? ui.fineModifica : ui.modificaTesti; bEsp.textContent = ui.esportaTesti + ' (' + n + ')'; bEsp.style.display = bAnn.style.display = n ? '' : 'none'; };
+  modifica.onChange(statoMod); statoMod();
 
   /* ===== [REQ-UI-02, REQ-LIT-01, REQ-LIT-02] Scheda: nessuna sezione tecnica ===== */
   let aperta = null;
@@ -78,12 +79,16 @@ export function createUI(cfg, world, state) {
     const x = h('button', { className: 'x', textContent: '×', title: ui.chiudi }); x.onclick = chiudi;
     const b1 = h('span', { className: 'badge', textContent: wl.nome }); b1.style.background = wl.colore;
     const b2 = h('span', { className: 'badge stato', textContent: ui.statoLungo[st] });
-    box.append(x, h('h3', { textContent: titolo }));
+    /* [REQ-CFG-09] chiave di ogni testo della scheda: serve a modificarlo sul posto */
+    const W = 'workloads.' + wlKey + '.', E = 'elements.' + d.id + '.', K = !rec ? { nome: W + 'nome', tecnico: W + 'tecnico' } : d.chiavi || { nome: E + 'nome', tecnico: E + 'tecnico', fabbrica: E + 'fabbrica', perTe: E + 'perTe' };
+    const lega = (nodo, campo) => modifica.lega(nodo, campo === 'fabbrica' && !d.fabbrica ? W + 'fabbrica' : campo === 'perTe' && !d.perTe ? W + 'perTe' : K[campo], (v) => { if (rec && d[campo] !== undefined) d[campo] = v; if (campo === 'nome' && rec && rec.div.firstChild) rec.div.firstChild.textContent = v; });
+    box.append(x, lega(h('h3', { textContent: titolo }), 'nome'));
     const tec = d.tipo === 'sorgente' ? '' : d.tecnico || (rec ? '' : wl.tecnico);                /* [REQ-UI-02, RDM-026] il nome tecnico: solo qui, mai nel nome */
-    if (tec) box.append(h('div', { className: 'tecnico' }, h('b', { textContent: ui.tecnico + ': ' }), tec));
+    if (tec) box.append(h('div', { className: 'tecnico' }, h('b', { textContent: ui.tecnico + ': ' }), lega(h('span', { textContent: tec }), 'tecnico')));
     box.append(h('div', { className: 'badges' }, b1, b2));
-    const sez = (t, txt) => { if (txt) box.append(h('h4', { textContent: t }), h('p', { textContent: txt })); };
-    if (d.categoriaNome) sez(ui.categoria, d.categoriaTecnico && d.categoriaTecnico !== d.categoriaNome ? d.categoriaNome + ' (' + d.categoriaTecnico + ')' : d.categoriaNome);
+    const sez = (t, txt, campo) => { if (txt) box.append(h('h4', { textContent: t }), lega(h('p', { textContent: txt }), campo)); };
+    if (d.categoriaNome) box.append(h('h4', { textContent: ui.categoria }), h('p', {}, lega(h('span', { textContent: d.categoriaNome }), 'categoriaNome'),
+      ...(d.categoriaTecnico && d.categoriaTecnico !== d.categoriaNome ? [' (', lega(h('span', { textContent: d.categoriaTecnico }), 'categoriaTecnico'), ')'] : [])));
     if (rec && rec.proprio !== undefined) {           /* [REQ-UI-09] stato di una singola sorgente o di un singolo spoke, dal vivo */
       const seg = h('div', { className: 'seg' });
       for (const s of ['off', 'wip', 'on']) { const b = h('button', { textContent: ui.stati[s], className: rec.proprio === s ? 'sel' : '' }); b.dataset.s = s; b.onclick = () => state.setElemento(rec.el.id, s); seg.append(b); }
@@ -91,9 +96,9 @@ export function createUI(cfg, world, state) {
     }
     if (figure && figure.scoperto(wlKey)) box.append(h('div', { className: 'avviso', textContent: '⚠ ' + ui.scoperto }));   /* [REQ-WL-13] */
     if (st === 'wip') sez(ui.lavori, d.notaCantiere || wl.notaCantiere);   /* [REQ-WL-03] nota del cantiere, es. quando sarà pronto */
-    sez(ui.nellaFabbrica, d.fabbrica || wl.fabbrica);
-    sez(ui.mezzo, d.mezzo);
-    sez(ui.perTe, d.perTe || wl.perTe);
+    sez(ui.nellaFabbrica, d.fabbrica || wl.fabbrica, 'fabbrica');
+    if (d.mezzo) box.append(h('h4', { textContent: ui.mezzo }), h('p', {}, lega(h('span', { textContent: d.mezzoNome }), 'mezzoNome'), '. ', lega(h('span', { textContent: d.mezzo }), 'mezzo')));
+    sez(ui.perTe, d.perTe || wl.perTe, 'perTe');
     sez(ui.contatto, [cfg.contatto.chi, cfg.contatto.come].filter(Boolean).join(' — '));
     sez(ui.gestore, [ui.gestori[d.gestore || wl.gestore], d.gestoreTesto].filter(Boolean).join('. '));
     box.classList.add('open');
@@ -209,7 +214,7 @@ export function createUI(cfg, world, state) {
   function ordinaEtichette(dt) {
     tEt += dt; if (tEt < 0.12) return; tEt = 0;
     const W = innerWidth, H = innerHeight, occupati = [], lista = [];
-    for (const id of ['left', 'bar', 'team', 'info', 'guida', 'legenda']) { const e = $(id); if (e && e.offsetParent !== null) { const r = e.getBoundingClientRect(); occupati.push([r.left - 6, r.top - 6, r.right + 6, r.bottom + 6]); } }   // i pannelli visibili
+    for (const id of ['left', 'bar', 'team', 'info', 'guida']) { const e = $(id); if (e && e.offsetParent !== null) { const r = e.getBoundingClientRect(); occupati.push([r.left - 6, r.top - 6, r.right + 6, r.bottom + 6]); } }   // i pannelli visibili
     for (const r of state.recs) {
       if (!r.label.visible || r.mostrato === 'off') continue;
       r.label.getWorldPosition(v); const d = v.distanceTo(world.camera.position); v.project(world.camera);

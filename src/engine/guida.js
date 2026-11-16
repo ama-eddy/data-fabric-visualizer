@@ -2,6 +2,7 @@
 // [REQ-NAR-01…08] narrativa a capitoli · [REQ-PER-01…07] percorsi · [REQ-UI-10] due modalità · [REQ-LIT-04] benvenuto
 import * as THREE from 'three';
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import { modifica } from './modifica.js';
 
 const $ = (id) => document.getElementById(id);
 const h = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); e.append(...kids.filter((k) => k !== null && k !== undefined)); return e; };
@@ -12,13 +13,13 @@ export function createGuida(cfg, world, state, ui) {
 
   /* ---------- scheda comune a capitoli e tappe ---------- */
   /* [REQ-NAR-07, REQ-PER-04] una scheda per capitolo o tappa: Avanti, Indietro, torna all'inquadratura */
-  function scheda({ intestazione, titolo, testo, righe = [], colore }) {
+  function scheda({ intestazione, titolo, testo, righe = [], colore, k = {} }) {                  // k: chiavi dei testi, per modificarli sul posto [REQ-CFG-09]
     box.innerHTML = ''; box.style.borderTopColor = colore || '#64748b';
     const nav = h('div', { className: 'nav' });
     const b = (txt, fn, cls = '', off = false) => { const x = h('button', { textContent: txt, className: cls, disabled: off }); x.onclick = fn; nav.append(x); };
     b('← ' + T.indietro, indietro, '', passo === 0); b(T.tornaQui, inquadra, 'sec'); b(T.esci, esci, 'sec'); b(T.avanti + ' →', avanti, 'primario', passo >= passi.length - 1);
-    box.append(h('div', { className: 'passo', textContent: intestazione }), h('h3', { textContent: titolo }), h('p', { className: 'testo', textContent: testo }),
-      ...righe.filter((r) => r[1]).map(([k, v]) => h('p', { className: 'riga' }, h('b', { textContent: k + ': ' }), v)), nav, h('div', { className: 'aiuto', textContent: T.aiutoGuida }));
+    box.append(h('div', { className: 'passo', textContent: intestazione }), modifica.lega(h('h3', { textContent: titolo }), k.titolo), modifica.lega(h('p', { className: 'testo', textContent: testo }), k.testo),
+      ...righe.filter((r) => r[1]).map(([e, v, kk]) => h('p', { className: 'riga' }, h('b', { textContent: e + ': ' }), modifica.lega(h('span', { textContent: v }), kk))), nav, h('div', { className: 'aiuto', textContent: T.aiutoGuida }));
     box.classList.add('open');
   }
   function inquadra() { if (!vista) return; if (vista === 'insieme') world.home(); else world.frame(vista.punti, vista.raggio); }   // [REQ-NAR-06, REQ-PER-07]
@@ -40,7 +41,7 @@ export function createGuida(cfg, world, state, ui) {
     const rs = ids ? ids.map((id) => state.elemento(id)).filter(Boolean) : state.recs.filter((r) => accesi.includes(r.el.wl) && r.el.tipo !== 'trasporto' && (r.proprio === undefined || r.proprio !== 'off'));
     vista = c.vista === 'insieme' || !rs.length ? 'insieme' : { punti: rs.map((r) => r.el.pos), raggio: 20 };
     inquadra();
-    scheda({ intestazione: `${T.capitolo} ${passo + 1} ${T.di} ${cs.length}`, titolo: c.titolo, testo: c.testo, colore: accesi[0] && cfg.workloads[accesi[0]] ? cfg.workloads[accesi[0]].colore : null });
+    scheda({ intestazione: `${T.capitolo} ${passo + 1} ${T.di} ${cs.length}`, titolo: c.titolo, testo: c.testo, k: { titolo: `chapters.${c.id}.titolo`, testo: `chapters.${c.id}.testo` }, colore: accesi[0] && cfg.workloads[accesi[0]] ? cfg.workloads[accesi[0]].colore : null });
     if (c.percorso) avviaPercorso(c.percorso);                                   // [REQ-PER-06]
   }
   function avviaNarrativa(da = 0) {
@@ -74,16 +75,16 @@ export function createGuida(cfg, world, state, ui) {
     passi.forEach((t, i) => { if (t.sfera) { t.sfera.scale.setScalar(i === passo ? 1.7 : 1); t.num.classList.toggle('ora', i === passo); } });
     if (fine) {                                                                // [REQ-LIT-06] messaggio chiave
       vista = 'insieme'; inquadra();
-      return scheda({ intestazione: percorso.sottotitolo + ' · ' + T.ricorda, titolo: percorso.titolo, testo: percorso.messaggio, colore: percorso.colore });
+      return scheda({ intestazione: percorso.sottotitolo + ' · ' + T.ricorda, titolo: percorso.titolo, testo: percorso.messaggio, k: { titolo: `paths.${percorso.id}.titolo`, testo: `paths.${percorso.id}.messaggio` }, colore: percorso.colore });
     }
     const t = passi[passo], n = passi.filter((x) => !x.fine).length;
     vista = { punti: [t.base], raggio: 16 }; inquadra();
-    scheda({ intestazione: `${percorso.sottotitolo} · ${T.tappa} ${passo + 1} ${T.di} ${n}`, titolo: state.elemento(t.el).el.nome, testo: t.cosa, righe: [[T.chi, t.chi], [T.tu, t.tu]], colore: percorso.colore });
+    scheda({ intestazione: `${percorso.sottotitolo} · ${T.tappa} ${passo + 1} ${T.di} ${n}`, titolo: state.elemento(t.el).el.nome, testo: t.origine.cosa, righe: [[T.chi, t.origine.chi, t.k + 'chi'], [T.tu, t.origine.tu, t.k + 'tu']], k: { testo: t.k + 'cosa' }, colore: percorso.colore });
   }
   function avviaPercorso(id) {
     esci(); percorso = cfg.paths.find((p) => p.id === id); if (!percorso) return;
     /* [REQ-PER-05] le tappe su workload spenti o in cantiere, o su elementi spenti, vengono saltate */
-    passi = percorso.tappe.filter((t) => { const r = state.elemento(t.el); return r && t.wl.every((w) => state.stato[w] === 'on') && state.effettivo(r) === 'on'; }).map((t) => ({ ...t }));
+    passi = percorso.tappe.map((t, i) => ({ ...t, k: `paths.${percorso.id}.tappe.${i}.`, origine: t })).filter((t) => { const r = state.elemento(t.el); return r && t.wl.every((w) => state.stato[w] === 'on') && state.effettivo(r) === 'on'; });
     modo = 'percorso'; passo = 0; document.body.classList.add('percorso'); world.setKeyboardMove(false); ui.chiudi();
     if (!passi.length) { passi = [{ fine: true }]; world.attenua(true); return scheda({ intestazione: percorso.sottotitolo, titolo: percorso.titolo, testo: T.nessunaTappa, colore: percorso.colore }); }
     disegna(); passi.push({ fine: true }); world.attenua(true); mostraTappa();
@@ -101,7 +102,7 @@ export function createGuida(cfg, world, state, ui) {
   }
   /* [REQ-NAR-05] tastiera e telecomando da presentazione */
   addEventListener('keydown', (e) => {
-    if (!modo || e.target.closest?.('input,textarea')) return;
+    if (!modo || e.target.closest?.('input,textarea,[contenteditable="true"]')) return;
     if (['ArrowRight', 'PageDown', 'Space', 'Enter'].includes(e.code)) { e.preventDefault(); avanti(); }
     else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.code)) { e.preventDefault(); indietro(); }
     else if (e.code === 'Escape') esci();

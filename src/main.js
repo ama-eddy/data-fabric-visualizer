@@ -9,6 +9,7 @@ import { elementiSpoke } from './engine/spoke.js';
 import { createFigures } from './engine/figures.js';
 import { createGuida } from './engine/guida.js';
 import { createClienti } from './engine/clienti.js';
+import { modifica, applicaTesti } from './engine/modifica.js';
 
 /* ===== [REQ-CFG-02] Il profilo dell'azienda si sovrappone al modello standard ===== */
 function applicaProfilo(cfg, p) {
@@ -34,20 +35,10 @@ function applicaProfilo(cfg, p) {
   return cfg;
 }
 
-/* ===== [REQ-CFG-08] I testi di TESTI.md sostituiscono quelli del CONFIG ===== */
-function applicaTesti(cfg, testi) {
-  for (const [chiave, testo] of Object.entries(testi || {})) {
-    const p = chiave.split('.'); let o = cfg;
-    for (let i = 0; i < p.length - 1 && o; i++) o = Array.isArray(o) ? (o.find((x) => x && x.id === p[i]) || o[+p[i]]) : o[p[i]];
-    if (o && typeof o === 'object') o[p[p.length - 1]] = testo;
-  }
-  return cfg;
-}
-
 try {
   /* [REQ-CFG-06] un profilo caricato da file (salvato in questo browser) prende il posto di quello scritto nella pagina */
   let caricato = null; try { caricato = JSON.parse(localStorage.getItem('fabbrica-profilo')); } catch (e) { caricato = null; }
-  const cfg = applicaProfilo(applicaTesti(window.CONFIG, window.TESTI), caricato && typeof caricato === 'object' ? caricato : window.PROFILE);
+  const cfg = applicaProfilo(modifica.avvia(applicaTesti(window.CONFIG, window.TESTI)), caricato && typeof caricato === 'object' ? caricato : window.PROFILE);
   const world = createScene(cfg, document.getElementById('scene'), document.getElementById('labels'));
   cfg.elements.push(...elementiSorgenti(cfg), ...elementiSpoke(cfg));
   const fi = cfg.elements.findIndex((e) => e.tipo === 'piazzale'); if (fi >= 0) cfg.elements.push(...cfg.elements.splice(fi, 1));   // i lotti dei fornitori servono le posizioni delle sorgenti
@@ -74,7 +65,7 @@ try {
     fps.n++; fps.t += dt; if (fps.t >= 1) { fps.v = Math.round(fps.n / fps.t); fps.n = 0; fps.t = 0; fpsEl.textContent = fps.v + ' fps'; }
     world.update(dt);
   })();
-  window.fabbrica = { cfg, world, state, ui, flows, figures, clienti, guida, fps: () => fps.v };                         // per prove e collaudo
+  window.fabbrica = { cfg, world, state, ui, flows, figures, clienti, guida, modifica, fps: () => fps.v };                         // per prove e collaudo
 } catch (e) {
   const el = document.getElementById('err');
   el.style.display = 'flex'; el.textContent = 'Impossibile avviare la fabbrica: ' + e.message;

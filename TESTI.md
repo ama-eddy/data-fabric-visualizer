@@ -56,6 +56,21 @@ Tutto on
 ### ui.tuttoOff
 Tutto off
 
+### ui.modificaTesti
+Modifica testi
+
+### ui.fineModifica
+Fine modifica
+
+### ui.esportaTesti
+Esporta testi
+
+### ui.annullaTesti
+Annulla modifiche
+
+### ui.annullaTestiConferma
+Tornare ai testi pubblicati? Le modifiche non esportate andranno perse.
+
 ### ui.caricaProfilo
 Carica profilo
 
@@ -199,15 +214,6 @@ Qui vedi quel viaggio: i fornitori, il lago dove arriva il materiale, i reparti 
 
 ### ui.benvenuto3
 Puoi seguire la presentazione, un capitolo alla volta, oppure esplorare da solo: accendi i reparti dal pannello e clicca su ciò che vedi.
-
-### ui.legenda
-Legenda
-
-### ui.materiali
-Materiali
-
-### ui.mezzi
-Trasporto
 
 ### ui.mezzo
 Come arriva il materiale
@@ -570,7 +576,7 @@ Ingresso clienti
 Accesso con l'account aziendale (Microsoft Entra ID)
 
 ### elements.ingresso.fabbrica
-L'ingresso clienti: chi fa parte dell'azienda passa il badge ai tornelli e raggiunge lo showroom e i negozi. Nella fabbrica, oltre il cancello interno, entra solo il team dati.
+L'ingresso clienti: chi fa parte dell'azienda passa il badge ai tornelli e raggiunge lo showroom e i negozi. Nel capannone, oltre il cancello della fabbrica, lavora il team dati.
 
 ### elements.ingresso.perTe
 Entri con il tuo account aziendale: guardi i report ufficiali nello showroom e quelli della tua funzione nel tuo negozio. Non ti serve entrare in fabbrica.
@@ -582,7 +588,7 @@ Recinzione e telecamere
 Sicurezza di rete · audit degli accessi
 
 ### elements.recinzione.fabbrica
-Le due cinte, con le telecamere. Quella esterna racchiude tutto e tiene fuori chi non è dell'azienda: si entra dall'ingresso clienti. Quella interna protegge la fabbrica: oltre il cancello va solo il team dati. Chi passa viene registrato.
+La recinzione, con le telecamere: un solo perimetro racchiude fabbrica, showroom e negozi, e tiene fuori chi non è dell'azienda. Si entra dall'ingresso clienti, e chi passa viene registrato.
 
 ### elements.recinzione.perTe
 I dati della tua funzione sono protetti come quelli di tutte le altre: si sa sempre chi ha guardato cosa.
@@ -1117,7 +1123,7 @@ Il materiale viene pulito, assemblato e confezionato in semilavorati: dati certi
 Security: proteggere ciò che vale
 
 ### chapters.sicurezza.testo
-Due cinte, telecamere e caveau: da fuori non entra nessuno, i dati riservati li vede solo chi deve, e si sa sempre chi ha guardato cosa.
+Recinzione, telecamere e caveau: da fuori non entra nessuno, i dati riservati li vede solo chi deve, e si sa sempre chi ha guardato cosa.
 
 ### chapters.accessi.titolo
 Accessi: chi entra e cosa può fare

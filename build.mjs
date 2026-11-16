@@ -15,7 +15,7 @@ const problemi = [
   ...controllaLessico(testi).map((e) => `lessico (REQUISITI §1.2) — ${e}`),
 ];
 if (problemi.length) { console.error('TESTI.md da correggere:\n- ' + problemi.join('\n- ')); process.exit(1); }
-const TESTI = 'window.TESTI = ' + JSON.stringify(Object.fromEntries(testi)) + ';';
+const TESTI = 'window.TESTI = ' + JSON.stringify(Object.fromEntries(testi)) + ';\nwindow.TESTI_MD = ' + JSON.stringify(readFileSync('TESTI.md', 'utf8')) + ';';   // [REQ-CFG-09] il file intero, per esportarlo aggiornato
 
 const safe = (js) => js.replace(/<\/script/gi, '<\\/script');
 const out = await build({

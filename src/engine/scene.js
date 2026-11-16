@@ -61,7 +61,7 @@ export function createScene(cfg, sceneEl, labelsEl) {
   const keys = new Set();
   const MOVE = { KeyW: [0, -1], ArrowUp: [0, -1], KeyS: [0, 1], ArrowDown: [0, 1], KeyA: [-1, 0], ArrowLeft: [-1, 0], KeyD: [1, 0], ArrowRight: [1, 0] };
   let keyboardMove = true;
-  addEventListener('keydown', (e) => { if (MOVE[e.code] && keyboardMove && !e.target.closest?.('input,textarea')) { keys.add(e.code); e.preventDefault(); } });
+  addEventListener('keydown', (e) => { if (MOVE[e.code] && keyboardMove && !e.target.closest?.('input,textarea,[contenteditable="true"]')) { keys.add(e.code); e.preventDefault(); } });
   addEventListener('keyup', (e) => keys.delete(e.code));
   addEventListener('blur', () => keys.clear());
 

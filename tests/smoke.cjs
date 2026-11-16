@@ -83,7 +83,7 @@ const path = require('path'), fs = require('fs');
   check(await page.locator('#info .tecnico').count() === 0 && (await page.locator('#info').textContent()).includes('Data lake esistente (ADLS, S3)'), 'scheda della sorgente: niente riga In Fabric, sigla nel tipo di sistema');
   await page.evaluate(() => fabbrica.ui.mostraElemento('confezionamento'));
   check((await page.locator('#info .tecnico').textContent()).includes('Semantic model') && !(await page.locator('#info h3').textContent()).includes('Semantic'), 'semilavorati: Semantic model nella scheda, non nel nome');
-  check(await page.locator('#legenda .voce').count() === 11, 'legenda: 6 materiali e 5 mezzi');
+  check(await page.locator('#legenda').count() === 0 && await page.getByText('Legenda').count() === 0, 'RDM-044: nessuna legenda');
   await page.getByText('Pausa flussi').click(); const p0 = await page.evaluate(() => fabbrica.flows.routes.find((r) => r.items.length).items[0].u);
   await page.waitForTimeout(500);
   check(await page.evaluate((u) => fabbrica.flows.routes.find((r) => r.items.length).items[0].u === u, p0), 'pausa: il materiale si ferma');
@@ -169,7 +169,7 @@ const path = require('path'), fs = require('fs');
   await page.evaluate(() => fabbrica.world.flyTo([26, 44, 162], [0, 2, 92]));
   check(await page.waitForFunction(() => fabbrica.clienti.inCammino() >= 3, null, { timeout: 30000 }).then(() => true, () => false), 'RDM-039: i clienti entrano dall\'ingresso clienti');
   await page.waitForTimeout(9000);
-  check(await page.evaluate(() => fabbrica.clienti.zMinima() > fabbrica.cfg.elements.find((e) => e.id === 'recinzione').fronte + 5 && fabbrica.state.elemento('ingresso').on.visible && fabbrica.state.elemento('showroom').el.pos[1] > 60.5), 'RDM-039: showroom nella zona clienti, nessun cliente oltre la cinta interna');
+  check(await page.evaluate(() => fabbrica.clienti.zMinima() > fabbrica.cfg.layout.capannone.z[1] + 20 && fabbrica.state.elemento('ingresso').on.visible && fabbrica.state.elemento('showroom').el.pos[1] > 60.5), 'RDM-039: showroom fuori dal capannone, nessun cliente in fabbrica');
   await shot('25-negozi-e-recinzione', 500);
   await page.evaluate(() => fabbrica.world.home()); await page.waitForTimeout(4000);
   const sovrapposte = await page.evaluate(() => { const r = [...document.querySelectorAll('.lbl')].filter((e) => e.offsetParent && getComputedStyle(e).opacity > 0.5 && !e.classList.contains('nascosta')).map((e) => e.getBoundingClientRect()); let n = 0; for (let i = 0; i < r.length; i++) for (let j = i + 1; j < r.length; j++) if (r[i].left < r[j].right && r[i].right > r[j].left && r[i].top < r[j].bottom && r[i].bottom > r[j].top) n++; return [n, r.length]; });
@@ -247,6 +247,20 @@ const path = require('path'), fs = require('fs');
   await page.getByText('Tutto off').click();
   await page.waitForTimeout(1500);
   check(await page.evaluate(() => fabbrica.state.recs.every((r) => !r.on.visible && !r.wip.visible)), 'tutto off svuota la scena');
+
+  // ---- REQ-CFG-09: modifica dei testi nella pagina ----
+  await page.evaluate(() => { fabbrica.state.set('ARC', 'on'); fabbrica.ui.mostraElemento('lago'); });
+  await page.locator('#modifica-btn').click();
+  const campo = page.locator('#info p[data-k="elements.lago.fabbrica"]');
+  await campo.click(); await page.keyboard.press('Control+A'); await page.keyboard.type('Testo di prova del lago'); await page.keyboard.press('Enter');
+  check(await page.evaluate(() => fabbrica.modifica.conta() === 1 && fabbrica.cfg.elements.find((e) => e.id === 'lago').fabbrica === 'Testo di prova del lago' && /### elements\.lago\.fabbrica\nTesto di prova del lago\n/.test(fabbrica.modifica.md()) && fabbrica.modifica.md().split('\n').length === window.TESTI_MD.split('\n').length), 'modifica testi: salvata e presente nel TESTI.md esportato');
+  check((await page.locator('#esporta-btn').textContent()) === 'Esporta testi (1)', 'modifica testi: pulsante di esportazione con il conteggio');
+  await page.reload(); await page.waitForFunction(() => window.fabbrica); await page.getByText('Esplora liberamente').click();
+  check(await page.evaluate(() => fabbrica.cfg.elements.find((e) => e.id === 'lago').fabbrica === 'Testo di prova del lago'), 'modifica testi: resta dopo la ricarica');
+  page.once('dialog', (d) => d.accept()); await page.locator('#annulla-btn').click();
+  await page.waitForFunction(() => window.fabbrica && fabbrica.modifica.conta() === 0, null, { timeout: 20000 }).catch(() => {});
+  await page.getByText('Esplora liberamente').click();
+  check(await page.evaluate(() => fabbrica.modifica.conta() === 0 && fabbrica.cfg.elements.find((e) => e.id === 'lago').fabbrica !== 'Testo di prova del lago'), 'Annulla modifiche: tornano i testi pubblicati');
 
   // ---- REQ-CFG-06: profilo caricato da file JSON ----
   await page.setInputFiles('#profilo-file', path.join(__dirname, '..', 'profili', 'profilo-esempio.json'));

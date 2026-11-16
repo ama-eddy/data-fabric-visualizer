@@ -14,11 +14,13 @@ export function elementiSorgenti(cfg) {
       /* [REQ-SRC-01] l'edificio del fornitore: appartiene alle Data Sources. [REQ-SRC-09] la sua scheda dice che tipo di sistema è, come arriva il materiale e se è acceso */
       { id, wl: 'SRC', tipo: 'sorgente', nome: s.nome, categoria: s.categoria, forma: cat.forma, modalita,
         pos: [x, L.z], dim: [10, 10, 7], stato: s.stato || 'on', narrativa: s.narrativa || 'on', categoriaNome: cat.nome, categoriaTecnico: cat.tecnico, etichetta: [0, i % 2 ? 15 : 10.5, 0],
-        fabbrica: cat.fabbrica, perTe: cat.perTe, mezzo: mz.nome + '. ' + mz.testo },   // [REQ-UI-02] niente riga "In Fabric": la sigla del sistema sta in "Tipo di sistema"
+        fabbrica: cat.fabbrica, perTe: cat.perTe, mezzoNome: mz.nome, mezzo: mz.testo,
+        chiavi: { nome: 'sources.' + id + '.nome', fabbrica: 'categorie.' + s.categoria + '.fabbrica', perTe: 'categorie.' + s.categoria + '.perTe', categoriaNome: 'categorie.' + s.categoria + '.nome', categoriaTecnico: 'categorie.' + s.categoria + '.tecnico', mezzoNome: 'modalita.' + modalita + '.nome', mezzo: 'modalita.' + modalita + '.testo' } },   // [REQ-UI-02] niente riga "In Fabric": la sigla del sistema sta in "Tipo di sistema"
       /* [REQ-SRC-03] il suo trasporto: appartiene alla Data Integration (il nastro veloce al Real-Time) e segue lo stato della sorgente */
       { id: 'tr-' + id, wl: modalita === 'streaming' ? 'RTI' : 'INT', tipo: 'trasporto', segue: id, nome: mz.nome + ' · ' + s.nome, modalita,
         pos: [x, L.z], dim: [10, 10, 7], arrivo: x * 0.4, cantiere: false, senzaEtichetta: true,
-        fabbrica: mz.testo, perTe: cfg.workloads[modalita === 'streaming' ? 'RTI' : 'INT'].perTe, tecnico: mz.tecnico },
+        fabbrica: mz.testo, perTe: cfg.workloads[modalita === 'streaming' ? 'RTI' : 'INT'].perTe, tecnico: mz.tecnico,
+        chiavi: { fabbrica: 'modalita.' + modalita + '.testo', tecnico: 'modalita.' + modalita + '.tecnico', perTe: 'workloads.' + (modalita === 'streaming' ? 'RTI' : 'INT') + '.perTe' } },
     ];
   });
 }

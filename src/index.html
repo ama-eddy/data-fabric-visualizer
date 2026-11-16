@@ -74,10 +74,6 @@
   #info h4 { margin: 14px 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 1.1px; color: var(--muted); }
   #info p { margin: 0; font-size: 14px; line-height: 1.5; }
   #info .x { position: absolute; top: 10px; right: 12px; background: none; border: 0; color: var(--muted); font-size: 20px; cursor: pointer; }
-  #legenda { bottom: 14px; left: 346px; right: 14px; width: fit-content; max-width: calc(100% - 360px); padding: 8px 14px; display: none; font-size: 12.5px; }
-  #legenda.open { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: center; }
-  #legenda h4 { margin: 0; font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.1px; color: var(--muted); }
-  #legenda .riga { display: flex; flex-wrap: wrap; gap: 2px 14px; }
   .voce { display: flex; align-items: center; gap: 6px; }
   .chip { width: 13px; height: 13px; border-radius: 3px; flex: none; border: 1px solid rgba(255,255,255,.35); }
   .chip.linea { height: 5px; border-radius: 3px; width: 20px; }
@@ -97,7 +93,7 @@
   .nav button.primario, #bar button.primario { background: #2563eb; border-color: #2563eb; color: #fff; }
   .nav button.sec { font-weight: 500; color: var(--muted); }
   .aiuto { font-size: 11.5px; color: var(--muted); margin-top: 6px; }
-  body.presenta #left, body.presenta #bar, body.presenta #legenda, body.presenta #apri-menu, body.percorso #legenda { display: none !important; }
+  body.presenta #left, body.presenta #bar, body.presenta #apri-menu { display: none !important; }
   .num { width: 26px; height: 26px; border-radius: 50%; color: #fff; font: 700 14px "Segoe UI", system-ui, sans-serif; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.4); pointer-events: auto; cursor: pointer; }
   .num.ora { width: 38px; height: 38px; font-size: 19px; }
   .ancora { position: relative; display: inline-flex; }
@@ -110,8 +106,8 @@
   .carta { background: #0f172a; border: 1px solid var(--line); border-radius: 16px; padding: 28px 34px 22px; width: min(640px, calc(100% - 32px)); box-shadow: 0 20px 60px rgba(0,0,0,.45); }
   .carta h2 { margin: 0 0 12px; font-size: 28px; } .carta p { font-size: 17px; line-height: 1.5; margin: 0 0 10px; }
   #apri-menu { display: none; top: 14px; left: 14px; width: 40px; height: 40px; color: var(--fg); font-size: 18px; cursor: pointer; z-index: 3; }
-  body.compatto #apri-menu { display: block; } body.compatto #left { display: none; } body.compatto #bar { left: 62px; max-width: calc(100% - 62px - 430px); } body.compatto #legenda { left: 14px; max-width: calc(100% - 28px); }
-  @media (max-width: 1279px) { #apri-menu { display: block; } #left { top: 60px; max-height: calc(100% - 74px); z-index: 5; } #bar { left: 62px; max-width: calc(100% - 76px); } #legenda { left: 14px; max-width: calc(100% - 28px); } #team { top: 108px; } #info { top: 212px; width: min(348px, calc(100% - 28px)); } }
+  body.compatto #apri-menu { display: block; } body.compatto #left { display: none; } body.compatto #bar { left: 62px; max-width: calc(100% - 62px - 430px); }
+  @media (max-width: 1279px) { #apri-menu { display: block; } #left { top: 60px; max-height: calc(100% - 74px); z-index: 5; } #bar { left: 62px; max-width: calc(100% - 76px); } #team { top: 108px; } #info { top: 212px; width: min(348px, calc(100% - 28px)); } }
   #fps { position: fixed; bottom: 4px; right: 6px; font: 11px monospace; color: #0f172a; background: rgba(255,255,255,.7); padding: 1px 5px; border-radius: 4px; display: none; z-index: 9; }
   #tip { position: fixed; pointer-events: none; background: #0f172a; color: #fff; font-size: 12px; padding: 4px 8px; border-radius: 6px; display: none; z-index: 5; }
   .lbl { font: 600 12px "Segoe UI", system-ui, sans-serif; color: #0f172a; background: rgba(255,255,255,.92); border-left: 4px solid #64748b; padding: 3px 8px; border-radius: 5px; white-space: nowrap; box-shadow: 0 2px 6px rgba(15,23,42,.18); }
@@ -120,6 +116,10 @@
   .lbl.wip { background: #fef3c7; }
   .lbl small { font-weight: 500; color: #92400e; }
   #err { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: #0f172a; color: #fff; padding: 40px; text-align: center; font-size: 16px; }
+  /* [REQ-CFG-09] testi modificabili sul posto */
+  body.modifica [data-k] { outline: 1px dashed #facc15; outline-offset: 2px; border-radius: 3px; cursor: text; }
+  body.modifica [data-k]:focus { outline: 2px solid #facc15; background: rgba(250, 204, 21, 0.12); }
+  #modifica-btn.attivo { background: #facc15; color: #111827; }
 </style>
 </head>
 <body>
@@ -129,7 +129,6 @@
 <nav id="bar" class="panel"></nav>
 <aside id="team" class="panel"></aside>
 <aside id="info" class="panel"></aside>
-<aside id="legenda" class="panel open"></aside>
 <aside id="guida" class="panel"></aside>
 <div id="benvenuto"></div>
 <div id="fps"></div>
