@@ -197,7 +197,7 @@ I workload hanno un proprio codice, `WL-<SIGLA>` (§5). È usato anche come chia
 |---|---|---|---|---|
 | REQ-WL-01 | Ogni workload ha uno stato tra `off`, `wip` e `on`. | Lo stato è leggibile e modificabile da CONFIG e dall'interfaccia. | M | Implementato |
 | REQ-WL-02 | Con stato **`off`**, gli elementi 3D del workload **non compaiono** nella scena. | Nessun edificio, impianto o flusso del workload è visibile. | M | Implementato |
-| REQ-WL-03 | Con stato **`wip`**, il workload compare **come cantiere**: impalcature, gru, recinzione, cartello "Lavori in corso", nessun flusso. | Si riconosce a colpo d'occhio che il workload è in costruzione; la scheda mostra lo stato "In costruzione" e, se indicata nel CONFIG (`notaCantiere`), una nota (es. quando sarà pronto). | M | Implementato |
+| REQ-WL-03 | Con stato **`wip`**, il workload compare **come cantiere**: impalcature, gru, recinzione, cartello "Lavori in corso", nessun flusso. | Si riconosce a colpo d'occhio che il workload è in costruzione; la scheda mostra, se indicata nel CONFIG (`notaCantiere`), una nota (es. quando sarà pronto). | M | Implementato |
 | REQ-WL-04 | Con stato **`on`**, il workload compare **completo e operativo**: edifici rifiniti e flussi animati. | Gli elementi sono visibili e i flussi del workload sono in movimento. | M | Implementato |
 | REQ-WL-05 | Nel **modello standard** tutti i workload sono `off` di default, tranne **Data Sources**, che è `on` con **tutte le sorgenti spente**: la scena parte dal terreno vuoto con la sola area fornitori. | Aprendo il file senza profilo si vedono il terreno, l'area fornitori vuota e il pannello dei workload. | M | Implementato |
 | REQ-WL-06 | Ogni workload dichiara le proprie **dipendenze** (§5.2). Accendere un workload accende **solo quello**: se una sua dipendenza non è `on`, il workload compare ma resta **fermo** (nessun materiale in arrivo, figure in attesa). Il "buco" a monte si vede e si racconta. | Con `WL-TRF` `on` e `WL-INT` `off`: i reparti di trasformazione sono visibili ma senza flusso; accendendo `WL-INT` il flusso parte. | M | Implementato |
@@ -325,7 +325,7 @@ Le sorgenti sono classificate per **categoria di software**, come le conoscono l
 | REQ-SRC-06 | Lo **Streaming** alimenta solo `WL-RTI`; se `WL-RTI` non è `on`, la sorgente è visibile ma senza flusso, e il pannello lo segnala. | Con `WL-RTI` spento il nastro luminoso è fermo. | M | Implementato |
 | REQ-SRC-07 | Le sorgenti stanno nell'**area fornitori**, sul fondo della scena, e **non sono legate a nessuno spoke**. L'area mostra **un lotto a terra per ogni sorgente del catalogo**, con un cartello del tipo di sistema, anche quando la sorgente è spenta. | Con Data Sources `on` e tutte le sorgenti spente si vedono i lotti con i cartelli, appoggiati a terra; accendendo una sorgente, l'edificio compare sul suo lotto. | M | Implementato |
 | REQ-SRC-08 | Ogni sorgente ha uno **stato proprio** (`off`/`wip`/`on`) che si combina con **Data Sources**: è visibile solo se Data Sources non è `off`. Nel modello standard tutte le sorgenti partono `off`. | Prova: Data Sources `on`, il gestionale in `wip` → è mostrato come cantiere, senza trasporto. | M | Implementato |
-| REQ-SRC-09 | Il pannello di una sorgente mostra solo informazioni utili al business: **che tipo di fornitore è** (spiegazione della categoria), **come arriva il materiale** (il mezzo, in parole semplici) e **se il flusso è attivo**. | Nessun termine tecnico nel pannello (verifica sul lessico §1.2). | M | Implementato |
+| REQ-SRC-09 | Il pannello di una sorgente mostra solo informazioni utili al business: **che tipo di fornitore è** (spiegazione della categoria), **come arriva il materiale** (il mezzo, in parole semplici, alla voce "Descrizione") e **se il flusso è attivo** (selettore dello stato). | Nessun termine tecnico nel pannello (verifica sul lessico §1.2). | M | Implementato |
 | REQ-SRC-10 | La narrativa (§8) può **accendere singole sorgenti** ("ora colleghiamo il gestionale"). | Un capitolo da CONFIG cambia lo stato di una sola sorgente. | C | Implementato |
 
 #### 6.1.5 Catalogo standard (sorgenti generiche)
@@ -446,7 +446,7 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 | ID | Requisito | Criterio di accettazione | Pr. | Stato |
 |---|---|---|---|---|
 | REQ-UI-01 | **Navigazione libera**: rotazione, zoom e spostamento col mouse; spostamento con WASD o frecce fuori dalla narrazione. | La scena si esplora da ogni angolazione. | M | Implementato |
-| REQ-UI-02 | **Clic su un elemento**: si apre un pannello con nome e, sotto il titolo, il **nome tecnico** ("In Fabric: …", es. Lago dei dati → OneLake; Confezionamento → Semantic model); poi workload e stato, *nella fabbrica* (metafora), *cosa significa per te*, *a chi rivolgerti* e *chi lo gestisce*. Ogni concetto rappresentato (workload, elemento, tipo di sistema, mezzo, spoke, team) ha il suo nome tecnico. Le **schede delle sorgenti non hanno la riga "In Fabric"**: la sigla o il nome tecnico del sistema (es. MES / WMS) sta nella voce **"Tipo di sistema"**, accanto al nome comune. | Le schede hanno la riga "In Fabric", tranne quelle delle sorgenti; il nome tecnico non compare mai nel nome o nell'etichetta dell'elemento. | M | Implementato |
+| REQ-UI-02 | **Clic su un elemento**: si apre un pannello con nome e, sotto il titolo, il **nome tecnico** ("In Fabric: …", es. Lago dei dati → OneLake; Confezionamento → Semantic model); poi il workload, *ruolo* (la metafora), *descrizione* (per le sorgenti: come arriva il materiale), *cosa significa per te*, *a chi rivolgerti* e *chi lo gestisce*. Ogni concetto rappresentato (workload, elemento, tipo di sistema, mezzo, spoke, team) ha il suo nome tecnico. Le **schede delle sorgenti non hanno la riga "In Fabric"**: la sigla o il nome tecnico del sistema (es. MES / WMS) sta nella voce **"Tipo di sistema"**, accanto al nome comune. | Le schede hanno la riga "In Fabric", tranne quelle delle sorgenti; il nome tecnico non compare mai nel nome o nell'etichetta dell'elemento. | M | Implementato |
 | REQ-UI-03 | **Pannello workload**: elenco dei 13 workload con badge colorato e **selettore a tre stati** (off/wip/on). Cliccando il nome, la telecamera inquadra il workload. | Cambiare stato aggiorna subito la scena. | M | Implementato |
 | REQ-UI-04 | Comandi globali: **vista d'insieme**, **pausa dei flussi**, **etichette on/off**, **tutto off** e **tutto on**. | Tutti funzionanti. | M | Implementato |
 | REQ-UI-05 | **Passando il mouse** su un elemento compaiono una **cornice** attorno all'elemento e un tooltip con il nome. | Il cursore diventa a "mano" sugli elementi cliccabili; la cornice segue l'elemento sotto il mouse. | S | Implementato |
@@ -706,6 +706,7 @@ const CONFIG = {
 | RDM-044 | Togliere la legenda dei materiali e dei mezzi: non aggiunge valore | Standard · UI, FLW, SRC | REQ-FLW-08, REQ-SRC-03, REQ-UI-02 | Approvata |
 | RDM-045 | Togliere la barriera interna: fabbrica, showroom e negozi stanno dentro lo stesso perimetro | Standard · SCN | REQ-SCN-03, REQ-SCN-14, REQ-SCN-16, D-56, D-57 | Approvata |
 | RDM-046 | Poter modificare i testi direttamente nella pagina, con esportazione di `TESTI.md` | Standard · CFG, UI | REQ-CFG-09, REQ-CFG-08 | Approvata |
+| RDM-047 | Nelle schede: titoli "Ruolo" (al posto di "Nella fabbrica") e "Descrizione" (al posto di "Come arriva il materiale"); togliere l'etichetta dello stato | Standard · UI | REQ-UI-02, REQ-WL-03 | Approvata |
 
 ---
 
@@ -713,4 +714,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.18 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…046 |
+| 1.18 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…047 |

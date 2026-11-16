@@ -78,14 +78,13 @@ export function createUI(cfg, world, state) {
     box.innerHTML = '';
     const x = h('button', { className: 'x', textContent: '×', title: ui.chiudi }); x.onclick = chiudi;
     const b1 = h('span', { className: 'badge', textContent: wl.nome }); b1.style.background = wl.colore;
-    const b2 = h('span', { className: 'badge stato', textContent: ui.statoLungo[st] });
     /* [REQ-CFG-09] chiave di ogni testo della scheda: serve a modificarlo sul posto */
     const W = 'workloads.' + wlKey + '.', E = 'elements.' + d.id + '.', K = !rec ? { nome: W + 'nome', tecnico: W + 'tecnico' } : d.chiavi || { nome: E + 'nome', tecnico: E + 'tecnico', fabbrica: E + 'fabbrica', perTe: E + 'perTe' };
     const lega = (nodo, campo) => modifica.lega(nodo, campo === 'fabbrica' && !d.fabbrica ? W + 'fabbrica' : campo === 'perTe' && !d.perTe ? W + 'perTe' : K[campo], (v) => { if (rec && d[campo] !== undefined) d[campo] = v; if (campo === 'nome' && rec && rec.div.firstChild) rec.div.firstChild.textContent = v; });
     box.append(x, lega(h('h3', { textContent: titolo }), 'nome'));
     const tec = d.tipo === 'sorgente' ? '' : d.tecnico || (rec ? '' : wl.tecnico);                /* [REQ-UI-02, RDM-026] il nome tecnico: solo qui, mai nel nome */
     if (tec) box.append(h('div', { className: 'tecnico' }, h('b', { textContent: ui.tecnico + ': ' }), lega(h('span', { textContent: tec }), 'tecnico')));
-    box.append(h('div', { className: 'badges' }, b1, b2));
+    box.append(h('div', { className: 'badges' }, b1));
     const sez = (t, txt, campo) => { if (txt) box.append(h('h4', { textContent: t }), lega(h('p', { textContent: txt }), campo)); };
     if (d.categoriaNome) box.append(h('h4', { textContent: ui.categoria }), h('p', {}, lega(h('span', { textContent: d.categoriaNome }), 'categoriaNome'),
       ...(d.categoriaTecnico && d.categoriaTecnico !== d.categoriaNome ? [' (', lega(h('span', { textContent: d.categoriaTecnico }), 'categoriaTecnico'), ')'] : [])));

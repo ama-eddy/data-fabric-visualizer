@@ -13,7 +13,7 @@ window.CONFIG = {
     tuttoOn: 'Tutto on', tuttoOff: 'Tutto off',
     modificaTesti: 'Modifica testi', fineModifica: 'Fine modifica', esportaTesti: 'Esporta testi', annullaTesti: 'Annulla modifiche', annullaTestiConferma: 'Tornare ai testi pubblicati? Le modifiche non esportate andranno perse.',   // [REQ-CFG-09]
     caricaProfilo: 'Carica profilo', togliProfilo: 'Togli profilo', profiloErrato: 'Il file scelto non è un profilo valido: deve essere un file JSON con la forma del profilo di esempio.',   // [REQ-CFG-06]
-    nellaFabbrica: 'Nella fabbrica', perTe: 'Cosa significa per te', contatto: 'A chi rivolgerti', gestore: 'Chi lo gestisce',
+    nellaFabbrica: 'Ruolo', perTe: 'Cosa significa per te', contatto: 'A chi rivolgerti', gestore: 'Chi lo gestisce',
     gestori: { hub: 'Il team dati (hub)', spoke: 'La tua funzione (spoke)', entrambi: 'Il team dati insieme alla tua funzione' },
     lavori: 'Lavori in corso', segnaposto: 'in arrivo',
     aiuto: 'Trascina per ruotare · rotellina per lo zoom · tasto destro o WASD per spostarti · clic su un elemento per la scheda',
@@ -28,7 +28,7 @@ window.CONFIG = {
     benvenuto1: 'I numeri che leggi nei report non nascono nei report: nascono nei sistemi che usi ogni giorno e fanno un viaggio, come in una fabbrica.',
     benvenuto2: 'Qui vedi quel viaggio: i fornitori, il lago dove arriva il materiale, i reparti che lo lavorano, i semilavorati certificati e i negozi delle funzioni.',
     benvenuto3: 'Puoi seguire la presentazione, un capitolo alla volta, oppure esplorare da solo: accendi i reparti dal pannello e clicca su ciò che vedi.',
-    mezzo: 'Come arriva il materiale', statoElemento: 'Stato', categoria: 'Tipo di sistema',
+    mezzo: 'Descrizione', statoElemento: 'Stato', categoria: 'Tipo di sistema',
     apri: 'Mostra uno per uno', team: 'Team dati', fuoriServizio: 'non in servizio',
   },
 

@@ -81,7 +81,7 @@ Togli profilo
 Il file scelto non è un profilo valido: deve essere un file JSON con la forma del profilo di esempio.
 
 ### ui.nellaFabbrica
-Nella fabbrica
+Ruolo
 
 ### ui.perTe
 Cosa significa per te
@@ -216,7 +216,7 @@ Qui vedi quel viaggio: i fornitori, il lago dove arriva il materiale, i reparti 
 Puoi seguire la presentazione, un capitolo alla volta, oppure esplorare da solo: accendi i reparti dal pannello e clicca su ciò che vedi.
 
 ### ui.mezzo
-Come arriva il materiale
+Descrizione
 
 ### ui.statoElemento
 Stato
