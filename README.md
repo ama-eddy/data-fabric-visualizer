@@ -18,4 +18,4 @@ Per modificarlo: i sorgenti sono in `src/` (`config.js` = contenuti, `profile.js
 
 Il modello standard è pubblicato su https://ama-eddy.github.io/data-fabric-visualizer/
 
-Il profilo reale di un'azienda **non va nel repository**. Il modo più semplice: copiare `profili/profilo-esempio.json`, compilarlo e caricarlo dalla pagina con **Carica profilo** (resta solo nel proprio browser). In alternativa si mette in `src/profile.local.js` (stessa forma di `src/profile.js`) e `npm run build` genera anche `data-platform-as-a-fabric.locale.html`, da usare in locale.
+Il profilo reale di un'azienda **non va nel repository**: si mette in `src/profile.local.js` (stessa forma di `src/profile.js`) e `npm run build` genera anche `data-platform-as-a-fabric.locale.html`, da usare in locale.

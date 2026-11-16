@@ -71,15 +71,6 @@ Annulla modifiche
 ### ui.annullaTestiConferma
 Tornare ai testi pubblicati? Le modifiche non esportate andranno perse.
 
-### ui.caricaProfilo
-Carica profilo
-
-### ui.togliProfilo
-Togli profilo
-
-### ui.profiloErrato
-Il file scelto non è un profilo valido: deve essere un file JSON con la forma del profilo di esempio.
-
 ### ui.nellaFabbrica
 Ruolo
 

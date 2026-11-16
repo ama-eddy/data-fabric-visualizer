@@ -4,7 +4,6 @@ tests/out/
 # profili aziendali reali: mai nel repository pubblico (D-37)
 profili/*
 !profili/PROFILO-TEMPLATE.md
-!profili/profilo-esempio.json
 src/profile.local.js
 data-platform-as-a-fabric.locale.html
 tests/esempio.html

@@ -263,15 +263,6 @@ const path = require('path'), fs = require('fs');
   await page.getByText('Esplora liberamente').click();
   check(await page.evaluate(() => fabbrica.modifica.conta() === 0 && fabbrica.cfg.elements.find((e) => e.id === 'lago').fabbrica !== 'Testo di prova del lago'), 'Annulla modifiche: tornano i testi pubblicati');
 
-  // ---- REQ-CFG-06: profilo caricato da file JSON ----
-  await page.setInputFiles('#profilo-file', path.join(__dirname, '..', 'profili', 'profilo-esempio.json'));
-  await page.waitForFunction(() => window.fabbrica && fabbrica.cfg.meta.azienda === 'Esempio S.p.A.', null, { timeout: 20000 }).catch(() => {});
-  check(await page.evaluate(() => fabbrica.cfg.meta.azienda === 'Esempio S.p.A.' && fabbrica.cfg.spokes.length === 4 && fabbrica.figures.tutte.length === 4) && (await page.locator('#profilo-btn').textContent()) === 'Togli profilo', 'profilo caricato da file: azienda, spoke e team applicati');
-  await page.getByText('Esplora liberamente').click();                                  // dopo la ricarica torna la schermata di benvenuto
-  await page.locator('#profilo-btn').click();
-  await page.waitForFunction(() => window.fabbrica && !fabbrica.cfg.meta.azienda && fabbrica.cfg.spokes.length === 5, null, { timeout: 20000 }).catch(() => {});
-  check(await page.evaluate(() => !fabbrica.cfg.meta.azienda && fabbrica.cfg.spokes.length === 5), 'Togli profilo: torna il modello standard');
-
   check(ext.length === 0, 'nessuna richiesta di rete: ' + ext.join(', '));
   await browser.close();
   if (errors.length) { console.error('ERRORI:\n' + errors.join('\n')); process.exit(1); }

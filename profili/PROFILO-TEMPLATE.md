@@ -3,7 +3,7 @@
 > Personalizza il **modello standard** descritto in `../REQUISITI.md` (REQ-CFG-02…05, D-32).
 > Contiene **solo** ciò che cambia da un'azienda all'altra: spoke, sorgenti con categoria e flusso, team dati, contatto. Tutto il resto è standard.
 > Usare i nomi con cui le persone conoscono funzioni e sistemi: **nessun nome tecnico** (D-26).
-> Il blocco `PROFILE` nell'HTML si ricava da questo documento (REQ-CFG-05). Per usarlo senza toccare il codice: compilare una copia di `profilo-esempio.json` e caricarla dalla pagina con **Carica profilo** (REQ-CFG-06).
+> Il blocco `PROFILE` nell'HTML si ricava da questo documento (REQ-CFG-05).
 > **Il profilo compilato non va caricato nel repository**, che è pubblico: resta in locale (REQ-CFG-07).
 
 | Campo | Valore |

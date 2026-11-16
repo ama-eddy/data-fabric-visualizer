@@ -12,7 +12,6 @@ window.CONFIG = {
     vistaInsieme: "Vista d'insieme", etichette: 'Etichette', pausa: 'Pausa flussi', riprendi: 'Riprendi flussi',
     tuttoOn: 'Tutto on', tuttoOff: 'Tutto off',
     modificaTesti: 'Modifica testi', fineModifica: 'Fine modifica', esportaTesti: 'Esporta testi', annullaTesti: 'Annulla modifiche', annullaTestiConferma: 'Tornare ai testi pubblicati? Le modifiche non esportate andranno perse.',   // [REQ-CFG-09]
-    caricaProfilo: 'Carica profilo', togliProfilo: 'Togli profilo', profiloErrato: 'Il file scelto non è un profilo valido: deve essere un file JSON con la forma del profilo di esempio.',   // [REQ-CFG-06]
     nellaFabbrica: 'Ruolo', perTe: 'Cosa significa per te', contatto: 'A chi rivolgerti', gestore: 'Chi lo gestisce',
     gestori: { hub: 'Il team dati (hub)', spoke: 'La tua funzione (spoke)', entrambi: 'Il team dati insieme alla tua funzione' },
     lavori: 'Lavori in corso', segnaposto: 'in arrivo',

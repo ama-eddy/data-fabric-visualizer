@@ -36,9 +36,7 @@ function applicaProfilo(cfg, p) {
 }
 
 try {
-  /* [REQ-CFG-06] un profilo caricato da file (salvato in questo browser) prende il posto di quello scritto nella pagina */
-  let caricato = null; try { caricato = JSON.parse(localStorage.getItem('fabbrica-profilo')); } catch (e) { caricato = null; }
-  const cfg = applicaProfilo(modifica.avvia(applicaTesti(window.CONFIG, window.TESTI)), caricato && typeof caricato === 'object' ? caricato : window.PROFILE);
+  const cfg = applicaProfilo(modifica.avvia(applicaTesti(window.CONFIG, window.TESTI)), window.PROFILE);
   const world = createScene(cfg, document.getElementById('scene'), document.getElementById('labels'));
   cfg.elements.push(...elementiSorgenti(cfg), ...elementiSpoke(cfg));
   const fi = cfg.elements.findIndex((e) => e.tipo === 'piazzale'); if (fi >= 0) cfg.elements.push(...cfg.elements.splice(fi, 1));   // i lotti dei fornitori servono le posizioni delle sorgenti

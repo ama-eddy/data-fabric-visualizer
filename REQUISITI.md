@@ -485,8 +485,7 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 | REQ-CFG-03 | Il profilo di un'azienda contiene **solo**: nome dell'azienda, **spoke** (nome + stato on/wip/off), **sorgenti** (nome noto al business + **categoria** + **metodo di integrazione** + **flusso on/off**), **team dati di partenza** (quante persone, la sagoma di ciascuna, il **nome**, che esiste solo nella versione aziendale, e i workload assegnati) e un **contatto** ("a chi rivolgerti"). Tutto il resto (workload, capitoli, percorsi, testi) è standard. **Nessun nome tecnico.** | Il template `profili/PROFILO-TEMPLATE.md` ha esattamente questi campi. | M | Approvato |
 | REQ-CFG-04 | Ogni chiave del CONFIG riporta i **REQ** che la governano (campo `reqs` o commento). | Ricerca di `REQ-xx` nel file e ritrovamento della chiave. | M | Implementato |
 | REQ-CFG-05 | Il documento di profilo (`profili/<org>.md`) e il blocco `PROFILE` nell'HTML sono **allineati**: il blocco si ricava dal documento. | Ogni campo del blocco esiste nel documento di profilo. | S | Implementato |
-| REQ-CFG-06 | Si può **caricare un profilo da file JSON** tramite l'interfaccia, senza modificare l'HTML. | Il pulsante "Carica profilo" applica il JSON alla scena (D-11); il profilo resta solo nel browser di chi lo carica e "Togli profilo" riporta al modello standard. Forma del file: `profili/profilo-esempio.json`. | C | Implementato |
-| REQ-CFG-07 | Il **modello standard** è pubblicato come pagina web pubblica (GitHub Pages). Il **profilo reale di un'azienda non entra mai nel repository**: si carica da un file JSON tenuto in locale (REQ-CFG-06), oppure sta in `src/profile.local.js`, escluso dal repository, e genera `data-platform-as-a-fabric.locale.html`, da usare in locale. | La pagina pubblica mostra solo il modello standard; `git status` non propone mai i file del profilo reale. | M | Implementato |
+| REQ-CFG-07 | Il **modello standard** è pubblicato come pagina web pubblica (GitHub Pages). Il **profilo reale di un'azienda non entra mai nel repository**: sta in `src/profile.local.js`, escluso dal repository, e genera `data-platform-as-a-fabric.locale.html`, da usare in locale. | La pagina pubblica mostra solo il modello standard; `git status` non propone mai i file del profilo reale. | M | Implementato |
 | REQ-CFG-08 | Tutti i testi visibili stanno in **`TESTI.md`**, la loro **fonte unica**: un titolo con la chiave e sotto il testo libero, modificabile anche da GitHub nel browser. La build verifica che il file sia **completo**, senza chiavi sconosciute né testi vuoti, e che rispetti il **lessico** (REQ-LIT-03); a ogni modifica su `main` un'azione di GitHub rigenera la pagina pubblicata. | Un testo cambiato in `TESTI.md` compare nella pagina; un termine vietato o una chiave sbagliata bloccano la build con l'elenco dei problemi. | M | Implementato |
 | REQ-CFG-09 | I testi si possono **modificare direttamente nella pagina**: con **Modifica testi** i testi delle schede (elementi, workload, contatto, gestore, capitoli, tappe dei percorsi) diventano scrivibili sul posto. Le modifiche si vedono subito e restano **nel browser** di chi le fa; **Esporta testi** scarica il `TESTI.md` aggiornato, che resta la fonte unica (REQ-CFG-08) e va caricato nel repository per valere per tutti. **Annulla modifiche** riporta ai testi pubblicati. | Modificando un testo e riaprendo la pagina il testo nuovo è ancora lì; il file esportato contiene il testo nuovo sotto la stessa chiave e supera i controlli della build. | S | Implementato |
 
@@ -558,7 +557,6 @@ const CONFIG = {
 | REQ-UI-08, 10 | — | `src/engine/guida.js` (pannello richiudibile, due modalità) · `src/index.html` | `npm test` | Implementato |
 | REQ-HS-01…07 | WL-SSR | `CONFIG.spokes` · `CONFIG.spoke` · `src/engine/spoke.js` | `npm test` | Implementato |
 | REQ-CFG-01…05, 07, 08 | — | `src/config.js` · `src/profile.js` · `src/main.js` · `build.mjs` · `tools/testi.mjs` · `TESTI.md` · `.gitignore` | `npm test` | Implementato |
-| REQ-CFG-06 | — | `src/engine/ui.js` (Carica profilo) · `src/main.js` · `profili/profilo-esempio.json` | `npm test` | Implementato |
 | REQ-CFG-09 | — | `src/engine/modifica.js` · `src/engine/ui.js` · `src/engine/guida.js` | `npm test` | Implementato |
 | NFR-01, 04, 05, 06 | — | `build.mjs` · `tests/smoke.cjs` | `npm test` | Implementato |
 | NFR-02, 03 | — | prove su Edge e Firefox, prestazioni | — | Approvato |
@@ -589,7 +587,7 @@ const CONFIG = {
 | D-08 | La **narrativa** è lo strumento della presentazione; ordine dei workload, nel pannello e nei capitoli: SRC → ARC → PMO → INT → TRF → SEC → ACC → VIS → SSR → GOV → FIN → KNW → RTI. | Utente | Confermata |
 | D-09 | Gli spoke sono **negozi**: personalizzano i semilavorati e aggiungono dati locali (composite model), senza una propria linea di produzione. | Utente | Confermata |
 | D-10 | **Un unico file offline**, con three.js incorporato. | Utente | Confermata |
-| D-11 | Personalizzazione tramite **profilo separato** (`profili/<org>.md` → blocco `PROFILE`); il profilo si può anche caricare da un file JSON dalla pagina (REQ-CFG-06). | Utente | Confermata |
+| D-11 | Personalizzazione tramite **profilo separato** (`profili/<org>.md` → blocco `PROFILE`); nessun caricamento del profilo dalla pagina: oggi lo strumento serve un solo caso, e i testi si adattano con la modifica nella pagina (REQ-CFG-09). | Utente | Confermata |
 | D-12 | Solo italiano; testi nel CONFIG per un eventuale multilingua futuro. | Utente | Confermata |
 | D-13 | 5 spoke **generici** nello standard; quelli reali vanno nel profilo. | Utente | Confermata |
 | D-14 | Livello **concettuale** nello standard; il profilo personalizza solo con elementi riconoscibili dal business, **senza mappatura tecnica** (vedi D-26). | Utente | Confermata |
@@ -701,12 +699,12 @@ const CONFIG = {
 | RDM-039 | Negozi e showroom devono essere raggiungibili da chi li usa: ingresso clienti, showroom davanti al capannone, clienti in movimento | Standard · SCN, HS | REQ-SCN-03, REQ-SCN-14, REQ-SCN-16, REQ-HS-01, D-39, D-57 | Approvata |
 | RDM-040 | Le Data Sources non hanno bisogno di persone del team dati che se ne occupino | Standard · UI, WL, SCN | REQ-UI-13, REQ-WL-13, §7.1, D-55 | Approvata |
 | RDM-041 | Rinominare il progetto in "Data Platform as a Fabric", file compresi | Standard · UI, documenti | Titolo dei documenti e dell'applicazione, D-58 | Approvata |
-| RDM-042 | Realizzare il caricamento del profilo da file JSON, già previsto, per usare il profilo aziendale senza rigenerare la pagina | Standard · CFG, UI | REQ-CFG-06, REQ-CFG-07, D-11 | Approvata |
 | RDM-043 | Nelle schede delle sorgenti togliere la riga "In Fabric" e mettere la sigla del sistema in "Tipo di sistema" | Standard · UI, SRC | REQ-UI-02 | Approvata |
 | RDM-044 | Togliere la legenda dei materiali e dei mezzi: non aggiunge valore | Standard · UI, FLW, SRC | REQ-FLW-08, REQ-SRC-03, REQ-UI-02 | Approvata |
 | RDM-045 | Togliere la barriera interna: fabbrica, showroom e negozi stanno dentro lo stesso perimetro | Standard · SCN | REQ-SCN-03, REQ-SCN-14, REQ-SCN-16, D-56, D-57 | Approvata |
 | RDM-046 | Poter modificare i testi direttamente nella pagina, con esportazione di `TESTI.md` | Standard · CFG, UI | REQ-CFG-09, REQ-CFG-08 | Approvata |
 | RDM-047 | Nelle schede: titoli "Ruolo" (al posto di "Nella fabbrica") e "Descrizione" (al posto di "Come arriva il materiale"); togliere l'etichetta dello stato | Standard · UI | REQ-UI-02, REQ-WL-03 | Approvata |
+| RDM-048 | Semplificare: niente caricamento del profilo aziendale dalla pagina; lo strumento serve oggi un solo caso, la scalabilità ad altre aziende va in roadmap | Standard · CFG, UI | REQ-CFG-07, D-11, `ROADMAP.md` | Approvata |
 
 ---
 
@@ -714,4 +712,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.18 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…047 |
+| 1.18 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…048 |
