@@ -80,7 +80,7 @@ const path = require('path'), fs = require('fs');
   await page.evaluate(() => { fabbrica.state.setElemento('src-erp', 'on'); fabbrica.ui.mostraElemento('src-lake'); const r = fabbrica.state.elemento('src-lake'); fabbrica.world.flyTo([r.el.pos[0] - 35, 38, -30], [r.el.pos[0] - 14, 3, -58]); });
   await shot('7-sorgenti', 5000);
   check((await page.locator('#info').textContent()).includes('compare nel lago'), 'scheda del ponte di vetro: compare nel lago');
-  check((await page.locator('#info .tecnico').textContent()).includes('Shortcut'), 'scheda: nome tecnico (In Fabric)');
+  check(await page.locator('#info .tecnico').count() === 0 && (await page.locator('#info').textContent()).includes('Data lake esistente (ADLS, S3)'), 'scheda della sorgente: niente riga In Fabric, sigla nel tipo di sistema');
   await page.evaluate(() => fabbrica.ui.mostraElemento('confezionamento'));
   check((await page.locator('#info .tecnico').textContent()).includes('Semantic model') && !(await page.locator('#info h3').textContent()).includes('Semantic'), 'semilavorati: Semantic model nella scheda, non nel nome');
   check(await page.locator('#legenda .voce').count() === 11, 'legenda: 6 materiali e 5 mezzi');

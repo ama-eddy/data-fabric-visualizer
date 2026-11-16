@@ -79,11 +79,11 @@ export function createUI(cfg, world, state) {
     const b1 = h('span', { className: 'badge', textContent: wl.nome }); b1.style.background = wl.colore;
     const b2 = h('span', { className: 'badge stato', textContent: ui.statoLungo[st] });
     box.append(x, h('h3', { textContent: titolo }));
-    const tec = d.tecnico || (rec ? '' : wl.tecnico);                /* [REQ-UI-02, RDM-026] il nome tecnico: solo qui, mai nel nome */
+    const tec = d.tipo === 'sorgente' ? '' : d.tecnico || (rec ? '' : wl.tecnico);                /* [REQ-UI-02, RDM-026] il nome tecnico: solo qui, mai nel nome */
     if (tec) box.append(h('div', { className: 'tecnico' }, h('b', { textContent: ui.tecnico + ': ' }), tec));
     box.append(h('div', { className: 'badges' }, b1, b2));
     const sez = (t, txt) => { if (txt) box.append(h('h4', { textContent: t }), h('p', { textContent: txt })); };
-    if (d.categoriaNome) sez(ui.categoria, d.categoriaNome);
+    if (d.categoriaNome) sez(ui.categoria, d.categoriaTecnico && d.categoriaTecnico !== d.categoriaNome ? d.categoriaNome + ' (' + d.categoriaTecnico + ')' : d.categoriaNome);
     if (rec && rec.proprio !== undefined) {           /* [REQ-UI-09] stato di una singola sorgente o di un singolo spoke, dal vivo */
       const seg = h('div', { className: 'seg' });
       for (const s of ['off', 'wip', 'on']) { const b = h('button', { textContent: ui.stati[s], className: rec.proprio === s ? 'sel' : '' }); b.dataset.s = s; b.onclick = () => state.setElemento(rec.el.id, s); seg.append(b); }

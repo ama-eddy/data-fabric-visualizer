@@ -446,7 +446,7 @@ Messaggi chiave: Incident, "Non devi sapere dove sta il problema: lo segnali all
 | ID | Requisito | Criterio di accettazione | Pr. | Stato |
 |---|---|---|---|---|
 | REQ-UI-01 | **Navigazione libera**: rotazione, zoom e spostamento col mouse; spostamento con WASD o frecce fuori dalla narrazione. | La scena si esplora da ogni angolazione. | M | Implementato |
-| REQ-UI-02 | **Clic su un elemento**: si apre un pannello con nome e, sotto il titolo, il **nome tecnico** ("In Fabric: …", es. Lago dei dati → OneLake; Confezionamento → Semantic model); poi workload e stato, *nella fabbrica* (metafora), *cosa significa per te*, *a chi rivolgerti* e *chi lo gestisce*. Ogni concetto rappresentato (workload, elemento, tipo di sistema, mezzo, spoke, team) ha il suo nome tecnico; i materiali e i mezzi lo mostrano nella legenda al passaggio del mouse. | Tutte le schede hanno la riga "In Fabric"; il nome tecnico non compare mai nel nome o nell'etichetta dell'elemento. | M | Implementato |
+| REQ-UI-02 | **Clic su un elemento**: si apre un pannello con nome e, sotto il titolo, il **nome tecnico** ("In Fabric: …", es. Lago dei dati → OneLake; Confezionamento → Semantic model); poi workload e stato, *nella fabbrica* (metafora), *cosa significa per te*, *a chi rivolgerti* e *chi lo gestisce*. Ogni concetto rappresentato (workload, elemento, tipo di sistema, mezzo, spoke, team) ha il suo nome tecnico; i materiali e i mezzi lo mostrano nella legenda al passaggio del mouse. Le **schede delle sorgenti non hanno la riga "In Fabric"**: la sigla o il nome tecnico del sistema (es. MES / WMS) sta nella voce **"Tipo di sistema"**, accanto al nome comune. | Le schede hanno la riga "In Fabric", tranne quelle delle sorgenti; il nome tecnico non compare mai nel nome o nell'etichetta dell'elemento. | M | Implementato |
 | REQ-UI-03 | **Pannello workload**: elenco dei 13 workload con badge colorato e **selettore a tre stati** (off/wip/on). Cliccando il nome, la telecamera inquadra il workload. | Cambiare stato aggiorna subito la scena. | M | Implementato |
 | REQ-UI-04 | Comandi globali: **vista d'insieme**, **pausa dei flussi**, **etichette on/off**, **tutto off** e **tutto on**. | Tutti funzionanti. | M | Implementato |
 | REQ-UI-05 | **Passando il mouse** su un elemento compaiono una **cornice** attorno all'elemento e un tooltip con il nome. | Il cursore diventa a "mano" sugli elementi cliccabili; la cornice segue l'elemento sotto il mouse. | S | Implementato |
@@ -700,6 +700,7 @@ const CONFIG = {
 | RDM-040 | Le Data Sources non hanno bisogno di persone del team dati che se ne occupino | Standard · UI, WL, SCN | REQ-UI-13, REQ-WL-13, §7.1, D-55 | Approvata |
 | RDM-041 | Rinominare il progetto in "Data Platform as a Fabric", file compresi | Standard · UI, documenti | Titolo dei documenti e dell'applicazione, D-58 | Approvata |
 | RDM-042 | Realizzare il caricamento del profilo da file JSON, già previsto, per usare il profilo aziendale senza rigenerare la pagina | Standard · CFG, UI | REQ-CFG-06, REQ-CFG-07, D-11 | Approvata |
+| RDM-043 | Nelle schede delle sorgenti togliere la riga "In Fabric" e mettere la sigla del sistema in "Tipo di sistema" | Standard · UI, SRC | REQ-UI-02 | Approvata |
 
 ---
 
@@ -707,4 +708,4 @@ const CONFIG = {
 
 | Versione | Data | Modifica | RDM |
 |---|---|---|---|
-| 1.18 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…042 |
+| 1.18 | 2026-11-13 | Requisiti approvati: base per l'implementazione | RDM-001…043 |

@@ -798,7 +798,7 @@ La sala cataloghi: schede ordinate di ogni prodotto, con codici, descrizioni e i
 HR
 
 ### categorie.hr.tecnico
-Human Capital Management
+Human Resources
 
 ### categorie.hr.fabbrica
 Una palazzina di uffici: le informazioni sulle persone dell'azienda.
@@ -822,7 +822,7 @@ Sono i sistemi della produzione e del magazzino: giacenze, lotti, avanzamento de
 E-commerce
 
 ### categorie.ecommerce.tecnico
-Piattaforma e-commerce
+B2B / B2C
 
 ### categorie.ecommerce.fabbrica
 Un centro pacchi: ordini che arrivano dal negozio online, uno dopo l'altro.
@@ -834,7 +834,7 @@ Un centro pacchi: ordini che arrivano dal negozio online, uno dopo l'altro.
 Marketing
 
 ### categorie.marketing.tecnico
-Marketing automation (API)
+Marketing automation
 
 ### categorie.marketing.fabbrica
 Uno sportello: si chiede e si riceve, un pezzo alla volta.
@@ -846,7 +846,7 @@ Sono i servizi di marketing a cui l'azienda è abbonata: campagne, newsletter, s
 Fogli di calcolo
 
 ### categorie.excel.tecnico
-File Excel / CSV
+Excel / CSV
 
 ### categorie.excel.fabbrica
 Un archivio di scatoloni: materiale sfuso, preparato a mano.
@@ -858,7 +858,7 @@ Sono i fogli di calcolo che oggi qualcuno compila e si passa a mano: budget, pre
 Sensori
 
 ### categorie.iot.tecnico
-Dispositivi IoT
+IoT
 
 ### categorie.iot.fabbrica
 Un campo di sensori: il materiale arriva in continuazione, senza pause.
@@ -870,7 +870,7 @@ Sono macchine e sensori che mandano segnali in ogni momento.
 Dati esterni
 
 ### categorie.esterni.tecnico
-Dati esterni / open data
+Open data
 
 ### categorie.esterni.fabbrica
 Un mercato: materiale che viene da fuori, acquistato o pubblico.
@@ -882,7 +882,7 @@ Sono dati di mercato o dati pubblici che arricchiscono quelli dell'azienda.
 Data lake esistente
 
 ### categorie.datalake.tecnico
-Data lake esterno (ADLS, S3)
+ADLS, S3
 
 ### categorie.datalake.fabbrica
 Un deposito di container: grandi quantità di materiale già raccolto altrove.
